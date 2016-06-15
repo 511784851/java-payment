@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<configuration scan="true" scanPeriod="30 seconds" >
+	<appender name="ROLLFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.dir}/guzhiPay-web.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${log.dir}/guzhiPay-web.%d{gbgb-MM-dd}.log</fileNamePattern>
+			<!-- keep 200 days' worth of history -->
+			<maxHistory>200</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%date %level [%thread] %logger{35} [%file:%line] %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="gbFILEAPPENDER" class="ch.qos.logback.core.FileAppender">
+		<file>${log.dir}/guzhiPay-web.log</file>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{35} [%file:%line] %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<logger name="java.sql" level="WARN" />
+	<logger name="com.mchange" level="WARN" />
+	<logger name="org.apache" level="debug" />
+	<logger name="org.mgbatis" level="WARN" />
+	<logger name="org.springframework" level="debug" />
+	<logger name="com.guzhi.pay.mapper" level="WARN" /> <!-- mgbatis use this prefix for mapper log -->
+	<root level="${log.level}">
+		<appender-ref ref="${log.appender}" />
+	</root>
+</configuration>

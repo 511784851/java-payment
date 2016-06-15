@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+        http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd">
+
+	<context:annotation-config />
+	<context:property-placeholder location="classpath:guzhiPay.properties" ignore-unresolvable="true"/>
+	<context:component-scan base-package="com.guzhi.pay" />
+	<import resource="classpath:configs/schedule-context.xml"/>
+	<import resource="classpath:configs/dao-context.xml"/>
+	<import resource="classpath:configs/task-context.xml"/>
+	<import resource="classpath:configs/traderule-context.xml"/>
+	<import resource="classpath:thrift/thrift-gbpay.xml"/>
+	<import resource="classpath:thrift/thrift-udbinfo.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+	
+	
+
+	<bean id="thriftServer" class="com.guzhi.pay.access.thrift.ThriftServerControl_v05"
+		init-method="start" destroy-method="stop">
+		<property name="bindHost" value="0.0.0.0" />
+		<property name="bindPort" value="8088" />
+	</bean>
+	
+	<!-- Http Client Config -->
+	<bean id="httpClientFactory" class="com.guzhi.pay.helper.HttpClientFactory" destroy-method="shutdownHttpClient" />
+	<bean id="channelAdapterSelector" class="com.guzhi.pay.channel.ChannelAdapterSelector"/>
+	
+	<!-- 联通卡渠道,设置连接超时和接收超时 -->
+	<http-conf:conduit name="http://impl.ws.ifdp.womusic.cn/*.http-conduit">   
+          <http-conf:client ConnectionTimeout="10000" ReceiveTimeout="20000"/>  
+    </http-conf:conduit>
+	
+	<jaxws:client id='productOrderManage' serviceClass="com.guzhi.pay.channel.unicom.cxf.productordermanage.ProductOrderManage" address="http://58.254.132.140:8080/ifdp/services/ProductOrderManage"/>
+	<jaxws:client id='verifyCodeManage' serviceClass="com.guzhi.pay.channel.unicom.cxf.verifycodemanage.VerifyCodeManage" address="http://58.254.132.140:8080/ifdp/services/VerifyCodeManage"/>
+	
+	
+	
+</beans>
