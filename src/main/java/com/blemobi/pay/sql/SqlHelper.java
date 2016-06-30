@@ -2,7 +2,6 @@ package com.blemobi.pay.sql;
 
 import java.util.UUID;
 
-import com.blemobi.pay.core.PayManager;
 import com.blemobi.pay.dbcp.JdbcTemplate;
 
 import lombok.extern.log4j.Log4j;

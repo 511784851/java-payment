@@ -37,8 +37,6 @@ public class WeixinContrller {
 	 *            支付金额（单位：分）
 	 * @return String 返回预支付签名信息
 	 * @throws Exception
-	 * @throws ChatException
-	 *             抛出ChatException异常
 	 */
 	@GET
 	@Path("paySign")
