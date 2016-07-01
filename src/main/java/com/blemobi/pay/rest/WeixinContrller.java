@@ -8,16 +8,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
-import org.json.simple.JSONObject;
-
+import com.blemobi.demo.probuf.ResultProtos.PMessage;
 import com.blemobi.pay.channel.weixin.WeiXinPayNotifyHelper;
 import com.blemobi.pay.channel.weixin.WeiXinPaySignHelper;
 import com.blemobi.pay.sql.SqlHelper;
+import com.google.protobuf.GeneratedMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
- * @author andy.zhao@blemobi.com 
- * 微信支付接口类
+ * @author andy.zhao@blemobi.com 微信支付接口类
  */
 @Path("/weixin")
 public class WeixinContrller {
@@ -40,8 +39,8 @@ public class WeixinContrller {
 	 */
 	@GET
 	@Path("paySign")
-	@Produces("text/plain")
-	public String paySign(@Context HttpServletRequest request, @Context HttpServletResponse response,
+	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+	public PMessage paySign(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@QueryParam("uuid") String uuid, @QueryParam("order_no") String order_no, @QueryParam("name") String name,
 			@QueryParam("amount") String amount) throws Exception {
 
@@ -53,9 +52,9 @@ public class WeixinContrller {
 		SqlHelper.savePayInfo(uuid, bank_type, name, order_no, amount, app_ip, fee_type);
 
 		// 生成预支付签名信息
-		JSONObject json = WeiXinPaySignHelper.paySign(order_no, name, amount, fee_type, request, response);
+		PMessage message = WeiXinPaySignHelper.paySign(order_no, name, amount, fee_type, request, response);
 
-		return json.toJSONString();
+		return message;
 	}
 
 	/**

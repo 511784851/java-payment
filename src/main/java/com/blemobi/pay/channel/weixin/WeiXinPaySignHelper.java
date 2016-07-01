@@ -3,14 +3,15 @@ package com.blemobi.pay.channel.weixin;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
-
+import com.blemobi.demo.probuf.PaymentProtos.PWeixin;
+import com.blemobi.demo.probuf.ResultProtos.PMessage;
 import com.blemobi.pay.channel.weixin.tenpay.AccessTokenRequestHandler;
 import com.blemobi.pay.channel.weixin.tenpay.ClientRequestHandler;
 import com.blemobi.pay.channel.weixin.tenpay.PackageRequestHandler;
 import com.blemobi.pay.channel.weixin.tenpay.PrepayIdRequestHandler;
 import com.blemobi.pay.channel.weixin.tenpay.util.ConstantUtil;
 import com.blemobi.pay.channel.weixin.tenpay.util.WXUtil;
+import com.blemobi.pay.util.ReslutUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -26,18 +27,16 @@ public class WeiXinPaySignHelper {
 	private static final String notify_url = "http://47.88.5.139:8088/WeiXinpay-0.0.1-SNAPSHOT//payNotifyUrl.jsp";// 通知的URL
 	private static final String input_charset = "GBK"; // 字符编码
 
-	public static JSONObject paySign(String out_trade_no, String body, String total_fee, String fee_type,
+	public static PMessage paySign(String out_trade_no, String body, String total_fee, String fee_type,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		JSONObject json = new JSONObject();
 
 		PackageRequestHandler packageReqHandler = new PackageRequestHandler(request, response);// 生成package的请求类
 		PrepayIdRequestHandler prepayReqHandler = new PrepayIdRequestHandler(request, response);// 获取prepayid的请求类
 		ClientRequestHandler clientHandler = new ClientRequestHandler(request, response);// 返回客户端支付参数的请求类
 		packageReqHandler.setKey(ConstantUtil.PARTNER_KEY);
 
-		int retcode;
-		String retmsg = "";
-		String xml_body = "";
+		int errorCode;
+		String errorMsg = "";
 		// 获取token值
 		String token = AccessTokenRequestHandler.getAccessToken();
 
@@ -57,7 +56,6 @@ public class WeiXinPaySignHelper {
 
 			// 获取package包
 			String packageValue = packageReqHandler.getRequestURL();
-			json.put("package", "Sign=WXPay");
 
 			log.info("--------------------payment info--------------------");
 			log.info("order number: " + out_trade_no);
@@ -107,25 +105,21 @@ public class WeiXinPaySignHelper {
 				sign = clientHandler.createSHA1Sign();
 				clientHandler.setParameter("sign", sign);
 
-				json.put("appid", ConstantUtil.APP_ID);
-				json.put("partnerid", ConstantUtil.PARTNER);
-				json.put("noncestr", noncestr);
-				json.put("timestamp", timestamp);
-				json.put("prepayid", prepayid);
-				json.put("sign", sign);
+				PWeixin weixin = PWeixin.newBuilder().setAppid(ConstantUtil.APP_ID).setPartnerid(ConstantUtil.PARTNER)
+						.setNoncestr(noncestr).setPackage("Sign=WXPay").setTimestamp(timestamp).setPrepayid(prepayid)
+						.setSign(sign).build();
 
-				retcode = 0;
-				retmsg = "OK";
+				return ReslutUtil.createReslutMessage(weixin);
 			} else {
-				retcode = -2;
-				retmsg = "get prepayId error";
+				errorCode = -2;
+				errorMsg = "get prepayId error";
 			}
 		} else {
-			retcode = -1;
-			retmsg = "get Token error";
+			errorCode = -1;
+			errorMsg = "get Token error";
 		}
 
-		return json;
+		return ReslutUtil.createErrorMessage(errorCode, errorMsg);
 	}
 
 }
