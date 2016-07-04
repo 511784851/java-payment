@@ -245,6 +245,7 @@ public class AliPayUtil {
 		Random r = new Random();
 		key = key + r.nextInt();
 		key = key.substring(0, 15);
+		key = key+"-"+UUID.randomUUID().toString();//在原有基础上再加上UUID
 		return key;
 	}
 
