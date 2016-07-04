@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blemobi.pay.channel.weixin.tenpay.util.TenpayUtil;
+import com.tenpay.util.TenpayUtil;
 
 public class PackageRequestHandler extends RequestHandler {
 
@@ -19,7 +19,7 @@ public class PackageRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * è·å–å¸¦å‚æ•°çš„è¯·æ±‚URL
+	 * »ñÈ¡´ø²ÎÊıµÄÇëÇóURL
 	 * @return String
 	 * @throws UnsupportedEncodingException 
 	 */
@@ -39,9 +39,9 @@ public class PackageRequestHandler extends RequestHandler {
 			sb.append(k + "=" + URLEncoder.encode(v, enc) + "&");
 		}
 		
-		//å»æ‰æœ€åä¸€ä¸ª&
+		//È¥µô×îºóÒ»¸ö&
 		String reqPars = sb.substring(0, sb.lastIndexOf("&"));
-		// è®¾ç½®debugä¿¡æ¯
+		// ÉèÖÃdebugĞÅÏ¢
 		this.setDebugInfo("md5 sb:" + getDebugInfo() + "\r\npackage:" + reqPars);
 		return reqPars;
 		

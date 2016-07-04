@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay.util;
+package com.tenpay.util;
 
 import java.security.MessageDigest;
 

@@ -1,9 +1,10 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blemobi.pay.channel.weixin.tenpay.util.MD5Util;
+import com.tenpay.RequestHandler;
+import com.tenpay.util.MD5Util;
 
 public class DownloadBillRequestHandler extends RequestHandler {
 
@@ -14,7 +15,7 @@ public class DownloadBillRequestHandler extends RequestHandler {
 	}
 	
 	/**
-	 * åˆ›å»ºmd5æ‘˜è¦,è§„åˆ™æ˜¯:æŒ‰å‚æ•°å›ºå®šé¡ºåºç»„ä¸²,é‡åˆ°ç©ºå€¼çš„å‚æ•°ä¸å‚åŠ ç­¾åã€‚
+	 * ´´½¨md5ÕªÒª,¹æÔòÊÇ:°´²ÎÊý¹Ì¶¨Ë³Ðò×é´®,Óöµ½¿ÕÖµµÄ²ÎÊý²»²Î¼ÓÇ©Ãû¡£
 	 */
 	protected void createSign() {
 		StringBuffer sb = new StringBuffer();
@@ -30,7 +31,7 @@ public class DownloadBillRequestHandler extends RequestHandler {
 		
 		this.setParameter("sign", sign);
 		
-		//debugä¿¡æ¯
+		//debugÐÅÏ¢
 		this.setDebugInfo(sb.toString() + " => sign:" + sign);
 		
 	}

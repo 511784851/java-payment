@@ -1,45 +1,44 @@
-package com.blemobi.pay.channel.weixin.tenpay.client;
+package com.tenpay.client;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.jdom.JDOMException;
-
-import com.blemobi.pay.channel.weixin.tenpay.util.MD5Util;
-import com.blemobi.pay.channel.weixin.tenpay.util.XMLUtil;
+import java.io.IOException;
+import com.tenpay.util.MD5Util;
+import org.jdom.JDOMException;
+import com.tenpay.util.XMLUtil;
 /**
- * åå°åº”ç­”ç±»<br/>
+ * ºóÌ¨Ó¦´ğÀà<br/>
  * ========================================================================<br/>
- * apiè¯´æ˜ï¼š<br/>
- * getKey()/setKey(),è·å–/è®¾ç½®å¯†é’¥<br/>
- * getContent() / setContent(), è·å–/è®¾ç½®åŸå§‹å†…å®¹<br/>
- * getParameter()/setParameter(),è·å–/è®¾ç½®å‚æ•°å€¼<br/>
- * getAllParameters(),è·å–æ‰€æœ‰å‚æ•°<br/>
- * isTenpaySign(),æ˜¯å¦è´¢ä»˜é€šç­¾å,true:æ˜¯ false:å¦<br/>
- * getDebugInfo(),è·å–debugä¿¡æ¯<br/>
+ * apiËµÃ÷£º<br/>
+ * getKey()/setKey(),»ñÈ¡/ÉèÖÃÃÜÔ¿<br/>
+ * getContent() / setContent(), »ñÈ¡/ÉèÖÃÔ­Ê¼ÄÚÈİ<br/>
+ * getParameter()/setParameter(),»ñÈ¡/ÉèÖÃ²ÎÊıÖµ<br/>
+ * getAllParameters(),»ñÈ¡ËùÓĞ²ÎÊı<br/>
+ * isTenpaySign(),ÊÇ·ñ²Æ¸¶Í¨Ç©Ãû,true:ÊÇ false:·ñ<br/>
+ * getDebugInfo(),»ñÈ¡debugĞÅÏ¢<br/>
  * 
  * ========================================================================<br/>
  *
  */
 public class ClientResponseHandler {
 	
-	/** åº”ç­”åŸå§‹å†…å®¹ */
+	/** Ó¦´ğÔ­Ê¼ÄÚÈİ */
 	private String content;
 	
-	/** åº”ç­”çš„å‚æ•° */
+	/** Ó¦´ğµÄ²ÎÊı */
 	private SortedMap parameters; 
 	
-	/** debugä¿¡æ¯ */
+	/** debugĞÅÏ¢ */
 	private String debugInfo;
 	
-	/** å¯†é’¥ */
+	/** ÃÜÔ¿ */
 	private String key;
 	
-	/** å­—ç¬¦é›† */
+	/** ×Ö·û¼¯ */
 	private String charset;
 	
 	public ClientResponseHandler() {
@@ -61,8 +60,8 @@ public class ClientResponseHandler {
 	}
 	
 	/**
-	 * è·å–å‚æ•°å€¼
-	 * @param parameter å‚æ•°åç§°
+	 * »ñÈ¡²ÎÊıÖµ
+	 * @param parameter ²ÎÊıÃû³Æ
 	 * @return String 
 	 */
 	public String getParameter(String parameter) {
@@ -71,9 +70,9 @@ public class ClientResponseHandler {
 	}
 	
 	/**
-	 * è®¾ç½®å‚æ•°å€¼
-	 * @param parameter å‚æ•°åç§°
-	 * @param parameterValue å‚æ•°å€¼
+	 * ÉèÖÃ²ÎÊıÖµ
+	 * @param parameter ²ÎÊıÃû³Æ
+	 * @param parameterValue ²ÎÊıÖµ
 	 */
 	public void setParameter(String parameter, String parameterValue) {
 		String v = "";
@@ -84,7 +83,7 @@ public class ClientResponseHandler {
 	}
 	
 	/**
-	 * è¿”å›æ‰€æœ‰çš„å‚æ•°
+	 * ·µ»ØËùÓĞµÄ²ÎÊı
 	 * @return SortedMap
 	 */
 	public SortedMap getAllParameters() {
@@ -96,14 +95,14 @@ public class ClientResponseHandler {
 	}
 	
 	/**
-	*è·å–å¯†é’¥
+	*»ñÈ¡ÃÜÔ¿
 	*/
 	public String getKey() {
 		return key;
 	}
 
 	/**
-	*è®¾ç½®å¯†é’¥
+	*ÉèÖÃÃÜÔ¿
 	*/
 	public void setKey(String key) {
 		this.key = key;
@@ -118,7 +117,7 @@ public class ClientResponseHandler {
 	}	
 	
 	/**
-	 * æ˜¯å¦è´¢ä»˜é€šç­¾å,è§„åˆ™æ˜¯:æŒ‰å‚æ•°åç§°a-zæ’åº,é‡åˆ°ç©ºå€¼çš„å‚æ•°ä¸å‚åŠ ç­¾åã€‚
+	 * ÊÇ·ñ²Æ¸¶Í¨Ç©Ãû,¹æÔòÊÇ:°´²ÎÊıÃû³Æa-zÅÅĞò,Óöµ½¿ÕÖµµÄ²ÎÊı²»²Î¼ÓÇ©Ãû¡£
 	 * @return boolean
 	 */
 	public boolean isTenpaySign() {
@@ -136,12 +135,12 @@ public class ClientResponseHandler {
 		
 		sb.append("key=" + this.getKey());
 		
-		//ç®—å‡ºæ‘˜è¦
+		//Ëã³öÕªÒª
 		String sign = MD5Util.MD5Encode(sb.toString(), this.charset).toLowerCase();
 		
 		String tenpaySign = this.getParameter("sign").toLowerCase();
 		
-		//debugä¿¡æ¯
+		//debugĞÅÏ¢
 		this.setDebugInfo(sb.toString() + " => sign:" + sign +
 				" tenpaySign:" + tenpaySign);
 		
@@ -149,8 +148,8 @@ public class ClientResponseHandler {
 	}
 	
 	/**
-	 * æ˜¯å¦è´¢ä»˜é€šç­¾å
-	 * @param signParameterArray ç­¾åçš„å‚æ•°æ•°ç»„
+	 * ÊÇ·ñ²Æ¸¶Í¨Ç©Ãû
+	 * @param signParameterArray Ç©ÃûµÄ²ÎÊıÊı×é
 	 * @return boolean
 	 */
 	protected boolean isTenpaySign(String signParameterArray[]) {
@@ -166,13 +165,13 @@ public class ClientResponseHandler {
 		
 		signPars.append("key=" + this.getKey());
 				
-		//ç®—å‡ºæ‘˜è¦
+		//Ëã³öÕªÒª
 		String sign = MD5Util.MD5Encode(
 				signPars.toString(), this.charset).toLowerCase();
 		
 		String tenpaySign = this.getParameter("sign").toLowerCase();
 		
-		//debugä¿¡æ¯
+		//debugĞÅÏ¢
 		this.setDebugInfo(signPars.toString() + " => sign:" + sign +
 				" tenpaySign:" + tenpaySign);
 		
@@ -185,15 +184,15 @@ public class ClientResponseHandler {
 	}
 	
 	/**
-	 * è§£æXMLå†…å®¹
+	 * ½âÎöXMLÄÚÈİ
 	 */
 	protected void doParse() throws JDOMException, IOException {
 		String xmlContent = this.getContent();
 		
-		//è§£æxml,å¾—åˆ°map
+		//½âÎöxml,µÃµ½map
 		Map m = XMLUtil.doXMLParse(xmlContent);
 		
-		//è®¾ç½®å‚æ•°
+		//ÉèÖÃ²ÎÊı
 		Iterator it = m.keySet().iterator();
 		while(it.hasNext()) {
 			String k = (String) it.next();

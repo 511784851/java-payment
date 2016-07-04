@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay.util;
+package com.tenpay.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 public class TenpayUtil {
 	
 	/**
-	 * æŠŠå¯¹è±¡è½¬æ¢æˆå­—ç¬¦ä¸²
+	 * °Ñ¶ÔÏó×ª»»³É×Ö·û´®
 	 * @param obj
-	 * @return String è½¬æ¢æˆå­—ç¬¦ä¸²,è‹¥å¯¹è±¡ä¸ºnull,åˆ™è¿”å›ç©ºå­—ç¬¦ä¸².
+	 * @return String ×ª»»³É×Ö·û´®,Èô¶ÔÏóÎªnull,Ôò·µ»Ø¿Õ×Ö·û´®.
 	 */
 	public static String toString(Object obj) {
 		if(obj == null)
@@ -22,11 +22,11 @@ public class TenpayUtil {
 	}
 	
 	/**
-	 * æŠŠå¯¹è±¡è½¬æ¢ä¸ºintæ•°å€¼.
+	 * °Ñ¶ÔÏó×ª»»ÎªintÊıÖµ.
 	 * 
 	 * @param obj
-	 *            åŒ…å«æ•°å­—çš„å¯¹è±¡.
-	 * @return int è½¬æ¢åçš„æ•°å€¼,å¯¹ä¸èƒ½è½¬æ¢çš„å¯¹è±¡è¿”å›0ã€‚
+	 *            °üº¬Êı×ÖµÄ¶ÔÏó.
+	 * @return int ×ª»»ºóµÄÊıÖµ,¶Ô²»ÄÜ×ª»»µÄ¶ÔÏó·µ»Ø0¡£
 	 */
 	public static int toInt(Object obj) {
 		int a = 0;
@@ -40,7 +40,7 @@ public class TenpayUtil {
 	}
 	
 	/**
-	 * è·å–å½“å‰æ—¶é—´ yyyyMMddHHmmss
+	 * »ñÈ¡µ±Ç°Ê±¼ä yyyyMMddHHmmss
 	 * @return String
 	 */ 
 	public static String getCurrTime() {
@@ -51,7 +51,7 @@ public class TenpayUtil {
 	}
 	
 	/**
-	 * è·å–å½“å‰æ—¥æœŸ yyyyMMdd
+	 * »ñÈ¡µ±Ç°ÈÕÆÚ yyyyMMdd
 	 * @param date
 	 * @return String
 	 */
@@ -62,11 +62,11 @@ public class TenpayUtil {
 	}
 	
 	/**
-	 * å–å‡ºä¸€ä¸ªæŒ‡å®šé•¿åº¦å¤§å°çš„éšæœºæ­£æ•´æ•°.
+	 * È¡³öÒ»¸öÖ¸¶¨³¤¶È´óĞ¡µÄËæ»úÕıÕûÊı.
 	 * 
 	 * @param length
-	 *            int è®¾å®šæ‰€å–å‡ºéšæœºæ•°çš„é•¿åº¦ã€‚lengthå°äº11
-	 * @return int è¿”å›ç”Ÿæˆçš„éšæœºæ•°ã€‚
+	 *            int Éè¶¨ËùÈ¡³öËæ»úÊıµÄ³¤¶È¡£lengthĞ¡ÓÚ11
+	 * @return int ·µ»ØÉú³ÉµÄËæ»úÊı¡£
 	 */
 	public static int buildRandom(int length) {
 		int num = 1;
@@ -81,7 +81,7 @@ public class TenpayUtil {
 	}
 	
 	/**
-	 * è·å–ç¼–ç å­—ç¬¦é›†
+	 * »ñÈ¡±àÂë×Ö·û¼¯
 	 * @param request
 	 * @param response
 	 * @return String
@@ -106,7 +106,7 @@ public class TenpayUtil {
 	}
 	
 	/**
-	 * è·å–unixæ—¶é—´ï¼Œä»1970-01-01 00:00:00å¼€å§‹çš„ç§’æ•°
+	 * »ñÈ¡unixÊ±¼ä£¬´Ó1970-01-01 00:00:00¿ªÊ¼µÄÃëÊı
 	 * @param date
 	 * @return long
 	 */
@@ -119,9 +119,9 @@ public class TenpayUtil {
 	}
 		
 	/**
-	 * æ—¶é—´è½¬æ¢æˆå­—ç¬¦ä¸²
-	 * @param date æ—¶é—´
-	 * @param formatType æ ¼å¼åŒ–ç±»å‹
+	 * Ê±¼ä×ª»»³É×Ö·û´®
+	 * @param date Ê±¼ä
+	 * @param formatType ¸ñÊ½»¯ÀàĞÍ
 	 * @return String
 	 */
 	public static String date2String(Date date, String formatType) {

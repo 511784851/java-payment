@@ -1,18 +1,21 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 
-import com.blemobi.pay.channel.weixin.tenpay.client.TenpayHttpClient;
-import com.blemobi.pay.channel.weixin.tenpay.util.ConstantUtil;
-import com.blemobi.pay.channel.weixin.tenpay.util.JsonUtil;
-import com.blemobi.pay.channel.weixin.tenpay.util.Sha1Util;
+import com.tenpay.client.TenpayHttpClient;
+import com.tenpay.util.ConstantUtil;
+import com.tenpay.util.JsonUtil;
+import com.tenpay.util.Sha1Util;
 
 public class PrepayIdRequestHandler extends RequestHandler {
 
@@ -22,7 +25,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * åˆ›å»ºç­¾åSHA1
+	 * ´´½¨Ç©ÃûSHA1
 	 * 
 	 * @param signParams
 	 * @return
@@ -45,7 +48,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 		return appsign;
 	}
 
-	// æäº¤é¢„æ”¯ä»˜
+	// Ìá½»Ô¤Ö§¸¶
 	public String sendPrepay() throws JSONException {
 		String prepayid = "";
 		StringBuffer sb = new StringBuffer("{");
@@ -80,7 +83,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 		return prepayid;
 	}
 
-	// åˆ¤æ–­access_tokenæ˜¯å¦å¤±æ•ˆ
+	// ÅĞ¶Ïaccess_tokenÊÇ·ñÊ§Ğ§
 	public String sendAccessToken() {
 		String accesstoken = "";
 		StringBuffer sb = new StringBuffer("{");
@@ -107,7 +110,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 		if (httpClient.callHttpPost(requestUrl, params)) {
 			resContent = httpClient.getResContent();
 			if (2 == resContent.indexOf(ConstantUtil.ERRORCODE)) {
-				accesstoken = resContent.substring(11, 16);//è·å–å¯¹åº”çš„errcodeçš„å€¼
+				accesstoken = resContent.substring(11, 16);//»ñÈ¡¶ÔÓ¦µÄerrcodeµÄÖµ
 			}
 		}
 		return accesstoken;

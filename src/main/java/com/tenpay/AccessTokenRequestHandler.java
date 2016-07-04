@@ -1,12 +1,12 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blemobi.pay.channel.weixin.tenpay.client.TenpayHttpClient;
-import com.blemobi.pay.channel.weixin.tenpay.util.ConstantUtil;
-import com.blemobi.pay.channel.weixin.tenpay.util.JsonUtil;
-import com.blemobi.pay.channel.weixin.tenpay.util.WXUtil;
+import com.tenpay.client.TenpayHttpClient;
+import com.tenpay.util.ConstantUtil;
+import com.tenpay.util.JsonUtil;
+import com.tenpay.util.WXUtil;
 
 public class AccessTokenRequestHandler extends RequestHandler {
 
@@ -18,22 +18,22 @@ public class AccessTokenRequestHandler extends RequestHandler {
 	private static String access_token = "";
 
 	/**
-	 * è·å–å‡­è¯access_token
+	 * »ñÈ¡Æ¾Ö¤access_token
 	 * @return
 	 */
 	public static String getAccessToken() {
-		if ("".equals(access_token)) {// å¦‚æœä¸ºç©ºç›´æ¥è·å–
+		if ("".equals(access_token)) {// Èç¹ûÎª¿ÕÖ±½Ó»ñÈ¡
 			return getTokenReal();
 		}
 
-		if (tokenIsExpire(access_token)) {// å¦‚æœè¿‡æœŸé‡æ–°è·å–
+		if (tokenIsExpire(access_token)) {// Èç¹û¹ıÆÚÖØĞÂ»ñÈ¡
 			return getTokenReal();
 		}
 		return access_token;
 	}
 
 	/**
-	 * å®é™…è·å–access_tokençš„æ–¹æ³•
+	 * Êµ¼Ê»ñÈ¡access_tokenµÄ·½·¨
 	 * @return
 	 */
 	protected static String getTokenReal() {
@@ -48,20 +48,20 @@ public class AccessTokenRequestHandler extends RequestHandler {
 			if (resContent.indexOf(ConstantUtil.ACCESS_TOKEN) > 0) {
 				access_token = JsonUtil.getJsonValue(resContent, ConstantUtil.ACCESS_TOKEN);
 			} else {
-				System.out.println("è·å–access_tokenå€¼è¿”å›é”™è¯¯ï¼ï¼ï¼");
+				System.out.println("»ñÈ¡access_tokenÖµ·µ»Ø´íÎó£¡£¡£¡");
 			}
 		} else {
-			System.out.println("åå°è°ƒç”¨é€šä¿¡å¤±è´¥");
+			System.out.println("ºóÌ¨µ÷ÓÃÍ¨ĞÅÊ§°Ü");
 			System.out.println(httpClient.getResponseCode());
 			System.out.println(httpClient.getErrInfo());
-			// æœ‰å¯èƒ½å› ä¸ºç½‘ç»œåŸå› ï¼Œè¯·æ±‚å·²ç»å¤„ç†ï¼Œä½†æœªæ”¶åˆ°åº”ç­”ã€‚
+			// ÓĞ¿ÉÄÜÒòÎªÍøÂçÔ­Òò£¬ÇëÇóÒÑ¾­´¦Àí£¬µ«Î´ÊÕµ½Ó¦´ğ¡£
 		}
 
 		return access_token;
 	}
 
 	/**
-	 * åˆ¤æ–­ä¼ é€’è¿‡æ¥çš„å‚æ•°access_tokenæ˜¯å¦è¿‡æœŸ
+	 * ÅĞ¶Ï´«µİ¹ıÀ´µÄ²ÎÊıaccess_tokenÊÇ·ñ¹ıÆÚ
 	 * @param access_token
 	 * @return
 	 */
@@ -75,14 +75,14 @@ public class AccessTokenRequestHandler extends RequestHandler {
 		wxReqHandler.setParameter("timestamp", WXUtil.getTimeStamp());
 		wxReqHandler.setParameter("traceid", ConstantUtil.traceid);
 
-		// ç”Ÿæˆæ”¯ä»˜ç­¾å
+		// Éú³ÉÖ§¸¶Ç©Ãû
 		String sign = wxReqHandler.createSHA1Sign();
 		wxReqHandler.setParameter("app_signature", sign);
 		wxReqHandler.setParameter("sign_method", ConstantUtil.SIGN_METHOD);
 		String gateUrl = ConstantUtil.GATEURL + access_token;
 		wxReqHandler.setGateUrl(gateUrl);
 
-		// å‘é€è¯·æ±‚
+		// ·¢ËÍÇëÇó
 		String accesstoken = wxReqHandler.sendAccessToken();
 		if (ConstantUtil.EXPIRE_ERRCODE.equals(accesstoken) || ConstantUtil.FAIL_ERRCODE.equals(accesstoken))
 			flag = true;

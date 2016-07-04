@@ -1,11 +1,13 @@
-package com.blemobi.pay.channel.weixin.tenpay.client;
+package com.tenpay.client;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -18,22 +20,22 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import com.blemobi.pay.channel.weixin.tenpay.util.HttpClientUtil;
+import com.tenpay.util.HttpClientUtil;
 
 /**
- * è´¢ä»˜é€šhttpæˆ–è€…httpsç½‘ç»œé€šä¿¡å®¢æˆ·ç«¯<br/>
+ * ²Æ¸¶Í¨http»òÕßhttpsÍøÂçÍ¨ĞÅ¿Í»§¶Ë<br/>
  * ========================================================================<br/>
- * apiè¯´æ˜ï¼š<br/>
- * setReqContent($reqContent),è®¾ç½®è¯·æ±‚å†…å®¹ï¼Œæ— è®ºpostå’Œgetï¼Œéƒ½ç”¨getæ–¹å¼æä¾›<br/>
- * getResContent(), è·å–åº”ç­”å†…å®¹<br/>
- * setMethod(method),è®¾ç½®è¯·æ±‚æ–¹æ³•,postæˆ–è€…get<br/>
- * getErrInfo(),è·å–é”™è¯¯ä¿¡æ¯<br/>
- * setCertInfo(certFile, certPasswd),è®¾ç½®è¯ä¹¦ï¼ŒåŒå‘httpsæ—¶éœ€è¦ä½¿ç”¨<br/>
- * setCaInfo(caFile), è®¾ç½®CAï¼Œæ ¼å¼æœªpemï¼Œä¸è®¾ç½®åˆ™ä¸æ£€æŸ¥<br/>
- * setTimeOut(timeOut)ï¼Œ è®¾ç½®è¶…æ—¶æ—¶é—´ï¼Œå•ä½ç§’<br/>
- * getResponseCode(), å–è¿”å›çš„httpçŠ¶æ€ç <br/>
- * call(),çœŸæ­£è°ƒç”¨æ¥å£<br/>
- * getCharset()/setCharset(),å­—ç¬¦é›†ç¼–ç <br/>
+ * apiËµÃ÷£º<br/>
+ * setReqContent($reqContent),ÉèÖÃÇëÇóÄÚÈİ£¬ÎŞÂÛpostºÍget£¬¶¼ÓÃget·½Ê½Ìá¹©<br/>
+ * getResContent(), »ñÈ¡Ó¦´ğÄÚÈİ<br/>
+ * setMethod(method),ÉèÖÃÇëÇó·½·¨,post»òÕßget<br/>
+ * getErrInfo(),»ñÈ¡´íÎóĞÅÏ¢<br/>
+ * setCertInfo(certFile, certPasswd),ÉèÖÃÖ¤Êé£¬Ë«ÏòhttpsÊ±ĞèÒªÊ¹ÓÃ<br/>
+ * setCaInfo(caFile), ÉèÖÃCA£¬¸ñÊ½Î´pem£¬²»ÉèÖÃÔò²»¼ì²é<br/>
+ * setTimeOut(timeOut)£¬ ÉèÖÃ³¬Ê±Ê±¼ä£¬µ¥Î»Ãë<br/>
+ * getResponseCode(), È¡·µ»ØµÄhttp×´Ì¬Âë<br/>
+ * call(),ÕæÕıµ÷ÓÃ½Ó¿Ú<br/>
+ * getCharset()/setCharset(),×Ö·û¼¯±àÂë<br/>
  * 
  * ========================================================================<br/>
  *
@@ -50,34 +52,34 @@ public class TenpayHttpClient {
 	
 	private static final String JKS_CA_PASSWORD = "";
 	
-	/** caè¯ä¹¦æ–‡ä»¶ */
+	/** caÖ¤ÊéÎÄ¼ş */
 	private File caFile;
 	
-	/** è¯ä¹¦æ–‡ä»¶ */
+	/** Ö¤ÊéÎÄ¼ş */
 	private File certFile;
 	
-	/** è¯ä¹¦å¯†ç  */
+	/** Ö¤ÊéÃÜÂë */
 	private String certPasswd;
 	
-	/** è¯·æ±‚å†…å®¹ï¼Œæ— è®ºpostå’Œgetï¼Œéƒ½ç”¨getæ–¹å¼æä¾› */
+	/** ÇëÇóÄÚÈİ£¬ÎŞÂÛpostºÍget£¬¶¼ÓÃget·½Ê½Ìá¹© */
 	private String reqContent;
 	
-	/** åº”ç­”å†…å®¹ */
+	/** Ó¦´ğÄÚÈİ */
 	private String resContent;
 	
-	/** è¯·æ±‚æ–¹æ³• */
+	/** ÇëÇó·½·¨ */
 	private String method;
 	
-	/** é”™è¯¯ä¿¡æ¯ */
+	/** ´íÎóĞÅÏ¢ */
 	private String errInfo;
 	
-	/** è¶…æ—¶æ—¶é—´,ä»¥ç§’ä¸ºå•ä½ */
+	/** ³¬Ê±Ê±¼ä,ÒÔÃëÎªµ¥Î» */
 	private int timeOut;
 	
-	/** httpåº”ç­”ç¼–ç  */
+	/** httpÓ¦´ğ±àÂë */
 	private int responseCode;
 	
-	/** å­—ç¬¦ç¼–ç  */
+	/** ×Ö·û±àÂë */
 	private String charset;
 	
 	private InputStream inputStream;
@@ -91,7 +93,7 @@ public class TenpayHttpClient {
 		this.resContent = "";
 		this.method = "POST";
 		this.errInfo = "";
-		this.timeOut = 30;//30ç§’
+		this.timeOut = 30;//30Ãë
 		
 		this.responseCode = 0;
 		this.charset = "GBK";
@@ -100,9 +102,9 @@ public class TenpayHttpClient {
 	}
 
 	/**
-	 * è®¾ç½®è¯ä¹¦ä¿¡æ¯
-	 * @param certFile è¯ä¹¦æ–‡ä»¶
-	 * @param certPasswd è¯ä¹¦å¯†ç 
+	 * ÉèÖÃÖ¤ÊéĞÅÏ¢
+	 * @param certFile Ö¤ÊéÎÄ¼ş
+	 * @param certPasswd Ö¤ÊéÃÜÂë
 	 */
 	public void setCertInfo(File certFile, String certPasswd) {
 		this.certFile = certFile;
@@ -110,7 +112,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * è®¾ç½®ca
+	 * ÉèÖÃca
 	 * @param caFile
 	 */
 	public void setCaInfo(File caFile) {
@@ -118,15 +120,15 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * è®¾ç½®è¯·æ±‚å†…å®¹
-	 * @param reqContent è¡¨æ±‚å†…å®¹
+	 * ÉèÖÃÇëÇóÄÚÈİ
+	 * @param reqContent ±íÇóÄÚÈİ
 	 */
 	public void setReqContent(String reqContent) {
 		this.reqContent = reqContent;
 	}
 	
 	/**
-	 * è·å–ç»“æœå†…å®¹
+	 * »ñÈ¡½á¹ûÄÚÈİ
 	 * @return String
 	 * @throws IOException 
 	 */
@@ -142,15 +144,15 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * è®¾ç½®è¯·æ±‚æ–¹æ³•postæˆ–è€…get
-	 * @param method è¯·æ±‚æ–¹æ³•post/get
+	 * ÉèÖÃÇëÇó·½·¨post»òÕßget
+	 * @param method ÇëÇó·½·¨post/get
 	 */
 	public void setMethod(String method) {
 		this.method = method;
 	}
 	
 	/**
-	 * è·å–é”™è¯¯ä¿¡æ¯
+	 * »ñÈ¡´íÎóĞÅÏ¢
 	 * @return String
 	 */
 	public String getErrInfo() {
@@ -158,15 +160,15 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * è®¾ç½®è¶…æ—¶æ—¶é—´,ä»¥ç§’ä¸ºå•ä½
-	 * @param timeOut è¶…æ—¶æ—¶é—´,ä»¥ç§’ä¸ºå•ä½
+	 * ÉèÖÃ³¬Ê±Ê±¼ä,ÒÔÃëÎªµ¥Î»
+	 * @param timeOut ³¬Ê±Ê±¼ä,ÒÔÃëÎªµ¥Î»
 	 */
 	public void setTimeOut(int timeOut) {
 		this.timeOut = timeOut;
 	}
 	
 	/**
-	 * è·å–httpçŠ¶æ€ç 
+	 * »ñÈ¡http×´Ì¬Âë
 	 * @return int
 	 */
 	public int getResponseCode() {
@@ -174,7 +176,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * æ‰§è¡Œhttpè°ƒç”¨ã€‚true:æˆåŠŸ false:å¤±è´¥
+	 * Ö´ĞĞhttpµ÷ÓÃ¡£true:³É¹¦ false:Ê§°Ü
 	 * @return boolean
 	 */
 	public boolean call() {
@@ -233,7 +235,7 @@ public class TenpayHttpClient {
 			KeyStoreException, NoSuchAlgorithmException,
 			UnrecoverableKeyException, KeyManagementException {
 
-		// caç›®å½•
+		// caÄ¿Â¼
 		String caPath = this.caFile.getParent();
 
 		File jksCAFile = new File(caPath + "/"
@@ -258,7 +260,7 @@ public class TenpayHttpClient {
 		SSLContext sslContext = HttpClientUtil.getSSLContext(trustStream,
 				TenpayHttpClient.JKS_CA_PASSWORD, keyStream, this.certPasswd);
 		
-		//å…³é—­æµ
+		//¹Ø±ÕÁ÷
 		keyStream.close();
 		trustStream.close();
 		
@@ -290,7 +292,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ä»¥http postæ–¹å¼é€šä¿¡
+	 * ÒÔhttp post·½Ê½Í¨ĞÅ
 	 * @param url
 	 * @param postData
 	 * @throws IOException
@@ -304,7 +306,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ä»¥http getæ–¹å¼é€šä¿¡
+	 * ÒÔhttp get·½Ê½Í¨ĞÅ
 	 * 
 	 * @param url
 	 * @throws IOException
@@ -325,7 +327,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ä»¥https getæ–¹å¼é€šä¿¡
+	 * ÒÔhttps get·½Ê½Í¨ĞÅ
 	 * @param url
 	 * @param sslContext
 	 * @throws IOException
@@ -357,29 +359,29 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * è®¾ç½®httpè¯·æ±‚é»˜è®¤å±æ€§
+	 * ÉèÖÃhttpÇëÇóÄ¬ÈÏÊôĞÔ
 	 * @param httpConnection
 	 */
 	protected void setHttpRequest(HttpURLConnection httpConnection) {
 		
-		//è®¾ç½®è¿æ¥è¶…æ—¶æ—¶é—´
+		//ÉèÖÃÁ¬½Ó³¬Ê±Ê±¼ä
 		httpConnection.setConnectTimeout(this.timeOut * 1000);
 		
 		//User-Agent
 		httpConnection.setRequestProperty("User-Agent", 
 				TenpayHttpClient.USER_AGENT_VALUE);
 		
-		//ä¸ä½¿ç”¨ç¼“å­˜
+		//²»Ê¹ÓÃ»º´æ
 		httpConnection.setUseCaches(false);
 		
-		//å…è®¸è¾“å…¥è¾“å‡º
+		//ÔÊĞíÊäÈëÊä³ö
 		httpConnection.setDoInput(true);
 		httpConnection.setDoOutput(true);
 		
 	}
 	
 	/**
-	 * å¤„ç†åº”ç­”
+	 * ´¦ÀíÓ¦´ğ
 	 * @throws IOException
 	 */
 	protected void doResponse() throws IOException {
@@ -388,16 +390,16 @@ public class TenpayHttpClient {
 			return;
 		}
 
-		//è·å–åº”ç­”å†…å®¹
+		//»ñÈ¡Ó¦´ğÄÚÈİ
 		this.resContent=HttpClientUtil.InputStreamTOString(this.inputStream,this.charset); 
 
-		//å…³é—­è¾“å…¥æµ
+		//¹Ø±ÕÊäÈëÁ÷
 		this.inputStream.close();
 		
 	}
 	
 	/**
-	 * postæ–¹å¼å¤„ç†
+	 * post·½Ê½´¦Àí
 	 * @param conn
 	 * @param postData
 	 * @throws IOException
@@ -405,10 +407,10 @@ public class TenpayHttpClient {
 	protected void doPost(HttpURLConnection conn, byte[] postData)
 			throws IOException {
 
-		// ä»¥postæ–¹å¼é€šä¿¡
+		// ÒÔpost·½Ê½Í¨ĞÅ
 		conn.setRequestMethod("POST");
 
-		// è®¾ç½®è¯·æ±‚é»˜è®¤å±æ€§
+		// ÉèÖÃÇëÇóÄ¬ÈÏÊôĞÔ
 		this.setHttpRequest(conn);
 
 		// Content-Type
@@ -421,34 +423,34 @@ public class TenpayHttpClient {
 		final int len = 1024; // 1KB
 		HttpClientUtil.doOutput(out, postData, len);
 
-		// å…³é—­æµ
+		// ¹Ø±ÕÁ÷
 		out.close();
 
-		// è·å–å“åº”è¿”å›çŠ¶æ€ç 
+		// »ñÈ¡ÏìÓ¦·µ»Ø×´Ì¬Âë
 		this.responseCode = conn.getResponseCode();
 
-		// è·å–åº”ç­”è¾“å…¥æµ
+		// »ñÈ¡Ó¦´ğÊäÈëÁ÷
 		this.inputStream = conn.getInputStream();
 
 	}
 	
 	/**
-	 * getæ–¹å¼å¤„ç†
+	 * get·½Ê½´¦Àí
 	 * @param conn
 	 * @throws IOException
 	 */
 	protected void doGet(HttpURLConnection conn) throws IOException {
 		
-		//ä»¥GETæ–¹å¼é€šä¿¡
+		//ÒÔGET·½Ê½Í¨ĞÅ
 		conn.setRequestMethod("GET");
 		
-		//è®¾ç½®è¯·æ±‚é»˜è®¤å±æ€§
+		//ÉèÖÃÇëÇóÄ¬ÈÏÊôĞÔ
 		this.setHttpRequest(conn);
 		
-		//è·å–å“åº”è¿”å›çŠ¶æ€ç 
+		//»ñÈ¡ÏìÓ¦·µ»Ø×´Ì¬Âë
 		this.responseCode = conn.getResponseCode();
 		
-		//è·å–åº”ç­”è¾“å…¥æµ
+		//»ñÈ¡Ó¦´ğÊäÈëÁ÷
 		this.inputStream = conn.getInputStream();
 	}
 

@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 
 import java.io.IOException;
@@ -13,27 +13,27 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blemobi.pay.channel.weixin.tenpay.util.MD5Util;
-import com.blemobi.pay.channel.weixin.tenpay.util.TenpayUtil;
+import com.tenpay.util.MD5Util;
+import com.tenpay.util.TenpayUtil;
 
 /**
- * è¯·æ±‚å¤„ç†ç±»
- * è¯·æ±‚å¤„ç†ç±»ç»§æ‰¿æ­¤ç±»ï¼Œé‡å†™createSignæ–¹æ³•å³å¯ã€‚
+ * ÇëÇó´¦ÀíÀà
+ * ÇëÇó´¦ÀíÀà¼Ì³Ğ´ËÀà£¬ÖØĞ´createSign·½·¨¼´¿É¡£
  * @author miklchen
  *
  */
 public class RequestHandler {
 	
-	/** ç½‘å…³urlåœ°å€ */
+	/** Íø¹ØurlµØÖ· */
 	private String gateUrl;
 	
-	/** å¯†é’¥ */
+	/** ÃÜÔ¿ */
 	private String key;
 	
-	/** è¯·æ±‚çš„å‚æ•° */
+	/** ÇëÇóµÄ²ÎÊı */
 	private SortedMap parameters;
 	
-	/** debugä¿¡æ¯ */
+	/** debugĞÅÏ¢ */
 	private String debugInfo;
 	
 	protected HttpServletRequest request;
@@ -41,7 +41,7 @@ public class RequestHandler {
 	protected HttpServletResponse response;
 	
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 * @param request
 	 * @param response
 	 */
@@ -56,43 +56,43 @@ public class RequestHandler {
 	}
 	
 	/**
-	*åˆå§‹åŒ–å‡½æ•°ã€‚
+	*³õÊ¼»¯º¯Êı¡£
 	*/
 	public void init() {
 		//nothing to do
 	}
 
 	/**
-	*è·å–å…¥å£åœ°å€,ä¸åŒ…å«å‚æ•°å€¼
+	*»ñÈ¡Èë¿ÚµØÖ·,²»°üº¬²ÎÊıÖµ
 	*/
 	public String getGateUrl() {
 		return gateUrl;
 	}
 
 	/**
-	*è®¾ç½®å…¥å£åœ°å€,ä¸åŒ…å«å‚æ•°å€¼
+	*ÉèÖÃÈë¿ÚµØÖ·,²»°üº¬²ÎÊıÖµ
 	*/
 	public void setGateUrl(String gateUrl) {
 		this.gateUrl = gateUrl;
 	}
 
 	/**
-	*è·å–å¯†é’¥
+	*»ñÈ¡ÃÜÔ¿
 	*/
 	public String getKey() {
 		return key;
 	}
 
 	/**
-	*è®¾ç½®å¯†é’¥
+	*ÉèÖÃÃÜÔ¿
 	*/
 	public void setKey(String key) {
 		this.key = key;
 	}
 	
 	/**
-	 * è·å–å‚æ•°å€¼
-	 * @param parameter å‚æ•°åç§°
+	 * »ñÈ¡²ÎÊıÖµ
+	 * @param parameter ²ÎÊıÃû³Æ
 	 * @return String 
 	 */
 	public String getParameter(String parameter) {
@@ -101,9 +101,9 @@ public class RequestHandler {
 	}
 	
 	/**
-	 * è®¾ç½®å‚æ•°å€¼
-	 * @param parameter å‚æ•°åç§°
-	 * @param parameterValue å‚æ•°å€¼
+	 * ÉèÖÃ²ÎÊıÖµ
+	 * @param parameter ²ÎÊıÃû³Æ
+	 * @param parameterValue ²ÎÊıÖµ
 	 */
 	public void setParameter(String parameter, String parameterValue) {
 		String v = "";
@@ -114,7 +114,7 @@ public class RequestHandler {
 	}
 	
 	/**
-	 * è¿”å›æ‰€æœ‰çš„å‚æ•°
+	 * ·µ»ØËùÓĞµÄ²ÎÊı
 	 * @return SortedMap
 	 */
 	public SortedMap getAllParameters() {		
@@ -122,14 +122,14 @@ public class RequestHandler {
 	}
 
 	/**
-	*è·å–debugä¿¡æ¯
+	*»ñÈ¡debugĞÅÏ¢
 	*/
 	public String getDebugInfo() {
 		return debugInfo;
 	}
 	
 	/**
-	 * è·å–å¸¦å‚æ•°çš„è¯·æ±‚URL
+	 * »ñÈ¡´ø²ÎÊıµÄÇëÇóURL
 	 * @return String
 	 * @throws UnsupportedEncodingException 
 	 */
@@ -153,7 +153,7 @@ public class RequestHandler {
 			}
 		}
 		
-		//å»æ‰æœ€åä¸€ä¸ª&
+		//È¥µô×îºóÒ»¸ö&
 		String reqPars = sb.substring(0, sb.lastIndexOf("&"));
 		
 		return this.getGateUrl() + "?" + reqPars;
@@ -165,7 +165,7 @@ public class RequestHandler {
 	}
 	
 	/**
-	 * åˆ›å»ºmd5æ‘˜è¦,è§„åˆ™æ˜¯:æŒ‰å‚æ•°åç§°a-zæ’åº,é‡åˆ°ç©ºå€¼çš„å‚æ•°ä¸å‚åŠ ç­¾åã€‚
+	 * ´´½¨md5ÕªÒª,¹æÔòÊÇ:°´²ÎÊıÃû³Æa-zÅÅĞò,Óöµ½¿ÕÖµµÄ²ÎÊı²»²Î¼ÓÇ©Ãû¡£
 	 */
 	protected void createSign() {
 		StringBuffer sb = new StringBuffer();
@@ -187,13 +187,13 @@ public class RequestHandler {
 		
 		this.setParameter("sign", sign);
 		
-		//debugä¿¡æ¯
+		//debugĞÅÏ¢
 		this.setDebugInfo(sb.toString() + " => sign:" + sign);
 		
 	}
 	
 	/**
-	*è®¾ç½®debugä¿¡æ¯
+	*ÉèÖÃdebugĞÅÏ¢
 	*/
 	protected void setDebugInfo(String debugInfo) {
 		this.debugInfo = debugInfo;

@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay.util;
+package com.tenpay.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,14 +14,14 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 /**
- * xmlå·¥å…·ç±»
+ * xml¹¤¾ßÀà
  * @author miklchen
  *
  */
 public class XMLUtil {
 
 	/**
-	 * è§£æxml,è¿”å›ç¬¬ä¸€çº§å…ƒç´ é”®å€¼å¯¹ã€‚å¦‚æœç¬¬ä¸€çº§å…ƒç´ æœ‰å­èŠ‚ç‚¹ï¼Œåˆ™æ­¤èŠ‚ç‚¹çš„å€¼æ˜¯å­èŠ‚ç‚¹çš„xmlæ•°æ®ã€‚
+	 * ½âÎöxml,·µ»ØµÚÒ»¼¶ÔªËØ¼üÖµ¶Ô¡£Èç¹ûµÚÒ»¼¶ÔªËØÓĞ×Ó½Úµã£¬Ôò´Ë½ÚµãµÄÖµÊÇ×Ó½ÚµãµÄxmlÊı¾İ¡£
 	 * @param strxml
 	 * @return
 	 * @throws JDOMException
@@ -56,14 +56,14 @@ public class XMLUtil {
 			m.put(k, v);
 		}
 		
-		//å…³é—­æµ
+		//¹Ø±ÕÁ÷
 		in.close();
 		
 		return m;
 	}
 	
 	/**
-	 * è·å–å­ç»“ç‚¹çš„xml
+	 * »ñÈ¡×Ó½áµãµÄxml
 	 * @param children
 	 * @return String
 	 */
@@ -89,7 +89,7 @@ public class XMLUtil {
 	}
 	
 	/**
-	 * è·å–xmlç¼–ç å­—ç¬¦é›†
+	 * »ñÈ¡xml±àÂë×Ö·û¼¯
 	 * @param strxml
 	 * @return
 	 * @throws IOException 

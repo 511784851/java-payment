@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 import java.util.Iterator;
 import java.util.Map;

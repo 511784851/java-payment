@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay.util;
+package com.tenpay.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -28,8 +28,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * Httpå®¢æˆ·ç«¯å·¥å…·ç±»<br/>
- * è¿™æ˜¯å†…éƒ¨è°ƒç”¨ç±»ï¼Œè¯·ä¸è¦åœ¨å¤–éƒ¨è°ƒç”¨ã€‚
+ * Http¿Í»§¶Ë¹¤¾ßÀà<br/>
+ * ÕâÊÇÄÚ²¿µ÷ÓÃÀà£¬Çë²»ÒªÔÚÍâ²¿µ÷ÓÃ¡£
  * @author miklchen
  *
  */
@@ -42,7 +42,7 @@ public class HttpClientUtil {
 	
 	/**
 	 * get HttpURLConnection
-	 * @param strUrl urlåœ°å€
+	 * @param strUrl urlµØÖ·
 	 * @return HttpURLConnection
 	 * @throws IOException
 	 */
@@ -56,7 +56,7 @@ public class HttpClientUtil {
 	
 	/**
 	 * get HttpsURLConnection
-	 * @param strUrl urlåœ°å€
+	 * @param strUrl urlµØÖ·
 	 * @return HttpsURLConnection
 	 * @throws IOException
 	 */
@@ -69,7 +69,7 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * è·å–ä¸å¸¦æŸ¥è¯¢ä¸²çš„url
+	 * »ñÈ¡²»´ø²éÑ¯´®µÄurl
 	 * @param strUrl
 	 * @return String
 	 */
@@ -89,7 +89,7 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * è·å–æŸ¥è¯¢ä¸²
+	 * »ñÈ¡²éÑ¯´®
 	 * @param strUrl
 	 * @return String
 	 */
@@ -108,7 +108,7 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * æŸ¥è¯¢å­—ç¬¦ä¸²è½¬æ¢æˆMap<br/>
+	 * ²éÑ¯×Ö·û´®×ª»»³ÉMap<br/>
 	 * name1=key1&name2=key2&...
 	 * @param queryString
 	 * @return
@@ -130,7 +130,7 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * æŠŠé”®å€¼æ·»åŠ è‡³Map<br/>
+	 * °Ñ¼üÖµÌí¼ÓÖÁMap<br/>
 	 * pair:name=value
 	 * @param pair name=value
 	 * @param m
@@ -154,8 +154,8 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * BufferedReaderè½¬æ¢æˆString<br/>
-	 * æ³¨æ„:æµå…³é—­éœ€è¦è‡ªè¡Œå¤„ç†
+	 * BufferedReader×ª»»³ÉString<br/>
+	 * ×¢Òâ:Á÷¹Ø±ÕĞèÒª×ÔĞĞ´¦Àí
 	 * @param reader
 	 * @return String
 	 * @throws IOException
@@ -172,8 +172,8 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * å¤„ç†è¾“å‡º<br/>
-	 * æ³¨æ„:æµå…³é—­éœ€è¦è‡ªè¡Œå¤„ç†
+	 * ´¦ÀíÊä³ö<br/>
+	 * ×¢Òâ:Á÷¹Ø±ÕĞèÒª×ÔĞĞ´¦Àí
 	 * @param out
 	 * @param data
 	 * @param len
@@ -193,14 +193,14 @@ public class HttpClientUtil {
 				dataLen -= len;
 			}
 
-			// åˆ·æ–°ç¼“å†²åŒº
+			// Ë¢ĞÂ»º³åÇø
 			out.flush();
 		}
 
 	}
 	
 	/**
-	 * è·å–SSLContext
+	 * »ñÈ¡SSLContext
 	 * @param trustFile 
 	 * @param trustPasswd
 	 * @param keyFile
@@ -241,8 +241,8 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * è·å–CAè¯ä¹¦ä¿¡æ¯
-	 * @param cafile CAè¯ä¹¦æ–‡ä»¶
+	 * »ñÈ¡CAÖ¤ÊéĞÅÏ¢
+	 * @param cafile CAÖ¤ÊéÎÄ¼ş
 	 * @return Certificate
 	 * @throws CertificateException
 	 * @throws IOException
@@ -257,7 +257,7 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * å­—ç¬¦ä¸²è½¬æ¢æˆcharæ•°ç»„
+	 * ×Ö·û´®×ª»»³ÉcharÊı×é
 	 * @param str
 	 * @return char[]
 	 */
@@ -268,7 +268,7 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * å­˜å‚¨caè¯ä¹¦æˆJKSæ ¼å¼
+	 * ´æ´¢caÖ¤Êé³ÉJKS¸ñÊ½
 	 * @param cert
 	 * @param alias
 	 * @param password
@@ -297,8 +297,8 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * InputStreamè½¬æ¢æˆByte
-	 * æ³¨æ„:æµå…³é—­éœ€è¦è‡ªè¡Œå¤„ç†
+	 * InputStream×ª»»³ÉByte
+	 * ×¢Òâ:Á÷¹Ø±ÕĞèÒª×ÔĞĞ´¦Àí
 	 * @param in
 	 * @return byte
 	 * @throws Exception
@@ -321,10 +321,10 @@ public class HttpClientUtil {
     } 
 	
 	/**
-	 * InputStreamè½¬æ¢æˆString
-	 * æ³¨æ„:æµå…³é—­éœ€è¦è‡ªè¡Œå¤„ç†
+	 * InputStream×ª»»³ÉString
+	 * ×¢Òâ:Á÷¹Ø±ÕĞèÒª×ÔĞĞ´¦Àí
 	 * @param in
-	 * @param encoding ç¼–ç 
+	 * @param encoding ±àÂë
 	 * @return String
 	 * @throws Exception
 	 */

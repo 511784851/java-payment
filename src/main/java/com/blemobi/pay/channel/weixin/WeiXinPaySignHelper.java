@@ -5,13 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.blemobi.demo.probuf.PaymentProtos.PWeixin;
 import com.blemobi.demo.probuf.ResultProtos.PMessage;
-import com.blemobi.pay.channel.weixin.tenpay.AccessTokenRequestHandler;
-import com.blemobi.pay.channel.weixin.tenpay.ClientRequestHandler;
-import com.blemobi.pay.channel.weixin.tenpay.PackageRequestHandler;
-import com.blemobi.pay.channel.weixin.tenpay.PrepayIdRequestHandler;
-import com.blemobi.pay.channel.weixin.tenpay.util.ConstantUtil;
-import com.blemobi.pay.channel.weixin.tenpay.util.WXUtil;
 import com.blemobi.pay.util.ReslutUtil;
+import com.tenpay.AccessTokenRequestHandler;
+import com.tenpay.ClientRequestHandler;
+import com.tenpay.PackageRequestHandler;
+import com.tenpay.PrepayIdRequestHandler;
+import com.tenpay.util.ConstantUtil;
+import com.tenpay.util.WXUtil;
 
 import lombok.extern.log4j.Log4j;
 

@@ -3,10 +3,10 @@ package com.blemobi.pay.channel.weixin;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blemobi.pay.channel.weixin.tenpay.RequestHandler;
-import com.blemobi.pay.channel.weixin.tenpay.ResponseHandler;
-import com.blemobi.pay.channel.weixin.tenpay.client.ClientResponseHandler;
-import com.blemobi.pay.channel.weixin.tenpay.client.TenpayHttpClient;
+import com.tenpay.RequestHandler;
+import com.tenpay.ResponseHandler;
+import com.tenpay.client.ClientResponseHandler;
+import com.tenpay.client.TenpayHttpClient;
 
 import lombok.extern.log4j.Log4j;
 

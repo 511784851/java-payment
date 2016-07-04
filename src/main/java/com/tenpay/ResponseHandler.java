@@ -1,4 +1,4 @@
-package com.blemobi.pay.channel.weixin.tenpay;
+package com.tenpay;
 
 
 import java.io.IOException;
@@ -13,24 +13,24 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.blemobi.pay.channel.weixin.tenpay.util.MD5Util;
-import com.blemobi.pay.channel.weixin.tenpay.util.TenpayUtil;
+import com.tenpay.util.MD5Util;
+import com.tenpay.util.TenpayUtil;
 
 /**
- * åº”ç­”å¤„ç†ç±»
- * åº”ç­”å¤„ç†ç±»ç»§æ‰¿æ­¤ç±»ï¼Œé‡å†™isTenpaySignæ–¹æ³•å³å¯ã€‚
+ * Ó¦´ğ´¦ÀíÀà
+ * Ó¦´ğ´¦ÀíÀà¼Ì³Ğ´ËÀà£¬ÖØĞ´isTenpaySign·½·¨¼´¿É¡£
  * @author miklchen
  *
  */
 public class ResponseHandler { 
 	
-	/** å¯†é’¥ */
+	/** ÃÜÔ¿ */
 	private String key;
 	
-	/** åº”ç­”çš„å‚æ•° */
+	/** Ó¦´ğµÄ²ÎÊı */
 	private SortedMap parameters; 
 	
-	/** debugä¿¡æ¯ */
+	/** debugĞÅÏ¢ */
 	private String debugInfo;
 	
 	private HttpServletRequest request;
@@ -40,7 +40,7 @@ public class ResponseHandler {
 	private String uriEncoding;
 	
 	/**
-	 * æ„é€ å‡½æ•°
+	 * ¹¹Ôìº¯Êı
 	 * 
 	 * @param request
 	 * @param response
@@ -67,22 +67,22 @@ public class ResponseHandler {
 	}
 	
 	/**
-	*è·å–å¯†é’¥
+	*»ñÈ¡ÃÜÔ¿
 	*/
 	public String getKey() {
 		return key;
 	}
 
 	/**
-	*è®¾ç½®å¯†é’¥
+	*ÉèÖÃÃÜÔ¿
 	*/
 	public void setKey(String key) {
 		this.key = key;
 	}
 
 	/**
-	 * è·å–å‚æ•°å€¼
-	 * @param parameter å‚æ•°åç§°
+	 * »ñÈ¡²ÎÊıÖµ
+	 * @param parameter ²ÎÊıÃû³Æ
 	 * @return String 
 	 */
 	public String getParameter(String parameter) {
@@ -91,9 +91,9 @@ public class ResponseHandler {
 	}
 	
 	/**
-	 * è®¾ç½®å‚æ•°å€¼
-	 * @param parameter å‚æ•°åç§°
-	 * @param parameterValue å‚æ•°å€¼
+	 * ÉèÖÃ²ÎÊıÖµ
+	 * @param parameter ²ÎÊıÃû³Æ
+	 * @param parameterValue ²ÎÊıÖµ
 	 */
 	public void setParameter(String parameter, String parameterValue) {
 		String v = "";
@@ -104,7 +104,7 @@ public class ResponseHandler {
 	}
 	
 	/**
-	 * è¿”å›æ‰€æœ‰çš„å‚æ•°
+	 * ·µ»ØËùÓĞµÄ²ÎÊı
 	 * @return SortedMap
 	 */
 	public SortedMap getAllParameters() {
@@ -112,7 +112,7 @@ public class ResponseHandler {
 	}
 	
 	/**
-	 * æ˜¯å¦è´¢ä»˜é€šç­¾å,è§„åˆ™æ˜¯:æŒ‰å‚æ•°åç§°a-zæ’åº,é‡åˆ°ç©ºå€¼çš„å‚æ•°ä¸å‚åŠ ç­¾åã€‚
+	 * ÊÇ·ñ²Æ¸¶Í¨Ç©Ãû,¹æÔòÊÇ:°´²ÎÊıÃû³Æa-zÅÅĞò,Óöµ½¿ÕÖµµÄ²ÎÊı²»²Î¼ÓÇ©Ãû¡£
 	 * @return boolean
 	 */
 	public boolean isTenpaySign() {
@@ -130,13 +130,13 @@ public class ResponseHandler {
 		
 		sb.append("key=" + this.getKey());
 		
-		//ç®—å‡ºæ‘˜è¦
+		//Ëã³öÕªÒª
 		String enc = TenpayUtil.getCharacterEncoding(this.request, this.response);
 		String sign = MD5Util.MD5Encode(sb.toString(), enc).toLowerCase();
 		
 		String tenpaySign = this.getParameter("sign").toLowerCase();
 		
-		//debugä¿¡æ¯
+		//debugĞÅÏ¢
 		this.setDebugInfo(sb.toString() + " => sign:" + sign +
 				" tenpaySign:" + tenpaySign);
 		
@@ -144,8 +144,8 @@ public class ResponseHandler {
 	}
 	
 	/**
-	 * è¿”å›å¤„ç†ç»“æœç»™è´¢ä»˜é€šæœåŠ¡å™¨ã€‚
-	 * @param msg: Success or failã€‚
+	 * ·µ»Ø´¦Àí½á¹û¸ø²Æ¸¶Í¨·şÎñÆ÷¡£
+	 * @param msg: Success or fail¡£
 	 * @throws IOException 
 	 */
 	public void sendToCFT(String msg) throws IOException {
@@ -158,7 +158,7 @@ public class ResponseHandler {
 	}
 	
 	/**
-	 * è·å–uriç¼–ç 
+	 * »ñÈ¡uri±àÂë
 	 * @return String
 	 */
 	public String getUriEncoding() {
@@ -166,7 +166,7 @@ public class ResponseHandler {
 	}
 
 	/**
-	 * è®¾ç½®uriç¼–ç 
+	 * ÉèÖÃuri±àÂë
 	 * @param uriEncoding
 	 * @throws UnsupportedEncodingException
 	 */
@@ -175,7 +175,7 @@ public class ResponseHandler {
 		if (!"".equals(uriEncoding.trim())) {
 			this.uriEncoding = uriEncoding;
 
-			// ç¼–ç è½¬æ¢
+			// ±àÂë×ª»»
 			String enc = TenpayUtil.getCharacterEncoding(request, response);
 			Iterator it = this.parameters.keySet().iterator();
 			while (it.hasNext()) {
@@ -188,14 +188,14 @@ public class ResponseHandler {
 	}
 
 	/**
-	*è·å–debugä¿¡æ¯
+	*»ñÈ¡debugĞÅÏ¢
 	*/
 	public String getDebugInfo() {
 		return debugInfo;
 	}
 	
 	/**
-	*è®¾ç½®debugä¿¡æ¯
+	*ÉèÖÃdebugĞÅÏ¢
 	*/
 	protected void setDebugInfo(String debugInfo) {
 		this.debugInfo = debugInfo;
