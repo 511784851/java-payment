@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,24 +20,27 @@ import com.blemobi.pay.sql.SqlHelper;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
- * @author andy.zhao@blemobi.com 
- * 微信支付接口类
+ * 
+ * @author 李子才<davis.lee@blemobi.com>
+ * 这是支付宝的支付接口。
  */
+
 @Path("/alipay")
 public class AlipayContrller {
 
 	/**
-	 * @param amount
-	 *            支付金额（单位：分）
-	 * @return String 返回预支付签名信息
-	 * @throws Exception
-	 * @throws ChatException
-	 *             抛出ChatException异常
+	 * @cookie uuid 用户的uuid
+	 * @cookie token 用户的token
+	 * @param orderSubject 订单的主题
+	 * @param orderBody 订单的内容描述
+	 * @param orderPrice 订单的总价（单位：分）。以人民币的元为单位，精细到小数点后面两位。
+	 * @return PAlipayOrderInfo 返回订单号和签名信息
+	 * @throws Exception 抛出Exception异常
 	 */
 	@GET
 	@Path("paySign")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage paySign(@QueryParam("uuid") String uuid, @QueryParam("token") String token,
+	public PMessage paySign(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
 			@QueryParam("orderSubject") String orderSubject,@QueryParam("orderBody") String orderBody,@QueryParam("orderPrice") String orderPrice) throws Exception {
 		//在此添加参数校验的代码
 		
