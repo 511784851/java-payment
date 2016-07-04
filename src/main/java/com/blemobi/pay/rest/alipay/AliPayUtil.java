@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,14 +18,22 @@ import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
 import com.blemobi.demo.probuf.PaymentAlipayProtos;
 import com.blemobi.demo.probuf.ResultProtos.PMessage;
+import com.blemobi.pay.dbcp.JdbcTemplate;
+import com.blemobi.pay.sql.SqlHelper;
+import com.blemobi.pay.util.ReslutUtil;
 
+import lombok.extern.log4j.Log4j;
+@Log4j
 public class AliPayUtil {
 	
 	private final static String notifyUrl="http://47.88.5.139:9006/chat/alipay/notify";
 
-	public static PMessage paySign(String uuid, String token,  String orderSubject, String orderBody,
+	public static PMessage paySign(String uuid, String token, String orderSubject, String orderBody,
 			String orderPrice) {
 		String orderNo = getOutTradeNo();
+		
+		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, orderPrice);
+		
 		String orderInfo = getOrderInfo(orderNo,orderSubject, orderBody, orderPrice);
 		
 		/**
@@ -48,8 +57,35 @@ public class AliPayUtil {
 		
 		PaymentAlipayProtos.PAlipayOrderInfo rtn = PaymentAlipayProtos.PAlipayOrderInfo.newBuilder().setOrderNo(orderNo).setPayInfo(payInfo).build();
 	
-		return com.blemobi.pay.util.ReslutUtil.createReslutMessage(rtn);
+		return ReslutUtil.createReslutMessage(rtn);
 		
+	}
+
+	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, String orderPrice) {
+		String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
+
+		String sql = "INSERT INTO pay_order(id,uuid,bank_type,name,order_no,amount,app_ip,fee_type,pay_statu) VALUE('%s','%s','%s','%s','%s','%s','%s','%s','%s')";
+
+		String id = UUID.randomUUID().toString();
+		String amount = formatPrice(orderPrice);
+		sql = String.format(sql, id,uuid,"ZFB",orderSubject,orderNo,amount,"127.0.0.1","1","0");
+		log.info(sql.toString());
+		boolean rtn = JdbcTemplate.execute(sql.toString());
+		return rtn;
+	}
+
+	//把金额的元转换成分。
+	private static String formatPrice(String yuan) {
+		String rtn = "";
+		String ch = ".";
+		int point = yuan.indexOf(ch);
+		if(point<0){
+			rtn = yuan+"00";
+		}else{
+			yuan = yuan+"00";
+			rtn = yuan.substring(0,point)+yuan.substring(point+1,2);
+		}
+		return rtn;
 	}
 
 	public static String payNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -71,11 +107,16 @@ public class AliPayUtil {
 		
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
 		//商户订单号	String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
-
+		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
 		//支付宝交易号	String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
-
+		String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
 		//交易状态
 		String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
+
+		//商户号
+		String seller_id = new String(request.getParameter("seller_id").getBytes("ISO-8859-1"),"UTF-8");
+		//金额
+		String total_fee = new String(request.getParameter("total_fee").getBytes("ISO-8859-1"),"UTF-8");
 
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
 
@@ -93,6 +134,15 @@ public class AliPayUtil {
 				//注意：
 				//退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
 				//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+				if(seller_id.equals(AlipayConfig.seller)){
+					//判断商户号，订单号，金额一致。
+					String sql = "update pay_order set pay_statu='%s' where order_no='%s' and amount='%s'";
+					String amount = formatPrice(total_fee);
+					sql = String.format(sql, "2",trade_no,amount);
+					log.info(sql.toString());
+					boolean rtn = JdbcTemplate.execute(sql.toString());
+				}
+				
 			} else if (trade_status.equals("TRADE_SUCCESS")){
 				//判断该笔订单是否在商户网站中已经做过处理
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
@@ -101,6 +151,18 @@ public class AliPayUtil {
 				//注意：
 				//付款完成后，支付宝系统发送该交易状态通知
 				//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+
+
+				//String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
+				
+				if(seller_id.equals(AlipayConfig.seller)){
+					//判断商户号，订单号，金额一致。
+					String sql = "update pay_order set pay_statu='%s' where order_no='%s' and amount='%s'";
+					String amount = formatPrice(total_fee);
+					sql = String.format(sql, "1",trade_no,amount);
+					log.info(sql.toString());
+					boolean rtn = JdbcTemplate.execute(sql.toString());
+				}
 			}
 
 			//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
