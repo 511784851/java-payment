@@ -1,5 +1,7 @@
 package com.blemobi.pay.util;
 
+import java.io.IOException;
+
 import com.blemobi.demo.probuf.ResultProtos.PMessage;
 import com.blemobi.demo.probuf.ResultProtos.PResult;
 import com.google.protobuf.GeneratedMessage;
@@ -7,8 +9,9 @@ import com.google.protobuf.GeneratedMessage;
 import lombok.extern.log4j.Log4j;
 
 /**
- * @author 赵勇<andy.zhao@blemobi.com>
  * 返回PMessage数据封装类
+ * 
+ * @author 赵勇<andy.zhao@blemobi.com>
  */
 
 @Log4j
@@ -18,9 +21,11 @@ public class ReslutUtil {
 	private static final String errorType = "PResult";// 返回PResult数据
 
 	/**
-	 * 返回Protocol对象数据
-	 * @param message message对象
-	 * @return PMessage 返回message对象数据
+	 * 正确时返回具体的Protocol对象数据
+	 * 
+	 * @param Data
+	 *            Protocol对象
+	 * @return
 	 */
 	public static PMessage createReslutMessage(GeneratedMessage message) {
 		char charSubClassKey = '$';
@@ -37,12 +42,6 @@ public class ReslutUtil {
 		return createReslutMessage(className, message);
 	}
 
-	/**
-	 * 返回的Protocol对象数据
-	 * @param type message名称
-	 * @param message message对象
-	 * @return PMessage 返回message对象数据
-	 */
 	private static PMessage createReslutMessage(String type, GeneratedMessage message) {
 		log.info("type：" + type + "；data：" + message);
 		
@@ -54,11 +53,14 @@ public class ReslutUtil {
 	}
 
 	/**
-	 * 返回PResult数据
-	 * @param errorCode 错误码
-	 * @param errorMsg 错误简要描述
-	 * @param extraInfo 扩展信息
-	 * @return PMessage 返回message对象数据
+	 * 错误时返回PResult数据（自定义错误码和错误描述）
+	 * 
+	 * @param errorCode
+	 *            错误码
+	 * @param errorMsg
+	 *            错误简要描述
+	 * @return
+	 * @throws IOException
 	 */
 	public static PMessage createErrorMessage(int errorCode, String errorMsg, String extraInfo) {
 		PResult result = PResult.newBuilder()
@@ -70,39 +72,16 @@ public class ReslutUtil {
 		return ReslutUtil.createReslutMessage(errorType, result);
 	}
 
-	/**
-	 * 返回PResult数据
-	 * @param errorCode 错误码
-	 * @param errorMsg 错误简要描述
-	 * @return PMessage 返回message对象数据
-	 */
 	public static PMessage createErrorMessage(int errorCode, String errorMsg) {
 		return createErrorMessage(errorCode, errorMsg, "");
 	}
 	
-	/**
-	 * 成功时返回PResult数据
-	 * @return PMessage 返回message对象数据
-	 */
 	public static PMessage createSucceedMessage() {
 		return createSucceedMessage("success");
 	}
-	
-	/**
-	 * 成功时返回PResult数据
-	 * @param errorMsg 错误简要描述
-	 * @return PMessage 返回message对象数据
-	 */
 	public static PMessage createSucceedMessage(String errorMsg) {
 		return createSucceedMessage(errorMsg, "");
 	}
-	
-	/**
-	 * 成功时返回PResult数据
-	 * @param errorMsg 简要描述
-	 * @param extraInfo 扩展信息
-	 * @return PMessage 返回message对象数据
-	 */
 	public static PMessage createSucceedMessage(String errorMsg, String extraInfo) {
 		return createErrorMessage(0, errorMsg, extraInfo);
 	}
