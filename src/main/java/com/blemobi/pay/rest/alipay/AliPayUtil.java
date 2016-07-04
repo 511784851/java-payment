@@ -70,7 +70,7 @@ public class AliPayUtil {
 		String amount = formatPrice(orderPrice);
 		sql = String.format(sql, id,uuid,"ZFB",orderSubject,orderNo,amount,"127.0.0.1","1","0");
 		log.info(sql.toString());
-		boolean rtn = JdbcTemplate.execute(sql.toString());
+		boolean rtn = JdbcTemplate.executeUpdate(sql);
 		return rtn;
 	}
 
@@ -140,7 +140,7 @@ public class AliPayUtil {
 					String amount = formatPrice(total_fee);
 					sql = String.format(sql, "2",trade_no,amount);
 					log.info(sql.toString());
-					boolean rtn = JdbcTemplate.execute(sql.toString());
+					boolean rtn = JdbcTemplate.executeUpdate(sql);
 				}
 				
 			} else if (trade_status.equals("TRADE_SUCCESS")){
@@ -161,7 +161,7 @@ public class AliPayUtil {
 					String amount = formatPrice(total_fee);
 					sql = String.format(sql, "1",trade_no,amount);
 					log.info(sql.toString());
-					boolean rtn = JdbcTemplate.execute(sql.toString());
+					boolean rtn = JdbcTemplate.executeUpdate(sql);
 				}
 			}
 
