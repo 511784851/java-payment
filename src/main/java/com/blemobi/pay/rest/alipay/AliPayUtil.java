@@ -62,7 +62,7 @@ public class AliPayUtil {
 	}
 
 	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, String orderPrice) {
-		String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
+		//String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
 
 		String sql = "INSERT INTO pay_order(id,uuid,bank_type,name,order_no,amount,app_ip,fee_type,pay_statu) VALUE('%s','%s','%s','%s','%s','%s','%s','%s','%s')";
 
