@@ -32,7 +32,9 @@ public class JdbcTemplate {
 			}
 
 			int result = ps.executeUpdate();
-			flag = result > 0 ? true : false;
+			//多余代码，多此一举
+//			flag = result > 0 ? true : false;
+			flag = result > 0 ;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
