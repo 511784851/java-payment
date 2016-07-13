@@ -42,8 +42,10 @@ public class ListParamFilter implements Filter {
 		sb.append("\r\n-------------Print Param Start---------------\r\n");
 		sb.append("Recv Client, ip=[" + request.getRemoteAddr() + "]\r\n");
 		sb.append("Request URL=[" + request.getRequestURL().toString() + "]\r\n");
-		for (String key : request.getParameterMap().keySet()) {
-			sb.append("Param " + key + "=[" + request.getParameter(key) + "]\r\n");
+		if(request.getParameterMap()!=null){
+			for (String key : request.getParameterMap().keySet()) {
+				sb.append("Param " + key + "=[" + request.getParameter(key) + "]\r\n");
+			}
 		}
 		sb.append("-------------Print Param End---------------\r\n");
 		log.info(sb.toString());
