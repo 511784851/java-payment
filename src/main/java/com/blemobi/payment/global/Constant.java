@@ -25,7 +25,7 @@ public class Constant  {
 	private static final String KEY_JETTY_PORT = "jetty_port";
 	
 	// 我们对外服务的业务所在的包目录。目录之外，是禁止访问
-	private static final String OutServicePermitPackagePath = "com.blemobi.netdisk.rest"; 
+	private static final String OutServicePermitPackagePath = "com.blemobi.payment.rest"; 
 	// Consul定时任务间隔时间，单位：毫秒
 	private static final long ConsulIntervalTime = 1000 * 30;
 
@@ -40,7 +40,7 @@ public class Constant  {
 	private static List<String> errorLogin = new ArrayList();
 	
 	// 定义我们自己的Jetty服务的端口
-	private static int jettyServerPort = 9015; 
+	private static int jettyServerPort = 9014; 
 
 	// 定义Redis服务的IP地址
 	private static String redisServerIP = null; 
@@ -49,7 +49,7 @@ public class Constant  {
 	// 定义Redis服务的认证信息
 	private static String redisServerAuth = null; 
 	// 聊天服务器的健康发现的端口
-	private static int contactServiceHealthPort = 19015;
+	private static int contactServiceHealthPort = 19014;
 	
 	//创建Consul服务器的适配器对象，该对象能接受从consul服务器传递过来的配置信息变更通知。
 	private static ConsulChangeListener adapter = new ConsulChangeListener(){
