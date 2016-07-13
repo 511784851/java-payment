@@ -58,11 +58,11 @@ public class ConsulManager {
 					log.info("System starting with local mode. ");
 					log.info("Now, System reading local config file. ");
 					try {
-						LocalProp.setLocalEnv("NetDiskManager.ini");
+						LocalProp.setLocalEnv("PaymentManager.ini");
 						log.info("Read local Config File Finish!");
 					} catch (IOException e) {
 						log.info("Read local Config File Exception.");
-						log.info("Config file [NetDiskManager.ini] not exist or content is error！");
+						log.info("Config file [PaymentManager.ini] not exist or content is error！");
 						log.info("System exit!");
 			        	log.info("Good bye!");
 						System.exit(0);
@@ -103,7 +103,7 @@ public class ConsulManager {
 	 */
 	private static boolean checkConsulStat(ConsulClient client,String token) {
 		try{
-			String KEY_PRE_FIX_CHAT = "blemobi/sep/netdisk/"+System.getProperty("EnvMode", "")+"/"; 
+			String KEY_PRE_FIX_CHAT = "blemobi/sep/payment/"+System.getProperty("EnvMode", "")+"/"; 
 			List<String> keys = (token==null)?client.getKVKeysOnly(KEY_PRE_FIX_CHAT).getValue():client.getKVKeysOnly(KEY_PRE_FIX_CHAT,null,token).getValue();
 			return keys.size()>0;
 		}catch(Exception e){
@@ -139,7 +139,7 @@ public class ConsulManager {
 	 */
 	private static void printHelp(String[][] data) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("usage: NetDiskManager -env ");
+		sb.append("usage: PaymentManager -env ");
 		sb.append("<");
 		for(int i=0;i<data.length;i++){
 			if(i>0)	sb.append("|");

@@ -21,7 +21,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ConsulMonitorThread extends Thread {
 	//声明变量,聊天系统的在consul中的key-value中键名的前缀
-	private static final String KEY_PRE_FIX_CHAT = "blemobi/sep/netdisk/"+System.getProperty("EnvMode", "")+"/"; 
+	private static final String KEY_PRE_FIX_CHAT = "blemobi/sep/payment/"+System.getProperty("EnvMode", "")+"/"; 
 	
 	//声明变量,聊天系统依赖的两个服务分别是账户系统[account]和好友[oss]系统。
 	private static final String[] SERVICE_NAME_LIST = new String[]{"account","oss","login"};
