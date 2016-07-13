@@ -1,5 +1,7 @@
 package com.alipay.config;
 
+
+
 /* *
  *类名：AlipayConfig
  *功能：基础配置类
@@ -23,22 +25,17 @@ package com.alipay.config;
 
 public class AlipayConfig {
 	
+	
 	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
 	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
-	public static String partner = "2088421352394906";
-	
-	// 商户收款账号
-	public static final String seller = "shenzhen-office-external@blemobi.com";
-	
+	public static String partner = "";
 	// 商户的私钥
-	public static String private_key = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAOBJi4gKVkq092dupsIcbj6QdTOEeCJ4xqkftFKZ9szRM/eRLUhzunFMGgOx98v+VTiucomycRyolUzx2jj18TpFiNbz72vNZzWnbkqGf+OYt1GqOP6eljle+b5b83d/3tRk8smbq77XPrvge50I/xk1TIETg/8rxG/2QY1wZwdlAgMBAAECgYEApcQVeT1Sm7J2bB6u5yZGIL15sdLFS40CHvtMtgQPET/Jbb8Bvduyv4vkaji9kSpvaA4en0CgMvMyLYVOqOy1FN6hrWfOM3k9lKwi0z9W50Y63DVtz7iIq8jxjUZ2YOqoVfjy6Tt8QwUlU4CKWrIvntItyMmaoWrn6jTVhS/g2CECQQD8gdqGEwU1nvCx759I+Zo4hNMDTg50IeA/ZSSiG33SrTdTbNnQbCGnMZsD0l0lC+YPsC7idlT+QBNip//H3wdNAkEA42PDNXboQ2oDZxOlg/x7YOTpJciwbJ+RppmgJbzlqqEPP635/ggRqppgq8t2/cGLjx8ZPyQ84G+Ji2SwxWzkeQI/fkBvApqAAE94CX/GJLaoZZoD56MflvFZLllj96nHP49cGlpSjeOC8BXdbAvChsNsRGvTBWglFvrytmFJgqYBAkBc1zCutZvjWneFMGpV11Jwn0XqHWSbFROc2AChJ90Fq7jUIS5+38CGzX1G503wEYPvrZzbQOpyIFgiR7w8/1bRAkBWjNZ/ctbMZ+R1jKTMhxPG6bHj1W00TFoa5gqV42tF1Nub9Bfo4qTpg4LxtPrc42uj/3Gqgpz1zbepklsywe8D";
+	public static String private_key = "";
 	
 	// 支付宝的公钥，无需修改该值
-	public static String ali_public_key  = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgSYuIClZKtPdnbqbCHG4+kHUzhHgieMapH7RSmfbM0TP3kS1Ic7pxTBoDsffL/lU4rnKJsnEcqJVM8do49fE6RYjW8+9rzWc1p25Khn/jmLdRqjj+npY5Xvm+W/N3f97UZPLJm6u+1z674HudCP8ZNUyBE4P/K8Rv9kGNcGcHZQIDAQAB";
+	public static String ali_public_key  = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
 
 	//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-	
 	
 
 	// 调试用，创建TXT日志文件夹路径
