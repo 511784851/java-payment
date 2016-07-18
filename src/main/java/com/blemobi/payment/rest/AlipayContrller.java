@@ -14,9 +14,9 @@ import javax.ws.rs.core.Context;
 
 import org.json.simple.JSONObject;
 
-import com.blemobi.demo.probuf.ResultProtos.PMessage;
 import com.blemobi.payment.rest.alipay.AliPayUtil;
 import com.blemobi.payment.sql.SqlHelper;
+import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
