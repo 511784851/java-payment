@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
-import com.blemobi.demo.probuf.PaymentAlipayProtos;
-import com.blemobi.demo.probuf.ResultProtos.PMessage;
 import com.blemobi.payment.dbcp.JdbcTemplate;
 import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
+import com.blemobi.sep.probuf.PaymentAlipayProtos;
+import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 import lombok.extern.log4j.Log4j;
 @Log4j
