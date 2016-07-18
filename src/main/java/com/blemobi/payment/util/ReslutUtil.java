@@ -2,8 +2,8 @@ package com.blemobi.payment.util;
 
 import java.io.IOException;
 
-import com.blemobi.demo.probuf.ResultProtos.PMessage;
-import com.blemobi.demo.probuf.ResultProtos.PResult;
+import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.blemobi.sep.probuf.ResultProtos.PResult;
 import com.google.protobuf.GeneratedMessage;
 
 import lombok.extern.log4j.Log4j;
