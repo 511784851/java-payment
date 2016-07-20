@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
 import com.blemobi.payment.dbcp.JdbcTemplate;
+import com.blemobi.payment.rest.util.IDMake;
 import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
 import com.blemobi.sep.probuf.PaymentAlipayProtos;
@@ -30,7 +31,8 @@ public class AliPayUtil {
 
 	public static PMessage paySign(String uuid, String token, String orderSubject, String orderBody,
 			String orderPrice) {
-		String orderNo = getOutTradeNo();
+		//String orderNo = getOutTradeNo();
+		String orderNo = IDMake.build(uuid, System.currentTimeMillis(), Long.parseLong(orderPrice));
 		
 		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, orderPrice);
 		
