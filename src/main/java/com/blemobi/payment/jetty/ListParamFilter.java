@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.log4j.Log4j;
@@ -47,6 +48,12 @@ public class ListParamFilter implements Filter {
 				sb.append("Param " + key + "=[" + request.getParameter(key) + "]\r\n");
 			}
 		}
+		if(request.getCookies()!=null){
+			for (Cookie cookie : request.getCookies()) {
+				sb.append("Cookie " + cookie.getName() + "=[" + cookie.getValue() + "]\r\n");
+			}
+		}
+		
 		sb.append("-------------Print Param End---------------\r\n");
 		log.info(sb.toString());
 	}
