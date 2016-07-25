@@ -18,9 +18,8 @@ import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
 import com.blemobi.payment.dbcp.JdbcTemplate;
 import com.blemobi.payment.rest.util.IDMake;
-import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
-import com.blemobi.sep.probuf.PaymentAlipayProtos;
+import com.blemobi.sep.probuf.PaymentProtos;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 import lombok.extern.log4j.Log4j;
@@ -57,7 +56,7 @@ public class AliPayUtil {
 		final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + getSignType();
 		
 		
-		PaymentAlipayProtos.PAlipayOrderInfo rtn = PaymentAlipayProtos.PAlipayOrderInfo.newBuilder().setOrderNo(orderNo).setPayInfo(payInfo).build();
+		PaymentProtos.PAlipayOrderInfo rtn = PaymentProtos.PAlipayOrderInfo.newBuilder().setOrderNo(orderNo).setPayInfo(payInfo).build();
 	
 		return ReslutUtil.createReslutMessage(rtn);
 		
