@@ -40,7 +40,7 @@ public class AlipayContrller {
 	@GET
 	@Path("paySign")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage paySign(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
+	public PMessage paySign(@QueryParam("uuid") String uuid, @QueryParam("token") String token,
 			@QueryParam("orderSubject") String orderSubject,@QueryParam("orderBody") String orderBody,@QueryParam("amount") String amount) throws Exception {
 		//在此添加参数校验的代码
 		
