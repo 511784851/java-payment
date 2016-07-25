@@ -41,10 +41,10 @@ public class AlipayContrller {
 	@Path("paySign")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage paySign(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
-			@QueryParam("orderSubject") String orderSubject,@QueryParam("orderBody") String orderBody,@QueryParam("orderPrice") String orderPrice) throws Exception {
+			@QueryParam("orderSubject") String orderSubject,@QueryParam("orderBody") String orderBody,@QueryParam("amount") String amount) throws Exception {
 		//在此添加参数校验的代码
 		
-		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,orderPrice);
+		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,amount);
 	}
 
 	/**
