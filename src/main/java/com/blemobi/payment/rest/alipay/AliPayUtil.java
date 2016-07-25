@@ -57,7 +57,10 @@ public class AliPayUtil {
 		
 		
 		PaymentProtos.PAlipayOrderInfo rtn = PaymentProtos.PAlipayOrderInfo.newBuilder().setOrderNo(orderNo).setPayInfo(payInfo).build();
-	
+		
+		log.info("getOrderNo="+rtn.getOrderNo());
+		log.info("getPayInfo="+rtn.getPayInfo());
+		
 		return ReslutUtil.createReslutMessage(rtn);
 		
 	}
