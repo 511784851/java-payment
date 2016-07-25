@@ -29,13 +29,13 @@ public class AliPayUtil {
 	private final static String notifyUrl="http://47.88.5.139:9006/chat/alipay/notify";
 
 	public static PMessage paySign(String uuid, String token, String orderSubject, String orderBody,
-			String orderPrice) {
+			String amount) {
 		//String orderNo = getOutTradeNo();
-		String orderNo = IDMake.build(uuid, System.currentTimeMillis(), Long.parseLong(orderPrice));
+		String orderNo = IDMake.build(uuid, System.currentTimeMillis(), Long.parseLong(amount));
 		
-		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, orderPrice);
+//		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, amount);
 		
-		String orderInfo = getOrderInfo(orderNo,orderSubject, orderBody, orderPrice);
+		String orderInfo = getOrderInfo(orderNo,orderSubject, orderBody, amount);
 		
 		/**
 		 * 特别注意，这里的签名逻辑需要放在服务端，切勿将私钥泄露在代码中！
