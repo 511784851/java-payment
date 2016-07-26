@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j;
 public class TestAliPay {
 
 	@Test
-	public void testUserLevel() throws Exception {
+	public void testAliPay() throws Exception {
 		// TODO Auto-generated method stub
 		String[] arg = new String[] { "-env", "local" };
 		PaymentManager.main(arg);

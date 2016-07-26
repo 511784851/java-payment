@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j;
 public class TestOrderID {
 
 	@Test
-	public void testUserLevel() throws Exception {
+	public void testOrderID() throws Exception {
 		String uuid = "0efe519d-cddf-412c-a5e0-2e8f14f80edb";
 		long time = System.currentTimeMillis();
 		String amount = "3";
