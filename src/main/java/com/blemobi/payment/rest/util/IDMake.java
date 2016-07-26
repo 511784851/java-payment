@@ -80,7 +80,7 @@ public class IDMake {
             Mac mac = Mac.getInstance(secretKey.getAlgorithm());  
             mac.init(secretKey);  
             bytes = mac.doFinal(data);
-            System.out.println(KEY_MAC+" encrypt last len = "+bytes.length);
+            //System.out.println(KEY_MAC+" encrypt last len = "+bytes.length);
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
