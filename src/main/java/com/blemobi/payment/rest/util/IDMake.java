@@ -10,15 +10,6 @@ import javax.crypto.spec.SecretKeySpec;
 import com.blemobi.payment.util.Base64;
 
 public class IDMake {
-	/** 
-     * 定义加密方式 
-     * MAC算法可选以下多种算法 
-     * HmacMD5		--> 16
-     * HmacSHA1		--> 20
-     * HmacSHA256	--> 32
-     * HmacSHA384	--> 48
-     * HmacSHA512	--> 64
-     */  
 	private static String key = "hIrH/Ry3r4JMQHRQMl74BzMsvH+sUzkKuSFEUcClErdu2vvoPOf5kgQBa3YHzgXMboVV6seC5aFdr7SRGzJFzQ==";
 	private final static String hexDigits = "0123456789ABCDEF";  
 	private final static String KEY_MAC = "HmacMD5";  
