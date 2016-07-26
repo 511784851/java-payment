@@ -43,9 +43,7 @@ public class WeixinContrller {
 			@CookieParam("uuid") String uuid, @QueryParam("orderSubject") String orderSubject, @QueryParam("orderBody") String orderBody,
 			@QueryParam("amount") int amount) throws Exception {
 
-		// 生成预支付签名信息 
-		
-		System.out.println("uuid: " + uuid + ";orderSubject: "+orderSubject + ";amount: "+amount);
+		System.out.println("uuid:" + uuid + "; orderSubject:"+orderSubject + "; amount:"+amount);
 		
 		PMessage message = WeiXinPaySignHelper.paySign(orderSubject, amount, uuid, request, response);
 
