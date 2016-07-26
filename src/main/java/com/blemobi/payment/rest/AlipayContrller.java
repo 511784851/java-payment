@@ -16,7 +16,9 @@ import org.json.simple.JSONObject;
 
 import com.blemobi.payment.rest.alipay.AliPayUtil;
 import com.blemobi.payment.sql.SqlHelper;
+import com.blemobi.payment.util.ReslutUtil;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.google.common.base.Strings;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
@@ -44,10 +46,36 @@ public class AlipayContrller {
 			@QueryParam("orderSubject") String orderSubject,@QueryParam("orderBody") String orderBody,@QueryParam("amount") String amount) throws Exception {
 		//在此添加参数校验的代码
 		
+		
 		if(uuid==null || uuid.length()==0)uuid = uuid2;
 		
 		if(token==null || token.length()==0)token = token2;
 		
+		if(Strings.isNullOrEmpty(uuid)){
+			return ReslutUtil.createErrorMessage(2501101, "UUID is empty!");
+		}
+		
+		if(Strings.isNullOrEmpty(token)){
+			return ReslutUtil.createErrorMessage(2501102, "Token is empty!");
+		}
+		
+		if(Strings.isNullOrEmpty(orderSubject)){
+			return ReslutUtil.createErrorMessage(2501103, "Order Subject is empty!");
+		}
+		
+		if(Strings.isNullOrEmpty(orderBody)){
+			return ReslutUtil.createErrorMessage(2501104, "Order Body is empty!");
+		}
+		if(Strings.isNullOrEmpty(amount)){
+			return ReslutUtil.createErrorMessage(2501105, "Amount is empty!");
+		}
+		
+		try{
+			int a = Integer.parseInt(amount);
+		}catch(Exception e){
+			return ReslutUtil.createErrorMessage(2201106, "Amount isn't Integer!");
+		}
+
 		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,amount);
 	}
 
