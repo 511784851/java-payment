@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import com.blemobi.payment.rest.alipay.AliPayUtil;
 import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
+import com.blemobi.sep.probuf.PaymentProtos;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.google.common.base.Strings;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
@@ -77,6 +78,17 @@ public class AlipayContrller {
 		}
 
 		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,amount);
+	}
+	
+	@GET
+	@Path("payStatus")
+	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+	public PMessage paySign(@CookieParam("uuid") String uuid, @CookieParam("token") String token,@QueryParam("orderNo") String orderNo) throws Exception {
+		//在此添加参数校验的代码
+		String status = "1";
+		PaymentProtos.PAlipayOrderStatus aos = PaymentProtos.PAlipayOrderStatus.newBuilder().setOrderNo(uuid).setStatus(status).build();
+		PMessage rtn = ReslutUtil.createReslutMessage(aos);
+		return	rtn;	
 	}
 
 	/**
