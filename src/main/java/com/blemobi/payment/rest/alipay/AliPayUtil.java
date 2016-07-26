@@ -31,7 +31,10 @@ public class AliPayUtil {
 	public static PMessage paySign(String uuid, String token, String orderSubject, String orderBody,
 			String amount) {
 		//String orderNo = getOutTradeNo();
-		String orderNo = IDMake.build(uuid, System.currentTimeMillis(), Long.parseLong(amount));
+		long time = System.currentTimeMillis();//订单时间
+		
+		//形成订单号的规则是 uuid+时间+金额
+		String orderNo = IDMake.build(uuid, time, Long.parseLong(amount));
 		
 //		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, amount);
 		
