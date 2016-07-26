@@ -9,7 +9,6 @@ import com.blemobi.payment.rest.alipay.AliPayUtil;
 import com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderInfo;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PResult;
-import com.ecwid.consul.v1.ConsulClient;
 
 import lombok.extern.log4j.Log4j;
 @Log4j
