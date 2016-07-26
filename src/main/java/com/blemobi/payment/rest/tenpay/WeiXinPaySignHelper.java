@@ -1,8 +1,7 @@
-package com.blemobi.payment.rest;
+package com.blemobi.payment.rest.tenpay;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.CookieParam;
 
 import com.blemobi.payment.rest.util.IDMake;
 import com.blemobi.payment.util.ReslutUtil;
@@ -29,8 +28,9 @@ public class WeiXinPaySignHelper {
 	private static final String notify_url = "http://47.88.5.139:8088/WeiXinpay-0.0.1-SNAPSHOT/payNotifyUrl.jsp";// 通知的URL
 	private static final String input_charset = "GBK"; // 字符编码
 	private static final String fee_type = "1"; // 币种，1人民币 66
+	private static final String bank_type = "WX";
 	
-	public static PMessage paySign(String orderSubject, String amount,@CookieParam("uuid") String uuid,
+	public static PMessage paySign(String orderSubject, int amount, String uuid,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		PackageRequestHandler packageReqHandler = new PackageRequestHandler(request, response);// 生成package的请求类
@@ -43,19 +43,24 @@ public class WeiXinPaySignHelper {
 		// 获取token值
 		String token = AccessTokenRequestHandler.getAccessToken();
 
-		String out_trade_no = IDMake.build(uuid, System.currentTimeMillis(), Long.parseLong(amount));
+		String out_trade_no = IDMake.build(uuid, System.currentTimeMillis(), amount);
 		
 		log.info("get token: " + token);
 
+		String spbill_create_ip = request.getRemoteAddr();
+
+		// 保存预支付信息
+		//SqlHelper.savePayInfo(uuid, bank_type, orderSubject, out_trade_no, amount, spbill_create_ip, fee_type);
+
 		if (!"".equals(token)) {
 			// 设置package订单参数
-			packageReqHandler.setParameter("bank_type", "WX");// 银行渠道
+			packageReqHandler.setParameter("bank_type", bank_type);// 银行渠道
 			packageReqHandler.setParameter("body", orderSubject); // 商品描述
 			packageReqHandler.setParameter("notify_url", notify_url); // 接收财付通通知的URL
 			packageReqHandler.setParameter("partner", ConstantUtil.PARTNER); // 商户号
 			packageReqHandler.setParameter("out_trade_no", out_trade_no); // 商家订单号
-			packageReqHandler.setParameter("total_fee", amount);// 支付金额（单位：分）
-			packageReqHandler.setParameter("spbill_create_ip", request.getRemoteAddr()); // 订单生成的机器IP，指用户浏览器端IP
+			packageReqHandler.setParameter("total_fee", amount+"");// 支付金额（单位：分）
+			packageReqHandler.setParameter("spbill_create_ip", spbill_create_ip); // 订单生成的机器IP，指用户浏览器端IP
 			packageReqHandler.setParameter("fee_type", fee_type); // 币种，1人民币 66
 			packageReqHandler.setParameter("input_charset", input_charset); // 字符编码
 

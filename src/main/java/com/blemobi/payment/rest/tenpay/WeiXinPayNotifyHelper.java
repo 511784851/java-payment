@@ -1,4 +1,4 @@
-package com.blemobi.payment.rest;
+package com.blemobi.payment.rest.tenpay;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
