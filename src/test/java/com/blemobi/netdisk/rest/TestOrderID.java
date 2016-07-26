@@ -2,12 +2,7 @@ package com.blemobi.netdisk.rest;
 
 import org.junit.Test;
 
-import com.blemobi.payment.core.PaymentManager;
-import com.blemobi.payment.rest.alipay.AliPayUtil;
 import com.blemobi.payment.rest.util.IDMake;
-import com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderInfo;
-import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.blemobi.sep.probuf.ResultProtos.PResult;
 
 import lombok.extern.log4j.Log4j;
 @Log4j
