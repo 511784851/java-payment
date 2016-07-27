@@ -24,7 +24,7 @@ public class ConsulMonitorThread extends Thread {
 	private static final String KEY_PRE_FIX_CHAT = "blemobi/sep/payment/"+System.getProperty("EnvMode", "")+"/"; 
 	
 	//声明变量,聊天系统依赖的两个服务分别是账户系统[account]和好友[oss]系统。
-	private static final String[] SERVICE_NAME_LIST = new String[]{"account","oss","login"};
+	private static final String[] SERVICE_NAME_LIST = new String[]{"account","oss","login","wallet"};
 
 	private Logger logger = Logger.getLogger(ConsulMonitorThread.class);
 
