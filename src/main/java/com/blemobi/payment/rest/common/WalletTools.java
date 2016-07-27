@@ -58,7 +58,7 @@ public class WalletTools {
 			log.info("getErrorMsg=["+pr.getErrorMsg()+"]");
 			rtn = false;
 		}
-		return true;
+		return rtn;
 		
 	}
 }
