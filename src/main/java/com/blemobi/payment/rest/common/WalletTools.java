@@ -17,13 +17,18 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class WalletTools {
 	//这是支付充传值成功后对钱包系统的通知
-	public static boolean invokeWalletDiamondAdd(String uuid,String token,int rmoney,String ordernumber) throws Exception {
+	public static boolean invokeWalletDiamondAdd(String uuid,String token,int rmoney,String ordernumber){
 		boolean rtn = false;
 		int max=5; //通讯连接，最多重复5遍。
 		while(max-->0){
-			if(invokeWalletDiamondAdd2(uuid,token,rmoney,ordernumber)){
-				rtn = true;
-				break;
+			try {
+				if(invokeWalletDiamondAdd2(uuid,token,rmoney,ordernumber)){
+					rtn = true;
+					break;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
 			}
 		}
 		return rtn;
