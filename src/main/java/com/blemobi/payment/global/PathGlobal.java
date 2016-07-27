@@ -36,4 +36,7 @@ public class PathGlobal {
 		
 	// 获取文件下载的url的接口，成功返回PuserList
 	public static final String GetOssDownloadFileUrl = "/oss/downloadurl";
+	
+	// 支付成功的充钻的接口，成功返回PuserList
+	public static final String GetWalletDiamondAdd = "/v1/wallet/diamond/add";
 }
