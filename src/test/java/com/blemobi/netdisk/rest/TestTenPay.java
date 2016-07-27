@@ -14,6 +14,9 @@ import lombok.extern.log4j.Log4j;
 
 public class TestTenPay {
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testUserLevel() throws Exception {
 		// TODO Auto-generated method stub
@@ -34,10 +37,15 @@ public class TestTenPay {
 		
 		Cookie[] cookies = CommonUtil.createLoginCookieParams(uuid, token);
 		String url = "http://localhost:9014/payment/weixin/paySign?orderSubject="+orderSubject+"&amount="+amount;
-		PMessage message = clientUtil.getMethod("", null, cookies);
+		PMessage message = clientUtil.getMethod(url, null, cookies);
 		String type = message.getType();
+		
 		log.info("type=["+type+"]");
 		
+//		PWeixinPay weixinPay = PWeixinPay.parseFrom(message.getData());
+//		log.info("weixinPay=["+weixinPay+"]");
+//		
+//		
 		System.exit(0);
 	}
 }

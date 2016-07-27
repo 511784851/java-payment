@@ -23,19 +23,19 @@ import javax.net.ssl.SSLSocketFactory;
 import com.tenpay.util.HttpClientUtil;
 
 /**
- * ²Æ¸¶Í¨http»òÕßhttpsÍøÂçÍ¨ĞÅ¿Í»§¶Ë<br/>
+ * ï¿½Æ¸ï¿½Í¨httpï¿½ï¿½ï¿½ï¿½httpsï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å¿Í»ï¿½ï¿½ï¿½<br/>
  * ========================================================================<br/>
- * apiËµÃ÷£º<br/>
- * setReqContent($reqContent),ÉèÖÃÇëÇóÄÚÈİ£¬ÎŞÂÛpostºÍget£¬¶¼ÓÃget·½Ê½Ìá¹©<br/>
- * getResContent(), »ñÈ¡Ó¦´ğÄÚÈİ<br/>
- * setMethod(method),ÉèÖÃÇëÇó·½·¨,post»òÕßget<br/>
- * getErrInfo(),»ñÈ¡´íÎóĞÅÏ¢<br/>
- * setCertInfo(certFile, certPasswd),ÉèÖÃÖ¤Êé£¬Ë«ÏòhttpsÊ±ĞèÒªÊ¹ÓÃ<br/>
- * setCaInfo(caFile), ÉèÖÃCA£¬¸ñÊ½Î´pem£¬²»ÉèÖÃÔò²»¼ì²é<br/>
- * setTimeOut(timeOut)£¬ ÉèÖÃ³¬Ê±Ê±¼ä£¬µ¥Î»Ãë<br/>
- * getResponseCode(), È¡·µ»ØµÄhttp×´Ì¬Âë<br/>
- * call(),ÕæÕıµ÷ÓÃ½Ó¿Ú<br/>
- * getCharset()/setCharset(),×Ö·û¼¯±àÂë<br/>
+ * apiËµï¿½ï¿½ï¿½ï¿½<br/>
+ * setReqContent($reqContent),ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½postï¿½ï¿½getï¿½ï¿½ï¿½ï¿½ï¿½ï¿½getï¿½ï¿½Ê½ï¿½á¹©<br/>
+ * getResContent(), ï¿½ï¿½È¡Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<br/>
+ * setMethod(method),ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó·½·ï¿½,postï¿½ï¿½ï¿½ï¿½get<br/>
+ * getErrInfo(),ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢<br/>
+ * setCertInfo(certFile, certPasswd),ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½é£¬Ë«ï¿½ï¿½httpsÊ±ï¿½ï¿½ÒªÊ¹ï¿½ï¿½<br/>
+ * setCaInfo(caFile), ï¿½ï¿½ï¿½ï¿½CAï¿½ï¿½ï¿½ï¿½Ê½Î´pemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò²»¼ï¿½ï¿½<br/>
+ * setTimeOut(timeOut)ï¿½ï¿½ ï¿½ï¿½ï¿½Ã³ï¿½Ê±Ê±ï¿½ä£¬ï¿½ï¿½Î»ï¿½ï¿½<br/>
+ * getResponseCode(), È¡ï¿½ï¿½ï¿½Øµï¿½http×´Ì¬ï¿½ï¿½<br/>
+ * call(),ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½Ó¿ï¿½<br/>
+ * getCharset()/setCharset(),ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<br/>
  * 
  * ========================================================================<br/>
  *
@@ -52,34 +52,34 @@ public class TenpayHttpClient {
 	
 	private static final String JKS_CA_PASSWORD = "";
 	
-	/** caÖ¤ÊéÎÄ¼ş */
+	/** caÖ¤ï¿½ï¿½ï¿½Ä¼ï¿½ */
 	private File caFile;
 	
-	/** Ö¤ÊéÎÄ¼ş */
+	/** Ö¤ï¿½ï¿½ï¿½Ä¼ï¿½ */
 	private File certFile;
 	
-	/** Ö¤ÊéÃÜÂë */
+	/** Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 	private String certPasswd;
 	
-	/** ÇëÇóÄÚÈİ£¬ÎŞÂÛpostºÍget£¬¶¼ÓÃget·½Ê½Ìá¹© */
+	/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½postï¿½ï¿½getï¿½ï¿½ï¿½ï¿½ï¿½ï¿½getï¿½ï¿½Ê½ï¿½á¹© */
 	private String reqContent;
 	
-	/** Ó¦´ğÄÚÈİ */
+	/** Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 	private String resContent;
 	
-	/** ÇëÇó·½·¨ */
+	/** ï¿½ï¿½ï¿½ó·½·ï¿½ */
 	private String method;
 	
-	/** ´íÎóĞÅÏ¢ */
+	/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ */
 	private String errInfo;
 	
-	/** ³¬Ê±Ê±¼ä,ÒÔÃëÎªµ¥Î» */
+	/** ï¿½ï¿½Ê±Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Î» */
 	private int timeOut;
 	
-	/** httpÓ¦´ğ±àÂë */
+	/** httpÓ¦ï¿½ï¿½ï¿½ï¿½ï¿½ */
 	private int responseCode;
 	
-	/** ×Ö·û±àÂë */
+	/** ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ */
 	private String charset;
 	
 	private InputStream inputStream;
@@ -93,7 +93,7 @@ public class TenpayHttpClient {
 		this.resContent = "";
 		this.method = "POST";
 		this.errInfo = "";
-		this.timeOut = 30;//30Ãë
+		this.timeOut = 30;//30ï¿½ï¿½
 		
 		this.responseCode = 0;
 		this.charset = "GBK";
@@ -102,9 +102,9 @@ public class TenpayHttpClient {
 	}
 
 	/**
-	 * ÉèÖÃÖ¤ÊéĞÅÏ¢
-	 * @param certFile Ö¤ÊéÎÄ¼ş
-	 * @param certPasswd Ö¤ÊéÃÜÂë
+	 * ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½Ï¢
+	 * @param certFile Ö¤ï¿½ï¿½ï¿½Ä¼ï¿½
+	 * @param certPasswd Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public void setCertInfo(File certFile, String certPasswd) {
 		this.certFile = certFile;
@@ -112,7 +112,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÉèÖÃca
+	 * ï¿½ï¿½ï¿½ï¿½ca
 	 * @param caFile
 	 */
 	public void setCaInfo(File caFile) {
@@ -120,15 +120,15 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÉèÖÃÇëÇóÄÚÈİ
-	 * @param reqContent ±íÇóÄÚÈİ
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * @param reqContent ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public void setReqContent(String reqContent) {
 		this.reqContent = reqContent;
 	}
 	
 	/**
-	 * »ñÈ¡½á¹ûÄÚÈİ
+	 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * @return String
 	 * @throws IOException 
 	 */
@@ -144,15 +144,15 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÉèÖÃÇëÇó·½·¨post»òÕßget
-	 * @param method ÇëÇó·½·¨post/get
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó·½·ï¿½postï¿½ï¿½ï¿½ï¿½get
+	 * @param method ï¿½ï¿½ï¿½ó·½·ï¿½post/get
 	 */
 	public void setMethod(String method) {
 		this.method = method;
 	}
 	
 	/**
-	 * »ñÈ¡´íÎóĞÅÏ¢
+	 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 	 * @return String
 	 */
 	public String getErrInfo() {
@@ -160,15 +160,15 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÉèÖÃ³¬Ê±Ê±¼ä,ÒÔÃëÎªµ¥Î»
-	 * @param timeOut ³¬Ê±Ê±¼ä,ÒÔÃëÎªµ¥Î»
+	 * ï¿½ï¿½ï¿½Ã³ï¿½Ê±Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Î»
+	 * @param timeOut ï¿½ï¿½Ê±Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Î»
 	 */
 	public void setTimeOut(int timeOut) {
 		this.timeOut = timeOut;
 	}
 	
 	/**
-	 * »ñÈ¡http×´Ì¬Âë
+	 * ï¿½ï¿½È¡http×´Ì¬ï¿½ï¿½
 	 * @return int
 	 */
 	public int getResponseCode() {
@@ -176,7 +176,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * Ö´ĞĞhttpµ÷ÓÃ¡£true:³É¹¦ false:Ê§°Ü
+	 * Ö´ï¿½ï¿½httpï¿½ï¿½ï¿½Ã¡ï¿½true:ï¿½É¹ï¿½ false:Ê§ï¿½ï¿½
 	 * @return boolean
 	 */
 	public boolean call() {
@@ -260,7 +260,7 @@ public class TenpayHttpClient {
 		SSLContext sslContext = HttpClientUtil.getSSLContext(trustStream,
 				TenpayHttpClient.JKS_CA_PASSWORD, keyStream, this.certPasswd);
 		
-		//¹Ø±ÕÁ÷
+		//ï¿½Ø±ï¿½ï¿½ï¿½
 		keyStream.close();
 		trustStream.close();
 		
@@ -282,7 +282,7 @@ public class TenpayHttpClient {
 		boolean flag = false;
 		byte[] postData;
 		try {
-			postData = postdata.getBytes(this.charset);
+			postData = postdata.getBytes("UTF-8");
 			this.httpPostMethod(url, postData);
 			flag = true;
 		} catch (IOException e1) {
@@ -292,7 +292,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÒÔhttp post·½Ê½Í¨ĞÅ
+	 * ï¿½ï¿½http postï¿½ï¿½Ê½Í¨ï¿½ï¿½
 	 * @param url
 	 * @param postData
 	 * @throws IOException
@@ -306,7 +306,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÒÔhttp get·½Ê½Í¨ĞÅ
+	 * ï¿½ï¿½http getï¿½ï¿½Ê½Í¨ï¿½ï¿½
 	 * 
 	 * @param url
 	 * @throws IOException
@@ -327,7 +327,7 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÒÔhttps get·½Ê½Í¨ĞÅ
+	 * ï¿½ï¿½https getï¿½ï¿½Ê½Í¨ï¿½ï¿½
 	 * @param url
 	 * @param sslContext
 	 * @throws IOException
@@ -359,29 +359,29 @@ public class TenpayHttpClient {
 	}
 	
 	/**
-	 * ÉèÖÃhttpÇëÇóÄ¬ÈÏÊôĞÔ
+	 * ï¿½ï¿½ï¿½ï¿½httpï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * @param httpConnection
 	 */
 	protected void setHttpRequest(HttpURLConnection httpConnection) {
 		
-		//ÉèÖÃÁ¬½Ó³¬Ê±Ê±¼ä
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½Ê±Ê±ï¿½ï¿½
 		httpConnection.setConnectTimeout(this.timeOut * 1000);
 		
 		//User-Agent
 		httpConnection.setRequestProperty("User-Agent", 
 				TenpayHttpClient.USER_AGENT_VALUE);
 		
-		//²»Ê¹ÓÃ»º´æ
+		//ï¿½ï¿½Ê¹ï¿½Ã»ï¿½ï¿½ï¿½
 		httpConnection.setUseCaches(false);
 		
-		//ÔÊĞíÊäÈëÊä³ö
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		httpConnection.setDoInput(true);
 		httpConnection.setDoOutput(true);
 		
 	}
 	
 	/**
-	 * ´¦ÀíÓ¦´ğ
+	 * ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½
 	 * @throws IOException
 	 */
 	protected void doResponse() throws IOException {
@@ -390,16 +390,16 @@ public class TenpayHttpClient {
 			return;
 		}
 
-		//»ñÈ¡Ó¦´ğÄÚÈİ
+		//ï¿½ï¿½È¡Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.resContent=HttpClientUtil.InputStreamTOString(this.inputStream,this.charset); 
 
-		//¹Ø±ÕÊäÈëÁ÷
+		//ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.inputStream.close();
 		
 	}
 	
 	/**
-	 * post·½Ê½´¦Àí
+	 * postï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
 	 * @param conn
 	 * @param postData
 	 * @throws IOException
@@ -407,10 +407,10 @@ public class TenpayHttpClient {
 	protected void doPost(HttpURLConnection conn, byte[] postData)
 			throws IOException {
 
-		// ÒÔpost·½Ê½Í¨ĞÅ
+		// ï¿½ï¿½postï¿½ï¿½Ê½Í¨ï¿½ï¿½
 		conn.setRequestMethod("POST");
 
-		// ÉèÖÃÇëÇóÄ¬ÈÏÊôĞÔ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.setHttpRequest(conn);
 
 		// Content-Type
@@ -423,34 +423,34 @@ public class TenpayHttpClient {
 		final int len = 1024; // 1KB
 		HttpClientUtil.doOutput(out, postData, len);
 
-		// ¹Ø±ÕÁ÷
+		// ï¿½Ø±ï¿½ï¿½ï¿½
 		out.close();
 
-		// »ñÈ¡ÏìÓ¦·µ»Ø×´Ì¬Âë
+		// ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
 		this.responseCode = conn.getResponseCode();
 
-		// »ñÈ¡Ó¦´ğÊäÈëÁ÷
+		// ï¿½ï¿½È¡Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.inputStream = conn.getInputStream();
 
 	}
 	
 	/**
-	 * get·½Ê½´¦Àí
+	 * getï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
 	 * @param conn
 	 * @throws IOException
 	 */
 	protected void doGet(HttpURLConnection conn) throws IOException {
 		
-		//ÒÔGET·½Ê½Í¨ĞÅ
+		//ï¿½ï¿½GETï¿½ï¿½Ê½Í¨ï¿½ï¿½
 		conn.setRequestMethod("GET");
 		
-		//ÉèÖÃÇëÇóÄ¬ÈÏÊôĞÔ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.setHttpRequest(conn);
 		
-		//»ñÈ¡ÏìÓ¦·µ»Ø×´Ì¬Âë
+		//ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
 		this.responseCode = conn.getResponseCode();
 		
-		//»ñÈ¡Ó¦´ğÊäÈëÁ÷
+		//ï¿½ï¿½È¡Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.inputStream = conn.getInputStream();
 	}
 

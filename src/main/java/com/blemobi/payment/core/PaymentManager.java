@@ -1,6 +1,7 @@
 package com.blemobi.payment.core;
 
 import com.blemobi.payment.consul.ConsulManager;
+import com.blemobi.payment.dbcp.DbcpConnect;
 import com.blemobi.payment.global.Constant;
 import com.blemobi.payment.health.HealthManager;
 import com.blemobi.payment.jetty.JettyServer;
@@ -9,7 +10,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class PaymentManager {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// 初始化Consul，获取连接Consul服务器的间隔时间
 		long consulIntervalTime = Constant.getConsulIntervaltime();
 
@@ -31,6 +32,10 @@ public class PaymentManager {
 		//发布Consul的健康发现
 		int healthPort = Constant.getChatServiceHealthPort();
 		HealthManager.startService(healthPort); 
+		
+		
+		DbcpConnect dbcp = new DbcpConnect("dbcp.properties");
+		dbcp.loadPool();
 		
 		/*
 		 * 1）从Consul读取信息 2) 开启Jetty HTTP服务器 3) 通过protobuff连接帐户服务器 4) 连接wukong

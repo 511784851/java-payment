@@ -25,7 +25,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 	}
 
 	/**
-	 * ´´½¨Ç©ÃûSHA1
+	 * ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½SHA1
 	 * 
 	 * @param signParams
 	 * @return
@@ -48,10 +48,10 @@ public class PrepayIdRequestHandler extends RequestHandler {
 		return appsign;
 	}
 
-	// Ìá½»Ô¤Ö§¸¶
+	// ï¿½á½»Ô¤Ö§ï¿½ï¿½
 	public String sendPrepay() throws JSONException {
 		String prepayid = "";
-		StringBuffer sb = new StringBuffer("{");
+		StringBuffer sb = new StringBuffer("<xml>");
 		Set es = super.getAllParameters().entrySet();
 		Iterator it = es.iterator();
 		while (it.hasNext()) {
@@ -60,11 +60,14 @@ public class PrepayIdRequestHandler extends RequestHandler {
 			String v = (String) entry.getValue();
 			if (null != v && !"".equals(v) && !"appkey".equals(k)) {
 				sb.append("\"" + k + "\":\"" + v + "\",");
+				sb.append("<" + k + ">" + v + "</" + k + ">");
 			}
 		}
-		String params = sb.substring(0, sb.lastIndexOf(","));
-		params += "}";
-
+		sb.append("</xml>");
+		
+		String params = sb.toString();//sb.substring(0, sb.lastIndexOf(","));
+		//params += "}";
+		//System.out.println("postdata:"+params);
 		String requestUrl = super.getGateUrl();
 		this.setDebugInfo(this.getDebugInfo() + "\r\n" + "requestUrl:"
 				+ requestUrl);
@@ -74,16 +77,19 @@ public class PrepayIdRequestHandler extends RequestHandler {
 		this.setDebugInfo(this.getDebugInfo() + "\r\n" + "post data:" + params);
 		if (httpClient.callHttpPost(requestUrl, params)) {
 			resContent = httpClient.getResContent();
-			if (2 == resContent.indexOf("prepayid")) {
-				prepayid = JsonUtil.getJsonValue(resContent, "prepayid");
+			int index = resContent.indexOf("<prepay_id><![CDATA[")+"<prepay_id><![CDATA[".length();
+			if (index>0) {
+				prepayid = resContent.substring(index, resContent.indexOf("]]></prepay_id>"));
+				//prepayid = JsonUtil.getJsonValue(resContent, "prepayid");
 			}
+			//System.out.println("resContent:"+resContent);
 			this.setDebugInfo(this.getDebugInfo() + "\r\n" + "resContent:"
 					+ resContent);
 		}
 		return prepayid;
 	}
 
-	// ÅÐ¶Ïaccess_tokenÊÇ·ñÊ§Ð§
+	// ï¿½Ð¶ï¿½access_tokenï¿½Ç·ï¿½Ê§Ð§
 	public String sendAccessToken() {
 		String accesstoken = "";
 		StringBuffer sb = new StringBuffer("{");
@@ -110,7 +116,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 		if (httpClient.callHttpPost(requestUrl, params)) {
 			resContent = httpClient.getResContent();
 			if (2 == resContent.indexOf(ConstantUtil.ERRORCODE)) {
-				accesstoken = resContent.substring(11, 16);//»ñÈ¡¶ÔÓ¦µÄerrcodeµÄÖµ
+				accesstoken = resContent.substring(11, 16);//ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½errcodeï¿½ï¿½Öµ
 			}
 		}
 		return accesstoken;

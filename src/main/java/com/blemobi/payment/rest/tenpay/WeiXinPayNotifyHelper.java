@@ -93,18 +93,21 @@ public class WeiXinPayNotifyHelper {
 					// 注意交易单不要重复处理
 					// 注意判断返回金额
 					String openid = queryRes.getParameter("openid");// 支付用户唯一标识
-					String trade_type = "WX";// 支付方式：微信
 					String bank_type = queryRes.getParameter("bank_type");// 付款银行
-					String amount = queryRes.getParameter("total_fee");// 支付金额
+					String total_fee = queryRes.getParameter("total_fee");// 支付金额
 					String fee_type = queryRes.getParameter("fee_type");// 货币类型
 					String transaction_id = queryRes.getParameter("transaction_id");// 交易单号
 					String order_no = queryRes.getParameter("order_no");// 订单号
-					String pay_statu = queryRes.getParameter("result_code");// 支付结果
+					String pay_statu_str = queryRes.getParameter("result_code");// 支付结果
 					String err_code = queryRes.getParameter("err_code");// 支付错误代码
 					String err_code_des = queryRes.getParameter("err_code_des");// 支付错误描述 
 					String time_end = queryRes.getParameter("time_end");// 支付完成时间
 					
-					SqlHelper.savePayResultInfo(openid, trade_type, bank_type, amount, fee_type, transaction_id, order_no, pay_statu, err_code, err_code_des, time_end);
+					int pay_statu = 0; //支付结果  1-支付成功，2-支付失败
+					if("SUCCESS".equals(pay_statu_str)){
+						pay_statu = 1;
+					}
+					SqlHelper.savePayResultInfo(pay_statu, openid, bank_type, total_fee, transaction_id, order_no, err_code, err_code_des, time_end);
 					// ------------------------------
 					// 处理业务完毕
 					// ------------------------------

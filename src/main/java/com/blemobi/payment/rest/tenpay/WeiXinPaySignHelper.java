@@ -1,17 +1,20 @@
 package com.blemobi.payment.rest.tenpay;
 
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.blemobi.payment.rest.util.IDMake;
+import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
 import com.blemobi.sep.probuf.PaymentProtos.PWeixinPay;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.tenpay.AccessTokenRequestHandler;
-import com.tenpay.ClientRequestHandler;
-import com.tenpay.PackageRequestHandler;
 import com.tenpay.PrepayIdRequestHandler;
 import com.tenpay.util.ConstantUtil;
+import com.tenpay.util.RequestHandler;
 import com.tenpay.util.WXUtil;
 
 import lombok.extern.log4j.Log4j;
@@ -25,111 +28,67 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class WeiXinPaySignHelper {
-	private static final String notify_url = "http://47.88.5.139:8088/WeiXinpay-0.0.1-SNAPSHOT/payNotifyUrl.jsp";// 通知的URL
-	private static final String input_charset = "GBK"; // 字符编码
 	private static final String fee_type = "1"; // 币种，1人民币 66
 	private static final String bank_type = "WX";
-	
-	public static PMessage paySign(String orderSubject, int amount, String uuid,
+
+	public static PMessage paySign(String orderSubject, String orderBody, int amount, String uuid,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		PackageRequestHandler packageReqHandler = new PackageRequestHandler(request, response);// 生成package的请求类
 		PrepayIdRequestHandler prepayReqHandler = new PrepayIdRequestHandler(request, response);// 获取prepayid的请求类
-		ClientRequestHandler clientHandler = new ClientRequestHandler(request, response);// 返回客户端支付参数的请求类
-		packageReqHandler.setKey(ConstantUtil.PARTNER_KEY);
 
-		int errorCode;
+		int errorCode = 190000;
 		String errorMsg = "";
-		// 获取token值
-		String token = AccessTokenRequestHandler.getAccessToken();
 
 		String out_trade_no = IDMake.build(uuid, System.currentTimeMillis(), amount);
-		
-		log.info("get token: " + token);
-
 		String spbill_create_ip = request.getRemoteAddr();
 
 		// 保存预支付信息
-		//SqlHelper.savePayInfo(uuid, bank_type, orderSubject, out_trade_no, amount, spbill_create_ip, fee_type);
+		SqlHelper.savePayInfo(uuid, bank_type, orderSubject, orderBody, out_trade_no, amount, spbill_create_ip,
+				fee_type);
 
-		if (!"".equals(token)) {
-			// 设置package订单参数
-			packageReqHandler.setParameter("bank_type", bank_type);// 银行渠道
-			packageReqHandler.setParameter("body", orderSubject); // 商品描述
-			packageReqHandler.setParameter("notify_url", notify_url); // 接收财付通通知的URL
-			packageReqHandler.setParameter("partner", ConstantUtil.PARTNER); // 商户号
-			packageReqHandler.setParameter("out_trade_no", out_trade_no); // 商家订单号
-			packageReqHandler.setParameter("total_fee", amount+"");// 支付金额（单位：分）
-			packageReqHandler.setParameter("spbill_create_ip", spbill_create_ip); // 订单生成的机器IP，指用户浏览器端IP
-			packageReqHandler.setParameter("fee_type", fee_type); // 币种，1人民币 66
-			packageReqHandler.setParameter("input_charset", input_charset); // 字符编码
+		String noncestr = WXUtil.getNonceStr();
+		String timestamp = WXUtil.getTimeStamp();
+		String traceid = out_trade_no;
 
-			// 获取package包
-			String packageValue = packageReqHandler.getRequestURL();
+		SortedMap<String, String> packageParams = new TreeMap<String, String>();
+		packageParams.put("appid", ConstantUtil.APP_ID);
+		packageParams.put("attach", traceid);
+		packageParams.put("body", orderSubject);
+		packageParams.put("mch_id", ConstantUtil.PARTNER);
+		packageParams.put("nonce_str", noncestr);
+		packageParams.put("notify_url", ConstantUtil.notify_url);
+		packageParams.put("out_trade_no", out_trade_no);
+		packageParams.put("spbill_create_ip", spbill_create_ip);
+		packageParams.put("total_fee", amount + "");
+		packageParams.put("trade_type", "APP");
+		RequestHandler reqHandler = new RequestHandler(request, response);
+		reqHandler.init(ConstantUtil.APP_ID, ConstantUtil.APP_SECRET, ConstantUtil.PARTNER_KEY);
+		String sign = reqHandler.createSign(packageParams);// 生成获取预支付签名
 
-			log.info("--------------------payment info--------------------");
-			log.info("order number: " + out_trade_no);
-			log.info("commodity name: " + orderSubject);
-			log.info("payment amount: " + amount);
-			log.info("--------------------payment info--------------------");
+		Set<String> set = packageParams.keySet();
+		for (String key : set) {
+			prepayReqHandler.setParameter(key, packageParams.get(key));
+		}
 
-			log.info("get package: " + packageValue);
+		// 获取prepayId
+		prepayReqHandler.setParameter("sign", sign);
+		prepayReqHandler.setGateUrl(ConstantUtil.GATEURL);
+		String prepayid = prepayReqHandler.sendPrepay();
 
-			String noncestr = WXUtil.getNonceStr();
-			String timestamp = WXUtil.getTimeStamp();
-			String traceid = "";
-			//// 设置获取prepayid支付参数
-			prepayReqHandler.setParameter("appid", ConstantUtil.APP_ID);
-			prepayReqHandler.setParameter("appkey", ConstantUtil.APP_KEY);
-			prepayReqHandler.setParameter("noncestr", noncestr);
-			prepayReqHandler.setParameter("package", packageValue);
-			prepayReqHandler.setParameter("timestamp", timestamp);
-			prepayReqHandler.setParameter("traceid", traceid);
+		log.info("get prepayid: " + prepayid);
 
-			// 生成获取预支付签名
-			String sign = prepayReqHandler.createSHA1Sign();
-			// 增加非参与签名的额外参数
-			prepayReqHandler.setParameter("app_signature", sign);
-			prepayReqHandler.setParameter("sign_method", ConstantUtil.SIGN_METHOD);
-			String gateUrl = ConstantUtil.GATEURL + token;
-			prepayReqHandler.setGateUrl(gateUrl);
+		// 吐回给客户端的参数
+		if (null != prepayid && !"".equals(prepayid)) {
+			PWeixinPay weixin = PWeixinPay.newBuilder().setAppid(ConstantUtil.APP_ID).setPartnerid(ConstantUtil.PARTNER)
+					.setNoncestr(noncestr).setPackage("Sign=WXPay").setTimestamp(timestamp).setPrepayid(prepayid)
+					.setSign(sign).setOrderNo(out_trade_no).build();
 
-			// 获取prepayId
-			String prepayid = prepayReqHandler.sendPrepay();
-
-			log.info("get prepayid: " + prepayid);
-
-			// 吐回给客户端的参数
-			if (null != prepayid && !"".equals(prepayid)) {
-				// 输出参数列表
-				clientHandler.setParameter("appid", ConstantUtil.APP_ID);
-				clientHandler.setParameter("appkey", ConstantUtil.APP_KEY);
-				clientHandler.setParameter("noncestr", noncestr);
-				// clientHandler.setParameter("package", "Sign=" +
-				// packageValue);
-				clientHandler.setParameter("package", "Sign=WXPay");
-				clientHandler.setParameter("partnerid", ConstantUtil.PARTNER);
-				clientHandler.setParameter("prepayid", prepayid);
-				clientHandler.setParameter("timestamp", timestamp);
-				// 生成签名
-				sign = clientHandler.createSHA1Sign();
-				clientHandler.setParameter("sign", sign);
-
-				PWeixinPay weixin = PWeixinPay.newBuilder().setAppid(ConstantUtil.APP_ID).setPartnerid(ConstantUtil.PARTNER)
-						.setNoncestr(noncestr).setPackage("Sign=WXPay").setTimestamp(timestamp).setPrepayid(prepayid)
-						.setSign(sign).setOrderNo(out_trade_no).build();
-
-				return ReslutUtil.createReslutMessage(weixin);
-			} else {
-				errorCode = -2;
-				errorMsg = "get prepayId error";
-			}
+			return ReslutUtil.createReslutMessage(weixin);
 		} else {
-			errorCode = -1;
-			errorMsg = "get Token error";
+			errorCode = -2;
+			errorMsg = "get prepayId error";
 		}
 
 		return ReslutUtil.createErrorMessage(errorCode, errorMsg);
 	}
-
 }
