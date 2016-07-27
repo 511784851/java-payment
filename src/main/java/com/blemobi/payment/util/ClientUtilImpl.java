@@ -110,6 +110,14 @@ public class ClientUtilImpl {
 
 		return createUrl(address, port, basePath);
 	}
+	
+	public String createWalletUrl(String basePath) throws Exception { //大概201行位置
+		String[] walletInfo = Constant.getWalletServer();
+		String address = walletInfo[0];
+		int port = Integer.parseInt(walletInfo[1]);
+
+		return createUrl(address, port, basePath);
+	}
 
 
 	/**
