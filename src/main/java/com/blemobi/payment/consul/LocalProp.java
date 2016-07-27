@@ -19,6 +19,7 @@ public class LocalProp {
 	private static String[] account	= null;
 	private static String[] oss 	= null;
 	private static String[] login 	= null;
+	private static String[] wallet 	= null;
 	
 	private static HashMap<String,String> propInfo = new HashMap<String,String>();
 	
@@ -27,6 +28,7 @@ public class LocalProp {
 		adapter.onServiceChange("account", new String[][]{account});
 		adapter.onServiceChange("oss", new String[][]{oss});
 		adapter.onServiceChange("login", new String[][]{login});
+		adapter.onServiceChange("wallet", new String[][]{wallet});
 		
 		adapter.onEnvChange(propInfo);
 	}
@@ -48,7 +50,7 @@ public class LocalProp {
 		account = new String[]{(String) fileProp.get("account_addr"),(String) fileProp.get("account_port")};
 		oss = new String[]{(String) fileProp.get("oss_addr"),(String) fileProp.get("oss_port")};
 		login = new String[]{(String) fileProp.get("login_addr"),(String) fileProp.get("login_port")};
-		
+		wallet = new String[]{(String) fileProp.get("wallet_addr"),(String) fileProp.get("wallet_port")};
 	
 	}
 
