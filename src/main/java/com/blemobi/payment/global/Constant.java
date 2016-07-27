@@ -39,6 +39,9 @@ public class Constant  {
 	private static String[][] loginInfo = null;
 	private static List<String> errorLogin = new ArrayList();
 	
+	private static String[][] walletInfo = null;//大概39行位置
+	private static List<String> errorWallet = new ArrayList();
+	
 	// 定义我们自己的Jetty服务的端口
 	private static int jettyServerPort = 9014; 
 
@@ -96,6 +99,10 @@ public class Constant  {
 				loginInfo = serverInfo;
 				errorLogin.clear();
 			}
+			if(serviceName.equals("wallet")){
+				walletInfo = serverInfo;
+				errorWallet.clear();
+			}
 			
 		}
 	};
@@ -119,10 +126,10 @@ public class Constant  {
 	 */
 	public static String[] getLoginServer() {
 		
-		String[][] healthAccount = getOnlineServer(loginInfo,errorLogin);
-		int ramdom = (int)(Math.random() * healthAccount.length);
+		String[][] healthLogin = getOnlineServer(loginInfo,errorLogin);
+		int ramdom = (int)(Math.random() * healthLogin.length);
 		
-		return healthAccount[ramdom];
+		return healthLogin[ramdom];
 //		return new String[]{"192.168.1.241","9001"};// 账户系统IP和port信息
 	}
 	
@@ -136,6 +143,15 @@ public class Constant  {
 		int ramdom = (int)(Math.random() * healthOss.length);
 		return healthOss[ramdom];
 //		return new String[]{"192.168.1.241","9008"};// 好友系统IP和port信息
+	}
+	
+	
+	public static String[] getWalletServer() { //大概120行位置
+		
+		String[][] healthAccount = getOnlineServer(walletInfo,errorWallet);
+		int ramdom = (int)(Math.random() * healthAccount.length);
+		
+		return healthAccount[ramdom];
 	}
 	
 	/**
