@@ -29,14 +29,14 @@ public class AliPayUtil {
 	private final static String notifyUrl="http://47.88.5.139:9006/chat/alipay/notify";
 
 	public static PMessage paySign(String uuid, String token, String orderSubject, String orderBody,
-			String amount) {
+			long amount) {
 		//String orderNo = getOutTradeNo();
 		long time = System.currentTimeMillis();//订单时间
 		
 		//形成订单号的规则是 uuid+时间+金额
-		String orderNo = IDMake.build(uuid, time, Long.parseLong(amount));
+		String orderNo = IDMake.build(uuid, time, amount);
 		
-//		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, amount);
+		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, amount);
 		
 		String orderInfo = getOrderInfo(orderNo,orderSubject, orderBody, amount);
 		
@@ -68,13 +68,12 @@ public class AliPayUtil {
 		
 	}
 
-	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, String orderPrice) {
+	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, long amount) {
 		//String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
 
 		String sql = "INSERT INTO pay_order(id,uuid,bank_type,name,order_no,amount,app_ip,fee_type,pay_statu) VALUE('%s','%s','%s','%s','%s','%s','%s','%s','%s')";
 
 		String id = UUID.randomUUID().toString();
-		String amount = formatPrice(orderPrice);
 		sql = String.format(sql, id,uuid,"ZFB",orderSubject,orderNo,amount,"127.0.0.1","1","0");
 		log.info(sql.toString());
 		boolean rtn = JdbcTemplate.executeUpdate(sql);
@@ -82,15 +81,20 @@ public class AliPayUtil {
 	}
 
 	//把金额的元转换成分。
-	private static String formatPrice(String yuan) {
-		String rtn = "";
-		String ch = ".";
-		int point = yuan.indexOf(ch);
-		if(point<0){
-			rtn = yuan+"00";
-		}else{
+	private static long converYuanToFen(String yuan) {
+		long rtn = 0L;
+		if(!yuan.equals("0")){
+			String fen = "";
+			String keyword = ".";
+			int point = yuan.indexOf(keyword);
 			yuan = yuan+"00";
-			rtn = yuan.substring(0,point)+yuan.substring(point+1,2);
+			if(point>0){
+				fen = yuan.substring(0,point)+yuan.substring(point+1,2);
+			}
+			while(fen.startsWith("0")){
+				fen = fen.substring(1);
+			}
+			rtn = Long.parseLong(fen);
 		}
 		return rtn;
 	}
@@ -144,7 +148,7 @@ public class AliPayUtil {
 				if(seller_id.equals(AlipayConfig.seller)){
 					//判断商户号，订单号，金额一致。
 					String sql = "update pay_order set pay_statu='%s' where order_no='%s' and amount='%s'";
-					String amount = formatPrice(total_fee);
+					long amount = converYuanToFen(total_fee);
 					sql = String.format(sql, "2",trade_no,amount);
 					log.info(sql.toString());
 					boolean rtn = JdbcTemplate.executeUpdate(sql);
@@ -165,7 +169,7 @@ public class AliPayUtil {
 				if(seller_id.equals(AlipayConfig.seller)){
 					//判断商户号，订单号，金额一致。
 					String sql = "update pay_order set pay_statu='%s' where order_no='%s' and amount='%s'";
-					String amount = formatPrice(total_fee);
+					long amount = converYuanToFen(total_fee);
 					sql = String.format(sql, "1",trade_no,amount);
 					log.info(sql.toString());
 					boolean rtn = JdbcTemplate.executeUpdate(sql);
@@ -187,7 +191,8 @@ public class AliPayUtil {
 	 * create the order info. 创建订单信息
 	 * 
 	 */
-	private static String getOrderInfo(String orderNo, String subject, String body, String price) {
+	private static String getOrderInfo(String orderNo, String subject, String body, long amount) {
+		String yuanAmount = converFenToYuan(amount);
 
 		// 签约合作者身份ID
 		String orderInfo = "partner=" + "\"" + AlipayConfig.partner + "\"";
@@ -205,7 +210,7 @@ public class AliPayUtil {
 		orderInfo += "&body=" + "\"" + body + "\"";
 
 		// 商品金额
-		orderInfo += "&total_fee=" + "\"" + price + "\"";
+		orderInfo += "&total_fee=" + "\"" + yuanAmount + "\"";
 
 		// 服务器异步通知页面路径
 		//orderInfo += "&notify_url=" + "\"" + "http://notify.msp.hk/notify.htm" + "\"";
@@ -238,6 +243,34 @@ public class AliPayUtil {
 		// orderInfo += "&paymethod=\"expressGateway\"";
 
 		return orderInfo;
+	}
+
+	//把分转成元
+	private static String converFenToYuan(long fen) {
+		String rtn = "";
+		if(fen==0){
+			rtn = "0";
+		}else if((fen%100)==0){
+			rtn = ""+(fen/100);
+		}else if((fen%10)==0){
+			long v = fen/10;
+			if(v<10){
+				rtn = "0."+v;
+			}else{
+				rtn = ""+v;
+				rtn = rtn.substring(0,rtn.length()-1)+"."+rtn.substring(rtn.length()-1);
+			}
+		}else{
+			if(fen<10){
+				rtn = "0.0"+fen;
+			}else if(fen<100){
+				rtn = "0."+fen;
+			}else{
+				rtn = ""+fen;
+				rtn = rtn.substring(0,rtn.length()-2)+"."+rtn.substring(rtn.length()-2);
+			}
+		}
+		return rtn;
 	}
 
 	/**
