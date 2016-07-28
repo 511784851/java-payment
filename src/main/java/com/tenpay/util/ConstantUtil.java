@@ -21,7 +21,7 @@ public class ConstantUtil {
 	public static String ERRORCODE = "errcode";//用来判断access_token是否失效的值
 	public static String SIGN_METHOD = "sha1";//签名算法常量值
 	public static String createOrderURL="https://api.mch.weixin.qq.com/pay/unifiedorder";
-	public static String notify_url = "http://www.hao123.com/payNotifyUrl.jsp";// 通知的URL
+	public static String notify_url = "http://47.88.5.139:8088/WeiXinpay-0.0.1-SNAPSHOT/payNotifyUrl.jsp";// 通知的URL
 	
 	//package常量值
 	public static String packageValue = "bank_type=WX&body=%B2%E2%CA%D4&fee_type=1&input_charset=GBK&notify_url=http%3A%2F%2F127.0.0.1%3A8180%2Ftenpay_api_b2c%2FpayNotifyUrl.jsp&out_trade_no=2051571832&partner=1900000109&sign=10DA99BCB3F63EF23E4981B331B0A3EF&spbill_create_ip=127.0.0.1&time_expire=20131222091010&total_fee=1";

@@ -82,7 +82,7 @@ public class PrepayIdRequestHandler extends RequestHandler {
 				prepayid = resContent.substring(index, resContent.indexOf("]]></prepay_id>"));
 				//prepayid = JsonUtil.getJsonValue(resContent, "prepayid");
 			}
-			//System.out.println("resContent:"+resContent);
+			System.out.println("resContent:"+resContent);
 			this.setDebugInfo(this.getDebugInfo() + "\r\n" + "resContent:"
 					+ resContent);
 		}
