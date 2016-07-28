@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -39,11 +40,10 @@ public class WeixinContrller {
 	@GET
 	@Path("paySign")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage paySign(@Context HttpServletRequest request, @Context HttpServletResponse response, @CookieParam("uuid") String uuid
-			, @QueryParam("orderSubject") String orderSubject, @QueryParam("orderBody") String orderBody, @QueryParam("amount") int amount) throws Exception {
+	public PMessage paySign(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@CookieParam("uuid") String uuid, @QueryParam("orderSubject") String orderSubject,
+			@QueryParam("orderBody") String orderBody, @QueryParam("amount") int amount) throws Exception {
 
-		System.out.println("uuid:" + uuid + "; orderSubject:"+orderSubject + "; amount:"+amount);
-		
 		PMessage message = WeiXinPaySignHelper.paySign(orderSubject, orderBody, amount, uuid, request, response);
 
 		return message;
@@ -58,13 +58,13 @@ public class WeixinContrller {
 	 *            HttpServletResponse
 	 * @throws Exception
 	 */
-	@GET
+	@POST
 	@Path("payNotify")
-	@Produces(MediaTypeExt.APPLICATION_JSON)
+	@Produces(MediaTypeExt.TEXT_XML)
 	public String payNotify(@Context HttpServletRequest request, @Context HttpServletResponse response)
 			throws Exception {
-		WeiXinPayNotifyHelper.payNotify(request, response);
-		return "Success";
+		String xml = WeiXinPayNotifyHelper.payNotify(request, response);
+		return xml;
 	}
 
 }
