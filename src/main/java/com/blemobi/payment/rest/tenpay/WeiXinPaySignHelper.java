@@ -25,7 +25,6 @@ import lombok.extern.log4j.Log4j;
  * @author seven_cm
  * @dateTime 2014-11-29
  */
-
 @Log4j
 public class WeiXinPaySignHelper {
 	private static final String fee_type = "1"; // 币种，1人民币 66

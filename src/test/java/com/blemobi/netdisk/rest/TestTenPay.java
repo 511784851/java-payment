@@ -84,6 +84,7 @@ public class TestTenPay {
 		System.exit(0);
 	}
 
+	
 	private static String postBodyMethod(String urlPath, byte[] body, Cookie[] cookies) throws Exception {
 		URL url = new URL(urlPath);
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
