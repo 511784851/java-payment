@@ -36,7 +36,7 @@ public class AlipayContrller {
 	 * @cookie token 用户的token
 	 * @param orderSubject 订单的主题
 	 * @param orderBody 订单的内容描述
-	 * @param orderPrice 订单的总价（单位：分）。以人民币的元为单位，精细到小数点后面两位。
+	 * @param amount 订单的总价（单位：分）。以人民币的元为单位。
 	 * @return PAlipayOrderInfo 返回订单号和签名信息
 	 * @throws Exception 抛出Exception异常
 	 */
@@ -71,13 +71,15 @@ public class AlipayContrller {
 			return ReslutUtil.createErrorMessage(2501105, "Amount is empty!");
 		}
 		
+		long fenAmount = 0;
+		
 		try{
-			int a = Integer.parseInt(amount);
+			fenAmount = Long.parseLong(amount);
 		}catch(Exception e){
 			return ReslutUtil.createErrorMessage(2201106, "Amount isn't Integer!");
 		}
 
-		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,amount);
+		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,fenAmount);
 	}
 	
 	@GET
