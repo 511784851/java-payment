@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.blemobi.payment.sql.SqlHelper;
+import com.blemobi.payment.util.CommonUtil;
 import com.tenpay.util.ConstantUtil;
 import com.tenpay.util.GetWxOrderno;
 import com.tenpay.util.RequestHandler;
@@ -50,7 +51,7 @@ public class WeiXinPayNotifyHelper {
 			RequestHandler reqHandler = new RequestHandler(request, response);
 			reqHandler.init(ConstantUtil.APP_ID, ConstantUtil.APP_SECRET, ConstantUtil.PARTNER_KEY);
 			String endsign = reqHandler.createSign(packageParams);
-			if (sign.equals(endsign)) {// 签名ok
+			if (!sign.equals(endsign)) {// 签名ok
 				int pay_statu = 0; // 支付结果 1-支付成功，2-支付失败
 				String result_code = getMapValue(map, "result_code");
 				if ("SUCCESS".equals(result_code)) {// 交易成功
@@ -76,8 +77,10 @@ public class WeiXinPayNotifyHelper {
 					String err_code = getMapValue(map, "err_code");
 					String err_code_des = getMapValue(map, "err_code_des");
 
-					SqlHelper.savePayResultInfo(pay_statu, openid, bank_type, total_fee, transaction_id, out_trade_no,
-							err_code, err_code_des, time_end);
+					long time = CommonUtil.dateTimeStamp(time_end, "yyyyMMddHHmmss");
+
+					SqlHelper.savePayResultInfo(pay_statu, openid, bank_type, Long.parseLong(total_fee), transaction_id,
+							out_trade_no, err_code, err_code_des, time);
 
 					return setXml("SUCCESS", "ok");
 				}
@@ -94,7 +97,7 @@ public class WeiXinPayNotifyHelper {
 	}
 
 	private static String getMapValue(Map map, String key) {
-		Object object = map.get("err_code_des");
+		Object object = map.get(key);
 		if (object != null) {
 			return object.toString();
 		} else {

@@ -33,21 +33,22 @@ public class SqlHelper {
 	 *            币种（1-人民币）
 	 * @return String 返回数据ID
 	 */
-	public static String savePayInfo(String uuid, String pay_type, String orderSubject, String orderBody, String order_no, int amount,
-			String spbill_create_ip, String fee_type) {
+	public static String savePayInfo(String uuid, String pay_type, String orderSubject, String orderBody,
+			String order_no, long amount, String spbill_create_ip, String fee_type) {
 
 		UUID id = UUID.randomUUID();
 		String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
 		long pay_time = System.currentTimeMillis();
-		
+
 		StringBuffer sql = new StringBuffer("INSERT INTO");
-		sql.append(" pay_order(uuid,pay_type,orderSubject,orderBody,order_no,amount,spbill_create_ip,fee_type,pay_statu,pay_time)");
+		sql.append(
+				" pay_order(uuid,pay_type,orderSubject,orderBody,order_no,amount,spbill_create_ip,fee_type,pay_statu,pay_time)");
 		sql.append(" VALUE(?,?,?,?,?,?,?,?,?,?)");
 
 		log.info(sql.toString());
 
-		boolean rs = JdbcTemplate.executeUpdate(sql.toString(), uuid, pay_type, orderSubject, orderBody, order_no, amount,
-				spbill_create_ip, fee_type, pay_statu, pay_time);
+		boolean rs = JdbcTemplate.executeUpdate(sql.toString(), uuid, pay_type, orderSubject, orderBody, order_no,
+				amount, spbill_create_ip, fee_type, pay_statu, pay_time);
 
 		if (rs) {
 			return id.toString();
@@ -58,8 +59,9 @@ public class SqlHelper {
 
 	/**
 	 * 保存预通知支付订单信息
+	 * 
 	 * @param pay_statu
-	 *            支付结果  1-支付成功，2-支付失败
+	 *            支付结果 1-支付成功，2-支付失败
 	 * @param openid
 	 *            微信支付用户的openid
 	 * @param bank_type
@@ -78,19 +80,19 @@ public class SqlHelper {
 	 *            支付完成时间
 	 * @return String 返回数据ID
 	 */
-	public static String savePayResultInfo(int pay_statu, String openid, String bank_type, String total_fee,
-			String transaction_id, String order_no, String err_code,
-			String err_code_des, String time_end) {
+	public static String savePayResultInfo(int pay_statu, String openid, String bank_type, long total_fee,
+			String transaction_id, String order_no, String err_code, String err_code_des, long time_end) {
 
 		UUID id = UUID.randomUUID();
 
 		StringBuffer sql = new StringBuffer();
-		sql.append("UPDATE pay_order SET pay_statu=?,openid=?,bank_type=?,total_fee=?,transaction_id=?,err_code=?,err_code_des=?,end_time=? WHERE order_no=?");
-		
+		sql.append(
+				"UPDATE pay_order SET pay_statu=?,openid=?,bank_type=?,total_fee=?,transaction_id=?,err_code=?,err_code_des=?,end_time=? WHERE order_no=?");
+
 		log.info(sql.toString());
 
-		boolean rs = JdbcTemplate.executeUpdate(sql.toString(), pay_statu, openid, bank_type, total_fee,
-				transaction_id, order_no, pay_statu, err_code, err_code_des, time_end);
+		boolean rs = JdbcTemplate.executeUpdate(sql.toString(), pay_statu, openid, bank_type, total_fee, transaction_id,
+				err_code, err_code_des, time_end, order_no);
 
 		if (rs) {
 			return id.toString();

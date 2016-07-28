@@ -42,7 +42,7 @@ public class WeixinContrller {
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage paySign(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@CookieParam("uuid") String uuid, @QueryParam("orderSubject") String orderSubject,
-			@QueryParam("orderBody") String orderBody, @QueryParam("amount") int amount) throws Exception {
+			@QueryParam("orderBody") String orderBody, @QueryParam("amount") long amount) throws Exception {
 
 		PMessage message = WeiXinPaySignHelper.paySign(orderSubject, orderBody, amount, uuid, request, response);
 

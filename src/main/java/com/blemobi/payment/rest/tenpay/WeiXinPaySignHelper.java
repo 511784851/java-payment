@@ -31,14 +31,13 @@ public class WeiXinPaySignHelper {
 	private static final String fee_type = "1"; // 币种，1人民币 66
 	private static final String bank_type = "WX";
 
-	public static PMessage paySign(String orderSubject, String orderBody, int amount, String uuid,
+	public static PMessage paySign(String orderSubject, String orderBody, long amount, String uuid,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		int errorCode = 190000;
 		String errorMsg = "";
 
 		// 金额转化为分为单位
-		String total_fee = amount*100+"";
 		String out_trade_no = IDMake.build(uuid, System.currentTimeMillis(), amount);
 		String spbill_create_ip = request.getRemoteAddr();
 
@@ -59,7 +58,7 @@ public class WeiXinPaySignHelper {
 		packageParams.put("notify_url", ConstantUtil.notify_url);
 		packageParams.put("out_trade_no", out_trade_no);
 		packageParams.put("spbill_create_ip", spbill_create_ip);
-		packageParams.put("total_fee", total_fee);
+		packageParams.put("total_fee", amount + "");
 		packageParams.put("trade_type", "APP");
 		RequestHandler reqHandler = new RequestHandler(request, response);
 		reqHandler.init(ConstantUtil.APP_ID, ConstantUtil.APP_SECRET, ConstantUtil.PARTNER_KEY);
@@ -84,8 +83,7 @@ public class WeiXinPaySignHelper {
 			PWeixinPay weixin = PWeixinPay.newBuilder()
 					.setAppid(ConstantUtil.APP_ID)
 					.setPartnerid(ConstantUtil.PARTNER)
-					.setNoncestr(noncestr)
-					.setPackage("Sign=WXPay")
+					.setNoncestr(noncestr).setPackage("Sign=WXPay")
 					.setTimestamp(timestamp)
 					.setPrepayid(prepayid)
 					.setSign(sign)
