@@ -14,7 +14,16 @@ public class LocalProp {
 			"health_check_port",
 			"redis_user_addr",
 			"redis_user_auth",
-			"jetty_port"
+			"jetty_port",
+			"dbDriverClassName ",
+			"dbUrl",
+			"dbUsername",
+			"dbPassword",
+			"dbInitialSize",
+			"dbMaxActive",
+			"dbMaxIdle",
+			"dbMinIdle",
+			"dbMaxWait"
 	};
 	private static String[] account	= null;
 	private static String[] oss 	= null;
