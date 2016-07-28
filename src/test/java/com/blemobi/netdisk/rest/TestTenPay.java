@@ -4,25 +4,53 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.junit.Test;
 
 import com.blemobi.payment.core.PaymentManager;
+import com.blemobi.payment.util.ClientUtilImpl;
+import com.blemobi.payment.util.CommonUtil;
+import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 
 public class TestTenPay {
-
-	/**
-	 * @throws Exception
-	 */
+	
 	@Test
-	public void testUserLevel() throws Exception {
+	public void testPaySign() throws Exception {
+		// TODO Auto-generated method stub
+		String[] arg = new String[] { "-env", "local" };
+		PaymentManager.main(arg);
+
+		String uuid = "0efe519d-cddf-412c-a5e0-2e8f14f80edb";
+		String token = "EiBmN2UzMzM5ZWFiOGZmZTJkZTg5MTE2NGQ2YjJiOGRiMBjYtte8BQ==";
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("amount", "1"));
+		params.add(new BasicNameValuePair("orderSubject", "充值1分"));
+		params.add(new BasicNameValuePair("orderBody", "1分"));
+		
+		Cookie[] cookies = CommonUtil.createLoginCookieParams(uuid, token);
+		String url = "http://localhost:9014/payment/weixin/paySign";
+		ClientUtilImpl clientUtil = new ClientUtilImpl();
+		PMessage message = clientUtil.getMethod(url, params, cookies);
+
+		// String type = message.getType();
+
+		log.info("message=[" + message + "]");
+	}
+	
+	//@Test
+	public void testPayNotify() throws Exception {
 		// TODO Auto-generated method stub
 		String[] arg = new String[] { "-env", "local" };
 		PaymentManager.main(arg);
@@ -48,7 +76,6 @@ public class TestTenPay {
 		sb.append("<transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id>");
 		sb.append("</xml>");
 
-		// Cookie[] cookies = CommonUtil.createLoginCookieParams(uuid, token);
 		String url = "http://localhost:9014/payment/weixin/payNotify";
 		String e = postBodyMethod(url, sb.toString().getBytes(), null);
 
@@ -65,8 +92,6 @@ public class TestTenPay {
 		urlConnection.setDoOutput(true);
 		urlConnection.setUseCaches(false);
 
-		// urlConnection.setRequestProperty("Content-type", "form-data");
-		// urlConnection.setRequestProperty("accept", "application/x-protobuf");
 		urlConnection.setRequestMethod("POST");
 
 		if (cookies != null) {

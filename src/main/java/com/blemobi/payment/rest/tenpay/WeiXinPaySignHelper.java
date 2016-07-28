@@ -80,13 +80,26 @@ public class WeiXinPaySignHelper {
 
 		// 吐回给客户端的参数
 		if (null != prepayid && !"".equals(prepayid)) {
-			PWeixinPay weixin = PWeixinPay.newBuilder()
+			SortedMap<String, String> finalpackage = new TreeMap<String, String>();  
+			String app_noncestr = WXUtil.getNonceStr();
+			String app_timestamp = WXUtil.getTimeStamp();
+            finalpackage.put("appid", ConstantUtil.APP_ID);    
+            finalpackage.put("timestamp", app_timestamp);    
+            finalpackage.put("noncestr", app_noncestr);    
+            finalpackage.put("partnerid", ConstantUtil.PARTNER);   
+            finalpackage.put("package", "Sign=WXPay");                
+            finalpackage.put("prepayid", prepayid);   
+            
+            String app_sign = reqHandler.createSign(finalpackage);  
+            
+            PWeixinPay weixin = PWeixinPay.newBuilder()
 					.setAppid(ConstantUtil.APP_ID)
 					.setPartnerid(ConstantUtil.PARTNER)
-					.setNoncestr(noncestr).setPackage("Sign=WXPay")
+					.setNoncestr(noncestr)
+					.setPackage("Sign=WXPay")
 					.setTimestamp(timestamp)
 					.setPrepayid(prepayid)
-					.setSign(sign)
+					.setSign(app_sign)
 					.setOrderNo(out_trade_no)
 					.build();
 
