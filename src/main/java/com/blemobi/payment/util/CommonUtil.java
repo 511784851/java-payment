@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
@@ -51,5 +52,14 @@ public class CommonUtil {
 	public static long dateTimeStamp(String date_str, String format) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return (sdf.parse(date_str).getTime() / 1000);
+	}
+
+	public static String getMapValue(Map map, String key) {
+		Object object = map.get(key);
+		if (object != null) {
+			return object.toString();
+		} else {
+			return "";
+		}
 	}
 }

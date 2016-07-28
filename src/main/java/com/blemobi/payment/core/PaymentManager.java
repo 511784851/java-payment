@@ -34,7 +34,7 @@ public class PaymentManager {
 		HealthManager.startService(healthPort); 
 		
 		
-		DbcpConnect dbcp = new DbcpConnect("dbcp.properties");
+		DbcpConnect dbcp = new DbcpConnect();
 		dbcp.loadPool();
 		
 		/*

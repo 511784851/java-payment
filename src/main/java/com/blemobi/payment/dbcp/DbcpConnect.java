@@ -2,35 +2,36 @@ package com.blemobi.payment.dbcp;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
-import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 
-import org.apache.commons.dbcp.BasicDataSourceFactory;
+import com.blemobi.payment.global.Constant;
 
 /*
  * mysql连接池管理类
  */
 public class DbcpConnect {
-	// mysql连接池配置信息
-	private String dpcpConfigUrl;
-	private static DataSource ds = null;
+	private static BasicDataSource dataSourec = null;
 
-	public DbcpConnect(String dpcpConfigUrl) {
-		this.dpcpConfigUrl = dpcpConfigUrl;
+	public DbcpConnect() {
+		dataSourec = new BasicDataSource();
 	}
 
 	// 初始化连接池
-	public void loadPool() throws Exception {
-		Properties prop = new Properties();
-		// 通过类路径来加载属性文件
-		prop.load(DbcpConnect.class.getClassLoader().getResourceAsStream(dpcpConfigUrl));
-		// 获取数据源
-		ds = BasicDataSourceFactory.createDataSource(prop);
+	public void loadPool() {
+		dataSourec.setDriverClassName(Constant.getDbDriverClassName());
+		dataSourec.setUrl(Constant.getDbUrl());
+		dataSourec.setUsername(Constant.getDbUsername());
+		dataSourec.setPassword(Constant.getDbPassword());
+		dataSourec.setInitialSize(Integer.parseInt(Constant.getDbInitialSize()));
+		dataSourec.setMaxActive(Integer.parseInt(Constant.getDbMaxActive()));
+		dataSourec.setMaxIdle(Integer.parseInt(Constant.getDbMaxIdle()));
+		dataSourec.setMinIdle(Integer.parseInt(Constant.getDbMinIdle()));
+		dataSourec.setMaxWait(Integer.parseInt(Constant.getDbMaxWait()));
 	}
 
 	// 获得连接
 	public static Connection getConnect() throws SQLException {
-		return ds.getConnection();
+		return dataSourec.getConnection();
 	}
 }

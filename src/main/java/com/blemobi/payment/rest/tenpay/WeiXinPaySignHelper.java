@@ -47,7 +47,7 @@ public class WeiXinPaySignHelper {
 
 		String noncestr = WXUtil.getNonceStr();
 		String timestamp = WXUtil.getTimeStamp();
-		String traceid = out_trade_no;// 附加信息
+		String traceid = "";// 附加信息
 
 		SortedMap<String, String> packageParams = new TreeMap<String, String>();
 		packageParams.put("appid", ConstantUtil.APP_ID);

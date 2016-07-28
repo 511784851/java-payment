@@ -173,8 +173,8 @@ public class RequestHandler {
 			}
 		}
 		sb.append("key=" + this.getKey());
-		//System.out.println("md5 sb:" + sb);
-		String sign = MD5Util.MD5Encode(sb.toString(), this.charset)
+		System.out.println("md5 sb:" + sb);
+		String sign = MD5Util.MD5Encode(sb.toString(), "UTF-8")
 				.toUpperCase();
 		//System.out.println("packge签名:" + sign);
 		return sign;

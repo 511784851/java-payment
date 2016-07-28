@@ -1,13 +1,15 @@
 package com.blemobi.payment.sql;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.blemobi.payment.dbcp.JdbcTemplate;
 
 import lombok.extern.log4j.Log4j;
 
-/*
- * 常用支付数据存储类
+/**
+ * @author andy.zhao@blemobi.com 支付数据处理类
  */
 @Log4j
 public class SqlHelper {
@@ -58,7 +60,7 @@ public class SqlHelper {
 	}
 
 	/**
-	 * 保存预通知支付订单信息
+	 * 保存通知支付订单信息
 	 * 
 	 * @param pay_statu
 	 *            支付结果 1-支付成功，2-支付失败
@@ -99,5 +101,51 @@ public class SqlHelper {
 		} else {
 			return "";
 		}
+	}
+
+	/**
+	 * 根据订单编号查询订单信息
+	 * 
+	 * @param uuid
+	 *            用户uuid
+	 * @param orderNo
+	 *            要查询的订单号
+	 * @return Map 返回订单信息
+	 */
+	public static Map<String, Object> query(String uuid, String order_no) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM pay_order t WHERE t.uuid=? AND t.order_no=?");
+
+		log.info(sql.toString());
+
+		List<Map<String, Object>> list = JdbcTemplate.executeQuery(sql.toString(), uuid, order_no);
+
+		if (list != null && list.size() == 1) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 批量查询用户支付订单信息
+	 * 
+	 * @param uuid
+	 *            用户uuid
+	 * @param offset
+	 *            批量查询起始值
+	 * @param count
+	 *            批量查询的数量
+	 * @return PMessage 返回订单信息列表
+	 */
+	public static List<Map<String, Object>> queryList(String uuid, int offset, int count) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM pay_order t WHERE t.uuid=? ORDER BY t.pay_time DESC LIMIT ?,? ");
+
+		log.info(sql.toString());
+
+		List<Map<String, Object>> list = JdbcTemplate.executeQuery(sql.toString(), uuid, offset, count);
+
+		return list;
 	}
 }

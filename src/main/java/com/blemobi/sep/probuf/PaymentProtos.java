@@ -2372,8 +2372,795 @@ public final class PaymentProtos {
 
   }
 
-  public interface PAlipayOrderStatusOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:common.PAlipayOrderStatus)
+  public interface PPayOrderListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:common.PPayOrderList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    java.util.List<com.blemobi.sep.probuf.PaymentProtos.PPayOrder> 
+        getPayOrdersList();
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    com.blemobi.sep.probuf.PaymentProtos.PPayOrder getPayOrders(int index);
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    int getPayOrdersCount();
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    java.util.List<? extends com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder> 
+        getPayOrdersOrBuilderList();
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder getPayOrdersOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code common.PPayOrderList}
+   */
+  public  static final class PPayOrderList extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:common.PPayOrderList)
+      PPayOrderListOrBuilder {
+    // Use PPayOrderList.newBuilder() to construct.
+    private PPayOrderList(com.google.protobuf.GeneratedMessage.Builder builder) {
+      super(builder);
+    }
+    private PPayOrderList() {
+      payOrders_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private PPayOrderList(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                payOrders_ = new java.util.ArrayList<com.blemobi.sep.probuf.PaymentProtos.PPayOrder>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              payOrders_.add(input.readMessage(com.blemobi.sep.probuf.PaymentProtos.PPayOrder.PARSER, extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw new RuntimeException(e.setUnfinishedMessage(this));
+      } catch (java.io.IOException e) {
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          payOrders_ = java.util.Collections.unmodifiableList(payOrders_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrderList_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrderList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.class, com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.Builder.class);
+    }
+
+    public static final int PAYORDERS_FIELD_NUMBER = 1;
+    private java.util.List<com.blemobi.sep.probuf.PaymentProtos.PPayOrder> payOrders_;
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    public java.util.List<com.blemobi.sep.probuf.PaymentProtos.PPayOrder> getPayOrdersList() {
+      return payOrders_;
+    }
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    public java.util.List<? extends com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder> 
+        getPayOrdersOrBuilderList() {
+      return payOrders_;
+    }
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    public int getPayOrdersCount() {
+      return payOrders_.size();
+    }
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    public com.blemobi.sep.probuf.PaymentProtos.PPayOrder getPayOrders(int index) {
+      return payOrders_.get(index);
+    }
+    /**
+     * <code>repeated .common.PPayOrder payOrders = 1;</code>
+     *
+     * <pre>
+     * 支付订单信息
+     * </pre>
+     */
+    public com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder getPayOrdersOrBuilder(
+        int index) {
+      return payOrders_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < payOrders_.size(); i++) {
+        output.writeMessage(1, payOrders_.get(i));
+      }
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < payOrders_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, payOrders_.get(i));
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.blemobi.sep.probuf.PaymentProtos.PPayOrderList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code common.PPayOrderList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:common.PPayOrderList)
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrderListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrderList_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrderList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.class, com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.Builder.class);
+      }
+
+      // Construct using com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getPayOrdersFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (payOrdersBuilder_ == null) {
+          payOrders_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          payOrdersBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrderList_descriptor;
+      }
+
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrderList getDefaultInstanceForType() {
+        return com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.getDefaultInstance();
+      }
+
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrderList build() {
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrderList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrderList buildPartial() {
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrderList result = new com.blemobi.sep.probuf.PaymentProtos.PPayOrderList(this);
+        int from_bitField0_ = bitField0_;
+        if (payOrdersBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            payOrders_ = java.util.Collections.unmodifiableList(payOrders_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.payOrders_ = payOrders_;
+        } else {
+          result.payOrders_ = payOrdersBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.blemobi.sep.probuf.PaymentProtos.PPayOrderList) {
+          return mergeFrom((com.blemobi.sep.probuf.PaymentProtos.PPayOrderList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.blemobi.sep.probuf.PaymentProtos.PPayOrderList other) {
+        if (other == com.blemobi.sep.probuf.PaymentProtos.PPayOrderList.getDefaultInstance()) return this;
+        if (payOrdersBuilder_ == null) {
+          if (!other.payOrders_.isEmpty()) {
+            if (payOrders_.isEmpty()) {
+              payOrders_ = other.payOrders_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensurePayOrdersIsMutable();
+              payOrders_.addAll(other.payOrders_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.payOrders_.isEmpty()) {
+            if (payOrdersBuilder_.isEmpty()) {
+              payOrdersBuilder_.dispose();
+              payOrdersBuilder_ = null;
+              payOrders_ = other.payOrders_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              payOrdersBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getPayOrdersFieldBuilder() : null;
+            } else {
+              payOrdersBuilder_.addAllMessages(other.payOrders_);
+            }
+          }
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrderList parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.blemobi.sep.probuf.PaymentProtos.PPayOrderList) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.blemobi.sep.probuf.PaymentProtos.PPayOrder> payOrders_ =
+        java.util.Collections.emptyList();
+      private void ensurePayOrdersIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          payOrders_ = new java.util.ArrayList<com.blemobi.sep.probuf.PaymentProtos.PPayOrder>(payOrders_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.blemobi.sep.probuf.PaymentProtos.PPayOrder, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder, com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder> payOrdersBuilder_;
+
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public java.util.List<com.blemobi.sep.probuf.PaymentProtos.PPayOrder> getPayOrdersList() {
+        if (payOrdersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(payOrders_);
+        } else {
+          return payOrdersBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public int getPayOrdersCount() {
+        if (payOrdersBuilder_ == null) {
+          return payOrders_.size();
+        } else {
+          return payOrdersBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder getPayOrders(int index) {
+        if (payOrdersBuilder_ == null) {
+          return payOrders_.get(index);
+        } else {
+          return payOrdersBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder setPayOrders(
+          int index, com.blemobi.sep.probuf.PaymentProtos.PPayOrder value) {
+        if (payOrdersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePayOrdersIsMutable();
+          payOrders_.set(index, value);
+          onChanged();
+        } else {
+          payOrdersBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder setPayOrders(
+          int index, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder builderForValue) {
+        if (payOrdersBuilder_ == null) {
+          ensurePayOrdersIsMutable();
+          payOrders_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          payOrdersBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder addPayOrders(com.blemobi.sep.probuf.PaymentProtos.PPayOrder value) {
+        if (payOrdersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePayOrdersIsMutable();
+          payOrders_.add(value);
+          onChanged();
+        } else {
+          payOrdersBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder addPayOrders(
+          int index, com.blemobi.sep.probuf.PaymentProtos.PPayOrder value) {
+        if (payOrdersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePayOrdersIsMutable();
+          payOrders_.add(index, value);
+          onChanged();
+        } else {
+          payOrdersBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder addPayOrders(
+          com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder builderForValue) {
+        if (payOrdersBuilder_ == null) {
+          ensurePayOrdersIsMutable();
+          payOrders_.add(builderForValue.build());
+          onChanged();
+        } else {
+          payOrdersBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder addPayOrders(
+          int index, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder builderForValue) {
+        if (payOrdersBuilder_ == null) {
+          ensurePayOrdersIsMutable();
+          payOrders_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          payOrdersBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder addAllPayOrders(
+          java.lang.Iterable<? extends com.blemobi.sep.probuf.PaymentProtos.PPayOrder> values) {
+        if (payOrdersBuilder_ == null) {
+          ensurePayOrdersIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, payOrders_);
+          onChanged();
+        } else {
+          payOrdersBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder clearPayOrders() {
+        if (payOrdersBuilder_ == null) {
+          payOrders_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          payOrdersBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public Builder removePayOrders(int index) {
+        if (payOrdersBuilder_ == null) {
+          ensurePayOrdersIsMutable();
+          payOrders_.remove(index);
+          onChanged();
+        } else {
+          payOrdersBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder getPayOrdersBuilder(
+          int index) {
+        return getPayOrdersFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder getPayOrdersOrBuilder(
+          int index) {
+        if (payOrdersBuilder_ == null) {
+          return payOrders_.get(index);  } else {
+          return payOrdersBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public java.util.List<? extends com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder> 
+           getPayOrdersOrBuilderList() {
+        if (payOrdersBuilder_ != null) {
+          return payOrdersBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(payOrders_);
+        }
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder addPayOrdersBuilder() {
+        return getPayOrdersFieldBuilder().addBuilder(
+            com.blemobi.sep.probuf.PaymentProtos.PPayOrder.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder addPayOrdersBuilder(
+          int index) {
+        return getPayOrdersFieldBuilder().addBuilder(
+            index, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .common.PPayOrder payOrders = 1;</code>
+       *
+       * <pre>
+       * 支付订单信息
+       * </pre>
+       */
+      public java.util.List<com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder> 
+           getPayOrdersBuilderList() {
+        return getPayOrdersFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.blemobi.sep.probuf.PaymentProtos.PPayOrder, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder, com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder> 
+          getPayOrdersFieldBuilder() {
+        if (payOrdersBuilder_ == null) {
+          payOrdersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.blemobi.sep.probuf.PaymentProtos.PPayOrder, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder, com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder>(
+                  payOrders_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          payOrders_ = null;
+        }
+        return payOrdersBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:common.PPayOrderList)
+    }
+
+    // @@protoc_insertion_point(class_scope:common.PPayOrderList)
+    private static final com.blemobi.sep.probuf.PaymentProtos.PPayOrderList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.blemobi.sep.probuf.PaymentProtos.PPayOrderList();
+    }
+
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrderList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    public static final com.google.protobuf.Parser<PPayOrderList> PARSER =
+        new com.google.protobuf.AbstractParser<PPayOrderList>() {
+      public PPayOrderList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new PPayOrderList(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PPayOrderList> getParserForType() {
+      return PARSER;
+    }
+
+    public com.blemobi.sep.probuf.PaymentProtos.PPayOrderList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PPayOrderOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:common.PPayOrder)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -2395,41 +3182,163 @@ public final class PaymentProtos {
         getOrderNoBytes();
 
     /**
-     * <code>optional string status = 2;</code>
+     * <code>optional string payType = 2;</code>
      *
      * <pre>
-     * 订单状态， 1--后端收款完成，2--前端已申请支付
+     * 支付渠道（WX-微信,ZFB-支付宝）
      * </pre>
      */
-    java.lang.String getStatus();
+    java.lang.String getPayType();
     /**
-     * <code>optional string status = 2;</code>
+     * <code>optional string payType = 2;</code>
      *
      * <pre>
-     * 订单状态， 1--后端收款完成，2--前端已申请支付
+     * 支付渠道（WX-微信,ZFB-支付宝）
      * </pre>
      */
     com.google.protobuf.ByteString
-        getStatusBytes();
+        getPayTypeBytes();
+
+    /**
+     * <code>optional string orderSubject = 3;</code>
+     *
+     * <pre>
+     * 商品名称
+     * </pre>
+     */
+    java.lang.String getOrderSubject();
+    /**
+     * <code>optional string orderSubject = 3;</code>
+     *
+     * <pre>
+     * 商品名称
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getOrderSubjectBytes();
+
+    /**
+     * <code>optional string orderBody = 4;</code>
+     *
+     * <pre>
+     * 商品描述
+     * </pre>
+     */
+    java.lang.String getOrderBody();
+    /**
+     * <code>optional string orderBody = 4;</code>
+     *
+     * <pre>
+     * 商品描述
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getOrderBodyBytes();
+
+    /**
+     * <code>optional int64 amount = 5;</code>
+     *
+     * <pre>
+     * 预支付金额（单位：分）
+     * </pre>
+     */
+    long getAmount();
+
+    /**
+     * <code>optional int64 payTime = 6;</code>
+     *
+     * <pre>
+     * 发起支付时间
+     * </pre>
+     */
+    long getPayTime();
+
+    /**
+     * <code>optional int32 payStatu = 7;</code>
+     *
+     * <pre>
+     * 支付状态， 0-支付中，1-支付成功，2-支付失败 ， 当pay_statu=1或2时，有以下数据
+     * </pre>
+     */
+    int getPayStatu();
+
+    /**
+     * <code>optional string bankType = 8;</code>
+     *
+     * <pre>
+     * 付款银行
+     * </pre>
+     */
+    java.lang.String getBankType();
+    /**
+     * <code>optional string bankType = 8;</code>
+     *
+     * <pre>
+     * 付款银行
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getBankTypeBytes();
+
+    /**
+     * <code>optional int64 totalFee = 9;</code>
+     *
+     * <pre>
+     * 实际支付金额（单位：分）
+     * </pre>
+     */
+    long getTotalFee();
+
+    /**
+     * <code>optional string errCodeDes = 10;</code>
+     *
+     * <pre>
+     * 支付失败原因描述
+     * </pre>
+     */
+    java.lang.String getErrCodeDes();
+    /**
+     * <code>optional string errCodeDes = 10;</code>
+     *
+     * <pre>
+     * 支付失败原因描述
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getErrCodeDesBytes();
+
+    /**
+     * <code>optional int64 endTime = 11;</code>
+     *
+     * <pre>
+     * 支付完成时间
+     * </pre>
+     */
+    long getEndTime();
   }
   /**
-   * Protobuf type {@code common.PAlipayOrderStatus}
-   *
-   * <pre>
-   * 获取支付宝的订单支付状态的返回包
-   * </pre>
+   * Protobuf type {@code common.PPayOrder}
    */
-  public  static final class PAlipayOrderStatus extends
+  public  static final class PPayOrder extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:common.PAlipayOrderStatus)
-      PAlipayOrderStatusOrBuilder {
-    // Use PAlipayOrderStatus.newBuilder() to construct.
-    private PAlipayOrderStatus(com.google.protobuf.GeneratedMessage.Builder builder) {
+      // @@protoc_insertion_point(message_implements:common.PPayOrder)
+      PPayOrderOrBuilder {
+    // Use PPayOrder.newBuilder() to construct.
+    private PPayOrder(com.google.protobuf.GeneratedMessage.Builder builder) {
       super(builder);
     }
-    private PAlipayOrderStatus() {
+    private PPayOrder() {
       orderNo_ = "";
-      status_ = "";
+      payType_ = "";
+      orderSubject_ = "";
+      orderBody_ = "";
+      amount_ = 0L;
+      payTime_ = 0L;
+      payStatu_ = 0;
+      bankType_ = "";
+      totalFee_ = 0L;
+      errCodeDes_ = "";
+      endTime_ = 0L;
     }
 
     @java.lang.Override
@@ -2437,7 +3346,7 @@ public final class PaymentProtos {
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-    private PAlipayOrderStatus(
+    private PPayOrder(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
@@ -2465,7 +3374,56 @@ public final class PaymentProtos {
             case 18: {
               com.google.protobuf.ByteString bs = input.readBytes();
 
-              status_ = bs;
+              payType_ = bs;
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+
+              orderSubject_ = bs;
+              break;
+            }
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+
+              orderBody_ = bs;
+              break;
+            }
+            case 40: {
+
+              amount_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              payTime_ = input.readInt64();
+              break;
+            }
+            case 56: {
+
+              payStatu_ = input.readInt32();
+              break;
+            }
+            case 66: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+
+              bankType_ = bs;
+              break;
+            }
+            case 72: {
+
+              totalFee_ = input.readInt64();
+              break;
+            }
+            case 82: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+
+              errCodeDes_ = bs;
+              break;
+            }
+            case 88: {
+
+              endTime_ = input.readInt64();
               break;
             }
           }
@@ -2482,14 +3440,14 @@ public final class PaymentProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PAlipayOrderStatus_descriptor;
+      return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrder_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PAlipayOrderStatus_fieldAccessorTable
+      return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrder_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.class, com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.Builder.class);
+              com.blemobi.sep.probuf.PaymentProtos.PPayOrder.class, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder.class);
     }
 
     public static final int ORDERNO_FIELD_NUMBER = 1;
@@ -2536,17 +3494,17 @@ public final class PaymentProtos {
       }
     }
 
-    public static final int STATUS_FIELD_NUMBER = 2;
-    private volatile java.lang.Object status_;
+    public static final int PAYTYPE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object payType_;
     /**
-     * <code>optional string status = 2;</code>
+     * <code>optional string payType = 2;</code>
      *
      * <pre>
-     * 订单状态， 1--后端收款完成，2--前端已申请支付
+     * 支付渠道（WX-微信,ZFB-支付宝）
      * </pre>
      */
-    public java.lang.String getStatus() {
-      java.lang.Object ref = status_;
+    public java.lang.String getPayType() {
+      java.lang.Object ref = payType_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -2554,30 +3512,271 @@ public final class PaymentProtos {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          status_ = s;
+          payType_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string status = 2;</code>
+     * <code>optional string payType = 2;</code>
      *
      * <pre>
-     * 订单状态， 1--后端收款完成，2--前端已申请支付
+     * 支付渠道（WX-微信,ZFB-支付宝）
      * </pre>
      */
     public com.google.protobuf.ByteString
-        getStatusBytes() {
-      java.lang.Object ref = status_;
+        getPayTypeBytes() {
+      java.lang.Object ref = payType_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        status_ = b;
+        payType_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
+    }
+
+    public static final int ORDERSUBJECT_FIELD_NUMBER = 3;
+    private volatile java.lang.Object orderSubject_;
+    /**
+     * <code>optional string orderSubject = 3;</code>
+     *
+     * <pre>
+     * 商品名称
+     * </pre>
+     */
+    public java.lang.String getOrderSubject() {
+      java.lang.Object ref = orderSubject_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          orderSubject_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string orderSubject = 3;</code>
+     *
+     * <pre>
+     * 商品名称
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getOrderSubjectBytes() {
+      java.lang.Object ref = orderSubject_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        orderSubject_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ORDERBODY_FIELD_NUMBER = 4;
+    private volatile java.lang.Object orderBody_;
+    /**
+     * <code>optional string orderBody = 4;</code>
+     *
+     * <pre>
+     * 商品描述
+     * </pre>
+     */
+    public java.lang.String getOrderBody() {
+      java.lang.Object ref = orderBody_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          orderBody_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string orderBody = 4;</code>
+     *
+     * <pre>
+     * 商品描述
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getOrderBodyBytes() {
+      java.lang.Object ref = orderBody_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        orderBody_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 5;
+    private long amount_;
+    /**
+     * <code>optional int64 amount = 5;</code>
+     *
+     * <pre>
+     * 预支付金额（单位：分）
+     * </pre>
+     */
+    public long getAmount() {
+      return amount_;
+    }
+
+    public static final int PAYTIME_FIELD_NUMBER = 6;
+    private long payTime_;
+    /**
+     * <code>optional int64 payTime = 6;</code>
+     *
+     * <pre>
+     * 发起支付时间
+     * </pre>
+     */
+    public long getPayTime() {
+      return payTime_;
+    }
+
+    public static final int PAYSTATU_FIELD_NUMBER = 7;
+    private int payStatu_;
+    /**
+     * <code>optional int32 payStatu = 7;</code>
+     *
+     * <pre>
+     * 支付状态， 0-支付中，1-支付成功，2-支付失败 ， 当pay_statu=1或2时，有以下数据
+     * </pre>
+     */
+    public int getPayStatu() {
+      return payStatu_;
+    }
+
+    public static final int BANKTYPE_FIELD_NUMBER = 8;
+    private volatile java.lang.Object bankType_;
+    /**
+     * <code>optional string bankType = 8;</code>
+     *
+     * <pre>
+     * 付款银行
+     * </pre>
+     */
+    public java.lang.String getBankType() {
+      java.lang.Object ref = bankType_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          bankType_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string bankType = 8;</code>
+     *
+     * <pre>
+     * 付款银行
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getBankTypeBytes() {
+      java.lang.Object ref = bankType_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        bankType_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOTALFEE_FIELD_NUMBER = 9;
+    private long totalFee_;
+    /**
+     * <code>optional int64 totalFee = 9;</code>
+     *
+     * <pre>
+     * 实际支付金额（单位：分）
+     * </pre>
+     */
+    public long getTotalFee() {
+      return totalFee_;
+    }
+
+    public static final int ERRCODEDES_FIELD_NUMBER = 10;
+    private volatile java.lang.Object errCodeDes_;
+    /**
+     * <code>optional string errCodeDes = 10;</code>
+     *
+     * <pre>
+     * 支付失败原因描述
+     * </pre>
+     */
+    public java.lang.String getErrCodeDes() {
+      java.lang.Object ref = errCodeDes_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          errCodeDes_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string errCodeDes = 10;</code>
+     *
+     * <pre>
+     * 支付失败原因描述
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getErrCodeDesBytes() {
+      java.lang.Object ref = errCodeDes_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errCodeDes_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ENDTIME_FIELD_NUMBER = 11;
+    private long endTime_;
+    /**
+     * <code>optional int64 endTime = 11;</code>
+     *
+     * <pre>
+     * 支付完成时间
+     * </pre>
+     */
+    public long getEndTime() {
+      return endTime_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2595,8 +3794,35 @@ public final class PaymentProtos {
       if (!getOrderNoBytes().isEmpty()) {
         output.writeBytes(1, getOrderNoBytes());
       }
-      if (!getStatusBytes().isEmpty()) {
-        output.writeBytes(2, getStatusBytes());
+      if (!getPayTypeBytes().isEmpty()) {
+        output.writeBytes(2, getPayTypeBytes());
+      }
+      if (!getOrderSubjectBytes().isEmpty()) {
+        output.writeBytes(3, getOrderSubjectBytes());
+      }
+      if (!getOrderBodyBytes().isEmpty()) {
+        output.writeBytes(4, getOrderBodyBytes());
+      }
+      if (amount_ != 0L) {
+        output.writeInt64(5, amount_);
+      }
+      if (payTime_ != 0L) {
+        output.writeInt64(6, payTime_);
+      }
+      if (payStatu_ != 0) {
+        output.writeInt32(7, payStatu_);
+      }
+      if (!getBankTypeBytes().isEmpty()) {
+        output.writeBytes(8, getBankTypeBytes());
+      }
+      if (totalFee_ != 0L) {
+        output.writeInt64(9, totalFee_);
+      }
+      if (!getErrCodeDesBytes().isEmpty()) {
+        output.writeBytes(10, getErrCodeDesBytes());
+      }
+      if (endTime_ != 0L) {
+        output.writeInt64(11, endTime_);
       }
     }
 
@@ -2610,62 +3836,98 @@ public final class PaymentProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, getOrderNoBytes());
       }
-      if (!getStatusBytes().isEmpty()) {
+      if (!getPayTypeBytes().isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getStatusBytes());
+          .computeBytesSize(2, getPayTypeBytes());
+      }
+      if (!getOrderSubjectBytes().isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getOrderSubjectBytes());
+      }
+      if (!getOrderBodyBytes().isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getOrderBodyBytes());
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, amount_);
+      }
+      if (payTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, payTime_);
+      }
+      if (payStatu_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, payStatu_);
+      }
+      if (!getBankTypeBytes().isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getBankTypeBytes());
+      }
+      if (totalFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(9, totalFee_);
+      }
+      if (!getErrCodeDesBytes().isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(10, getErrCodeDesBytes());
+      }
+      if (endTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(11, endTime_);
       }
       memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(byte[] data)
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(java.io.InputStream input)
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseDelimitedFrom(java.io.InputStream input)
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseDelimitedFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parseFrom(
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2676,7 +3938,7 @@ public final class PaymentProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus prototype) {
+    public static Builder newBuilder(com.blemobi.sep.probuf.PaymentProtos.PPayOrder prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -2691,29 +3953,25 @@ public final class PaymentProtos {
       return builder;
     }
     /**
-     * Protobuf type {@code common.PAlipayOrderStatus}
-     *
-     * <pre>
-     * 获取支付宝的订单支付状态的返回包
-     * </pre>
+     * Protobuf type {@code common.PPayOrder}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:common.PAlipayOrderStatus)
-        com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatusOrBuilder {
+        // @@protoc_insertion_point(builder_implements:common.PPayOrder)
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrderOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PAlipayOrderStatus_descriptor;
+        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrder_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PAlipayOrderStatus_fieldAccessorTable
+        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrder_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.class, com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.Builder.class);
+                com.blemobi.sep.probuf.PaymentProtos.PPayOrder.class, com.blemobi.sep.probuf.PaymentProtos.PPayOrder.Builder.class);
       }
 
-      // Construct using com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.newBuilder()
+      // Construct using com.blemobi.sep.probuf.PaymentProtos.PPayOrder.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2731,54 +3989,112 @@ public final class PaymentProtos {
         super.clear();
         orderNo_ = "";
 
-        status_ = "";
+        payType_ = "";
+
+        orderSubject_ = "";
+
+        orderBody_ = "";
+
+        amount_ = 0L;
+
+        payTime_ = 0L;
+
+        payStatu_ = 0;
+
+        bankType_ = "";
+
+        totalFee_ = 0L;
+
+        errCodeDes_ = "";
+
+        endTime_ = 0L;
 
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PAlipayOrderStatus_descriptor;
+        return com.blemobi.sep.probuf.PaymentProtos.internal_static_common_PPayOrder_descriptor;
       }
 
-      public com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus getDefaultInstanceForType() {
-        return com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.getDefaultInstance();
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder getDefaultInstanceForType() {
+        return com.blemobi.sep.probuf.PaymentProtos.PPayOrder.getDefaultInstance();
       }
 
-      public com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus build() {
-        com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus result = buildPartial();
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder build() {
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrder result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus buildPartial() {
-        com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus result = new com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus(this);
+      public com.blemobi.sep.probuf.PaymentProtos.PPayOrder buildPartial() {
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrder result = new com.blemobi.sep.probuf.PaymentProtos.PPayOrder(this);
         result.orderNo_ = orderNo_;
-        result.status_ = status_;
+        result.payType_ = payType_;
+        result.orderSubject_ = orderSubject_;
+        result.orderBody_ = orderBody_;
+        result.amount_ = amount_;
+        result.payTime_ = payTime_;
+        result.payStatu_ = payStatu_;
+        result.bankType_ = bankType_;
+        result.totalFee_ = totalFee_;
+        result.errCodeDes_ = errCodeDes_;
+        result.endTime_ = endTime_;
         onBuilt();
         return result;
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus) {
-          return mergeFrom((com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus)other);
+        if (other instanceof com.blemobi.sep.probuf.PaymentProtos.PPayOrder) {
+          return mergeFrom((com.blemobi.sep.probuf.PaymentProtos.PPayOrder)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus other) {
-        if (other == com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.blemobi.sep.probuf.PaymentProtos.PPayOrder other) {
+        if (other == com.blemobi.sep.probuf.PaymentProtos.PPayOrder.getDefaultInstance()) return this;
         if (!other.getOrderNo().isEmpty()) {
           orderNo_ = other.orderNo_;
           onChanged();
         }
-        if (!other.getStatus().isEmpty()) {
-          status_ = other.status_;
+        if (!other.getPayType().isEmpty()) {
+          payType_ = other.payType_;
           onChanged();
+        }
+        if (!other.getOrderSubject().isEmpty()) {
+          orderSubject_ = other.orderSubject_;
+          onChanged();
+        }
+        if (!other.getOrderBody().isEmpty()) {
+          orderBody_ = other.orderBody_;
+          onChanged();
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        if (other.getPayTime() != 0L) {
+          setPayTime(other.getPayTime());
+        }
+        if (other.getPayStatu() != 0) {
+          setPayStatu(other.getPayStatu());
+        }
+        if (!other.getBankType().isEmpty()) {
+          bankType_ = other.bankType_;
+          onChanged();
+        }
+        if (other.getTotalFee() != 0L) {
+          setTotalFee(other.getTotalFee());
+        }
+        if (!other.getErrCodeDes().isEmpty()) {
+          errCodeDes_ = other.errCodeDes_;
+          onChanged();
+        }
+        if (other.getEndTime() != 0L) {
+          setEndTime(other.getEndTime());
         }
         onChanged();
         return this;
@@ -2792,11 +4108,11 @@ public final class PaymentProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus parsedMessage = null;
+        com.blemobi.sep.probuf.PaymentProtos.PPayOrder parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus) e.getUnfinishedMessage();
+          parsedMessage = (com.blemobi.sep.probuf.PaymentProtos.PPayOrder) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2896,22 +4212,22 @@ public final class PaymentProtos {
         return this;
       }
 
-      private java.lang.Object status_ = "";
+      private java.lang.Object payType_ = "";
       /**
-       * <code>optional string status = 2;</code>
+       * <code>optional string payType = 2;</code>
        *
        * <pre>
-       * 订单状态， 1--后端收款完成，2--前端已申请支付
+       * 支付渠道（WX-微信,ZFB-支付宝）
        * </pre>
        */
-      public java.lang.String getStatus() {
-        java.lang.Object ref = status_;
+      public java.lang.String getPayType() {
+        java.lang.Object ref = payType_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            status_ = s;
+            payType_ = s;
           }
           return s;
         } else {
@@ -2919,69 +4235,619 @@ public final class PaymentProtos {
         }
       }
       /**
-       * <code>optional string status = 2;</code>
+       * <code>optional string payType = 2;</code>
        *
        * <pre>
-       * 订单状态， 1--后端收款完成，2--前端已申请支付
+       * 支付渠道（WX-微信,ZFB-支付宝）
        * </pre>
        */
       public com.google.protobuf.ByteString
-          getStatusBytes() {
-        java.lang.Object ref = status_;
+          getPayTypeBytes() {
+        java.lang.Object ref = payType_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          status_ = b;
+          payType_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string status = 2;</code>
+       * <code>optional string payType = 2;</code>
        *
        * <pre>
-       * 订单状态， 1--后端收款完成，2--前端已申请支付
+       * 支付渠道（WX-微信,ZFB-支付宝）
        * </pre>
        */
-      public Builder setStatus(
+      public Builder setPayType(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        status_ = value;
+        payType_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string status = 2;</code>
+       * <code>optional string payType = 2;</code>
        *
        * <pre>
-       * 订单状态， 1--后端收款完成，2--前端已申请支付
+       * 支付渠道（WX-微信,ZFB-支付宝）
        * </pre>
        */
-      public Builder clearStatus() {
+      public Builder clearPayType() {
         
-        status_ = getDefaultInstance().getStatus();
+        payType_ = getDefaultInstance().getPayType();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string status = 2;</code>
+       * <code>optional string payType = 2;</code>
        *
        * <pre>
-       * 订单状态， 1--后端收款完成，2--前端已申请支付
+       * 支付渠道（WX-微信,ZFB-支付宝）
        * </pre>
        */
-      public Builder setStatusBytes(
+      public Builder setPayTypeBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        status_ = value;
+        payType_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object orderSubject_ = "";
+      /**
+       * <code>optional string orderSubject = 3;</code>
+       *
+       * <pre>
+       * 商品名称
+       * </pre>
+       */
+      public java.lang.String getOrderSubject() {
+        java.lang.Object ref = orderSubject_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            orderSubject_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string orderSubject = 3;</code>
+       *
+       * <pre>
+       * 商品名称
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getOrderSubjectBytes() {
+        java.lang.Object ref = orderSubject_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          orderSubject_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string orderSubject = 3;</code>
+       *
+       * <pre>
+       * 商品名称
+       * </pre>
+       */
+      public Builder setOrderSubject(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        orderSubject_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string orderSubject = 3;</code>
+       *
+       * <pre>
+       * 商品名称
+       * </pre>
+       */
+      public Builder clearOrderSubject() {
+        
+        orderSubject_ = getDefaultInstance().getOrderSubject();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string orderSubject = 3;</code>
+       *
+       * <pre>
+       * 商品名称
+       * </pre>
+       */
+      public Builder setOrderSubjectBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        orderSubject_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object orderBody_ = "";
+      /**
+       * <code>optional string orderBody = 4;</code>
+       *
+       * <pre>
+       * 商品描述
+       * </pre>
+       */
+      public java.lang.String getOrderBody() {
+        java.lang.Object ref = orderBody_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            orderBody_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string orderBody = 4;</code>
+       *
+       * <pre>
+       * 商品描述
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getOrderBodyBytes() {
+        java.lang.Object ref = orderBody_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          orderBody_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string orderBody = 4;</code>
+       *
+       * <pre>
+       * 商品描述
+       * </pre>
+       */
+      public Builder setOrderBody(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        orderBody_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string orderBody = 4;</code>
+       *
+       * <pre>
+       * 商品描述
+       * </pre>
+       */
+      public Builder clearOrderBody() {
+        
+        orderBody_ = getDefaultInstance().getOrderBody();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string orderBody = 4;</code>
+       *
+       * <pre>
+       * 商品描述
+       * </pre>
+       */
+      public Builder setOrderBodyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        orderBody_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>optional int64 amount = 5;</code>
+       *
+       * <pre>
+       * 预支付金额（单位：分）
+       * </pre>
+       */
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>optional int64 amount = 5;</code>
+       *
+       * <pre>
+       * 预支付金额（单位：分）
+       * </pre>
+       */
+      public Builder setAmount(long value) {
+        
+        amount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 amount = 5;</code>
+       *
+       * <pre>
+       * 预支付金额（单位：分）
+       * </pre>
+       */
+      public Builder clearAmount() {
+        
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long payTime_ ;
+      /**
+       * <code>optional int64 payTime = 6;</code>
+       *
+       * <pre>
+       * 发起支付时间
+       * </pre>
+       */
+      public long getPayTime() {
+        return payTime_;
+      }
+      /**
+       * <code>optional int64 payTime = 6;</code>
+       *
+       * <pre>
+       * 发起支付时间
+       * </pre>
+       */
+      public Builder setPayTime(long value) {
+        
+        payTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 payTime = 6;</code>
+       *
+       * <pre>
+       * 发起支付时间
+       * </pre>
+       */
+      public Builder clearPayTime() {
+        
+        payTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int payStatu_ ;
+      /**
+       * <code>optional int32 payStatu = 7;</code>
+       *
+       * <pre>
+       * 支付状态， 0-支付中，1-支付成功，2-支付失败 ， 当pay_statu=1或2时，有以下数据
+       * </pre>
+       */
+      public int getPayStatu() {
+        return payStatu_;
+      }
+      /**
+       * <code>optional int32 payStatu = 7;</code>
+       *
+       * <pre>
+       * 支付状态， 0-支付中，1-支付成功，2-支付失败 ， 当pay_statu=1或2时，有以下数据
+       * </pre>
+       */
+      public Builder setPayStatu(int value) {
+        
+        payStatu_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 payStatu = 7;</code>
+       *
+       * <pre>
+       * 支付状态， 0-支付中，1-支付成功，2-支付失败 ， 当pay_statu=1或2时，有以下数据
+       * </pre>
+       */
+      public Builder clearPayStatu() {
+        
+        payStatu_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object bankType_ = "";
+      /**
+       * <code>optional string bankType = 8;</code>
+       *
+       * <pre>
+       * 付款银行
+       * </pre>
+       */
+      public java.lang.String getBankType() {
+        java.lang.Object ref = bankType_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            bankType_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string bankType = 8;</code>
+       *
+       * <pre>
+       * 付款银行
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getBankTypeBytes() {
+        java.lang.Object ref = bankType_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          bankType_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string bankType = 8;</code>
+       *
+       * <pre>
+       * 付款银行
+       * </pre>
+       */
+      public Builder setBankType(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        bankType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string bankType = 8;</code>
+       *
+       * <pre>
+       * 付款银行
+       * </pre>
+       */
+      public Builder clearBankType() {
+        
+        bankType_ = getDefaultInstance().getBankType();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string bankType = 8;</code>
+       *
+       * <pre>
+       * 付款银行
+       * </pre>
+       */
+      public Builder setBankTypeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        bankType_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long totalFee_ ;
+      /**
+       * <code>optional int64 totalFee = 9;</code>
+       *
+       * <pre>
+       * 实际支付金额（单位：分）
+       * </pre>
+       */
+      public long getTotalFee() {
+        return totalFee_;
+      }
+      /**
+       * <code>optional int64 totalFee = 9;</code>
+       *
+       * <pre>
+       * 实际支付金额（单位：分）
+       * </pre>
+       */
+      public Builder setTotalFee(long value) {
+        
+        totalFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 totalFee = 9;</code>
+       *
+       * <pre>
+       * 实际支付金额（单位：分）
+       * </pre>
+       */
+      public Builder clearTotalFee() {
+        
+        totalFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errCodeDes_ = "";
+      /**
+       * <code>optional string errCodeDes = 10;</code>
+       *
+       * <pre>
+       * 支付失败原因描述
+       * </pre>
+       */
+      public java.lang.String getErrCodeDes() {
+        java.lang.Object ref = errCodeDes_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            errCodeDes_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string errCodeDes = 10;</code>
+       *
+       * <pre>
+       * 支付失败原因描述
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getErrCodeDesBytes() {
+        java.lang.Object ref = errCodeDes_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errCodeDes_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string errCodeDes = 10;</code>
+       *
+       * <pre>
+       * 支付失败原因描述
+       * </pre>
+       */
+      public Builder setErrCodeDes(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errCodeDes_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string errCodeDes = 10;</code>
+       *
+       * <pre>
+       * 支付失败原因描述
+       * </pre>
+       */
+      public Builder clearErrCodeDes() {
+        
+        errCodeDes_ = getDefaultInstance().getErrCodeDes();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string errCodeDes = 10;</code>
+       *
+       * <pre>
+       * 支付失败原因描述
+       * </pre>
+       */
+      public Builder setErrCodeDesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errCodeDes_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long endTime_ ;
+      /**
+       * <code>optional int64 endTime = 11;</code>
+       *
+       * <pre>
+       * 支付完成时间
+       * </pre>
+       */
+      public long getEndTime() {
+        return endTime_;
+      }
+      /**
+       * <code>optional int64 endTime = 11;</code>
+       *
+       * <pre>
+       * 支付完成时间
+       * </pre>
+       */
+      public Builder setEndTime(long value) {
+        
+        endTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 endTime = 11;</code>
+       *
+       * <pre>
+       * 支付完成时间
+       * </pre>
+       */
+      public Builder clearEndTime() {
+        
+        endTime_ = 0L;
         onChanged();
         return this;
       }
@@ -2996,27 +4862,27 @@ public final class PaymentProtos {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:common.PAlipayOrderStatus)
+      // @@protoc_insertion_point(builder_scope:common.PPayOrder)
     }
 
-    // @@protoc_insertion_point(class_scope:common.PAlipayOrderStatus)
-    private static final com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:common.PPayOrder)
+    private static final com.blemobi.sep.probuf.PaymentProtos.PPayOrder DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus();
+      DEFAULT_INSTANCE = new com.blemobi.sep.probuf.PaymentProtos.PPayOrder();
     }
 
-    public static com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus getDefaultInstance() {
+    public static com.blemobi.sep.probuf.PaymentProtos.PPayOrder getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<PAlipayOrderStatus> PARSER =
-        new com.google.protobuf.AbstractParser<PAlipayOrderStatus>() {
-      public PAlipayOrderStatus parsePartialFrom(
+    public static final com.google.protobuf.Parser<PPayOrder> PARSER =
+        new com.google.protobuf.AbstractParser<PPayOrder>() {
+      public PPayOrder parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         try {
-          return new PAlipayOrderStatus(input, extensionRegistry);
+          return new PPayOrder(input, extensionRegistry);
         } catch (RuntimeException e) {
           if (e.getCause() instanceof
               com.google.protobuf.InvalidProtocolBufferException) {
@@ -3029,11 +4895,11 @@ public final class PaymentProtos {
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PAlipayOrderStatus> getParserForType() {
+    public com.google.protobuf.Parser<PPayOrder> getParserForType() {
       return PARSER;
     }
 
-    public com.blemobi.sep.probuf.PaymentProtos.PAlipayOrderStatus getDefaultInstanceForType() {
+    public com.blemobi.sep.probuf.PaymentProtos.PPayOrder getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3050,10 +4916,15 @@ public final class PaymentProtos {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_common_PAlipayOrderInfo_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_common_PAlipayOrderStatus_descriptor;
+    internal_static_common_PPayOrderList_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_common_PAlipayOrderStatus_fieldAccessorTable;
+      internal_static_common_PPayOrderList_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_common_PPayOrder_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_common_PPayOrder_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3068,10 +4939,15 @@ public final class PaymentProtos {
       "estr\030\003 \001(\t\022\021\n\ttimestamp\030\004 \001(\t\022\020\n\010prepayi" +
       "d\030\005 \001(\t\022\017\n\007package\030\006 \001(\t\022\014\n\004sign\030\007 \001(\t\022\017" +
       "\n\007orderNo\030\010 \001(\t\"4\n\020PAlipayOrderInfo\022\017\n\007o" +
-      "rderNo\030\001 \001(\t\022\017\n\007payInfo\030\002 \001(\t\"5\n\022PAlipay" +
-      "OrderStatus\022\017\n\007orderNo\030\001 \001(\t\022\016\n\006status\030\002" +
-      " \001(\tB\'\n\026com.blemobi.sep.probufB\rPaymentP" +
-      "rotosb\006proto3"
+      "rderNo\030\001 \001(\t\022\017\n\007payInfo\030\002 \001(\t\"5\n\rPPayOrd" +
+      "erList\022$\n\tpayOrders\030\001 \003(\0132\021.common.PPayO" +
+      "rder\"\322\001\n\tPPayOrder\022\017\n\007orderNo\030\001 \001(\t\022\017\n\007p" +
+      "ayType\030\002 \001(\t\022\024\n\014orderSubject\030\003 \001(\t\022\021\n\tor" +
+      "derBody\030\004 \001(\t\022\016\n\006amount\030\005 \001(\003\022\017\n\007payTime",
+      "\030\006 \001(\003\022\020\n\010payStatu\030\007 \001(\005\022\020\n\010bankType\030\010 \001" +
+      "(\t\022\020\n\010totalFee\030\t \001(\003\022\022\n\nerrCodeDes\030\n \001(\t" +
+      "\022\017\n\007endTime\030\013 \001(\003B\'\n\026com.blemobi.sep.pro" +
+      "bufB\rPaymentProtosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3097,12 +4973,18 @@ public final class PaymentProtos {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_common_PAlipayOrderInfo_descriptor,
         new java.lang.String[] { "OrderNo", "PayInfo", });
-    internal_static_common_PAlipayOrderStatus_descriptor =
+    internal_static_common_PPayOrderList_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_common_PAlipayOrderStatus_fieldAccessorTable = new
+    internal_static_common_PPayOrderList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_common_PAlipayOrderStatus_descriptor,
-        new java.lang.String[] { "OrderNo", "Status", });
+        internal_static_common_PPayOrderList_descriptor,
+        new java.lang.String[] { "PayOrders", });
+    internal_static_common_PPayOrder_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_common_PPayOrder_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_common_PPayOrder_descriptor,
+        new java.lang.String[] { "OrderNo", "PayType", "OrderSubject", "OrderBody", "Amount", "PayTime", "PayStatu", "BankType", "TotalFee", "ErrCodeDes", "EndTime", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
