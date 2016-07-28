@@ -24,6 +24,17 @@ public class Constant  {
 	private static final String KEY_HEALTH_CHECK_PORT = "health_check_port";
 	private static final String KEY_JETTY_PORT = "jetty_port";
 	
+	private static final String KEY_DB_DriverClassName = "dbDriverClassName";
+	private static final String KEY_DB_Url = "dbUrl";
+	private static final String KEY_DB_Username = "dbUsername";
+	private static final String KEY_DB_Password = "dbPassword";
+	private static final String KEY_DB_InitialSize = "dbInitialSize";
+	private static final String KEY_DB_MaxActive = "dbMaxActive";
+	private static final String KEY_DB_MaxIdle = "dbMaxIdle";
+	private static final String KEY_DB_MinIdle = "dbMinIdle";
+	private static final String KEY_DB_MaxWait = "dbMaxWait";
+	
+	
 	// 我们对外服务的业务所在的包目录。目录之外，是禁止访问
 	private static final String OutServicePermitPackagePath = "com.blemobi.payment.rest"; 
 	// Consul定时任务间隔时间，单位：毫秒
@@ -54,6 +65,18 @@ public class Constant  {
 	// 聊天服务器的健康发现的端口
 	private static int contactServiceHealthPort = 19014;
 	
+	private static String dbDriverClassName = "";
+	private static String dbUrl = "";
+	private static String dbUsername = "";
+	private static String dbPassword = "";
+	private static String dbInitialSize = "";
+	private static String dbMaxActive = "";
+	private static String dbMaxIdle = "";
+	private static String dbMinIdle = "";
+	private static String dbMaxWait = "";
+	
+	
+	
 	//创建Consul服务器的适配器对象，该对象能接受从consul服务器传递过来的配置信息变更通知。
 	private static ConsulChangeListener adapter = new ConsulChangeListener(){
 		
@@ -66,6 +89,18 @@ public class Constant  {
 				
 				jettyServerPort  = Integer.parseInt(prop.get(KEY_JETTY_PORT));
 				
+				
+				dbDriverClassName = prop.get(KEY_DB_DriverClassName);
+				dbUrl = prop.get(KEY_DB_Url);
+				dbUsername = prop.get(KEY_DB_Username);
+				dbPassword = prop.get(KEY_DB_Password);
+				dbInitialSize = prop.get(KEY_DB_InitialSize);
+				dbMaxActive = prop.get(KEY_DB_MaxActive);
+				dbMaxIdle = prop.get(KEY_DB_MaxIdle);
+				dbMinIdle = prop.get(KEY_DB_MinIdle);
+				dbMaxWait = prop.get(KEY_DB_MaxWait);
+				
+
 				String redisUserAddr = prop.get(KEY_REDIS_USER_ADDR);; // 定义Redis服务的IP地址和端口
 				
 				int point = redisUserAddr.indexOf(':');
@@ -300,4 +335,58 @@ public class Constant  {
 	public static int getChatServiceHealthPort() {
 		return contactServiceHealthPort ;
 	}
+
+	public static String[][] getWalletInfo() {
+		return walletInfo;
+	}
+
+	public static String getRedisServerIP() {
+		return redisServerIP;
+	}
+
+	public static String getRedisServerPort() {
+		return redisServerPort;
+	}
+
+	public static String getRedisServerAuth() {
+		return redisServerAuth;
+	}
+
+	public static String getDbDriverClassName() {
+		return dbDriverClassName;
+	}
+
+	public static String getDbUrl() {
+		return dbUrl;
+	}
+
+	public static String getDbUsername() {
+		return dbUsername;
+	}
+
+	public static String getDbPassword() {
+		return dbPassword;
+	}
+
+	public static String getDbInitialSize() {
+		return dbInitialSize;
+	}
+
+	public static String getDbMaxActive() {
+		return dbMaxActive;
+	}
+
+	public static String getDbMaxIdle() {
+		return dbMaxIdle;
+	}
+
+	public static String getDbMinIdle() {
+		return dbMinIdle;
+	}
+
+	public static String getDbMaxWait() {
+		return dbMaxWait;
+	}
+	
+	
 }
