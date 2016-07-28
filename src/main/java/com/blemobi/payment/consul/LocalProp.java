@@ -15,7 +15,7 @@ public class LocalProp {
 			"redis_user_addr",
 			"redis_user_auth",
 			"jetty_port",
-			"dbDriverClassName ",
+			"dbDriverClassName",
 			"dbUrl",
 			"dbUsername",
 			"dbPassword",
