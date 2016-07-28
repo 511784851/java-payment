@@ -62,7 +62,7 @@ public class WeiXinPaySignHelper {
 		RequestHandler reqHandler = new RequestHandler(request, response);
 		reqHandler.init(ConstantUtil.APP_ID, ConstantUtil.APP_SECRET, ConstantUtil.PARTNER_KEY);
 		String sign = reqHandler.createSign(packageParams);// 生成获取预支付签名
-
+		log.info("get prepayid sign: " + sign);
 		PrepayIdRequestHandler prepayReqHandler = new PrepayIdRequestHandler(request, response);// 获取prepayid的请求类
 
 		Set<String> set = packageParams.keySet();
@@ -90,7 +90,7 @@ public class WeiXinPaySignHelper {
             finalpackage.put("prepayid", prepayid);   
             
             String app_sign = reqHandler.createSign(finalpackage);  
-            
+            log.info("get app sign: " + app_sign);
             PWeixinPay weixin = PWeixinPay.newBuilder()
 					.setAppid(ConstantUtil.APP_ID)
 					.setPartnerid(ConstantUtil.PARTNER)
