@@ -81,17 +81,6 @@ public class AlipayContrller {
 
 		return AliPayUtil.paySign(uuid,token,orderSubject,orderBody,fenAmount);
 	}
-	
-	@GET
-	@Path("payStatus")
-	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage paySign(@CookieParam("uuid") String uuid, @CookieParam("token") String token,@QueryParam("orderNo") String orderNo) throws Exception {
-		//在此添加参数校验的代码
-		String status = "1";
-		PaymentProtos.PAlipayOrderStatus aos = PaymentProtos.PAlipayOrderStatus.newBuilder().setOrderNo(uuid).setStatus(status).build();
-		PMessage rtn = ReslutUtil.createReslutMessage(aos);
-		return	rtn;	
-	}
 
 	/**
 	 * 微信预支付通知
