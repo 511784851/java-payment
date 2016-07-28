@@ -32,7 +32,7 @@ public class TestAliPay {
 		String orderSubject = "Subject1";
 		String orderBody = "Body1";
 		String amount = "1";
-		PMessage message = AliPayUtil.paySign(uuid, token, orderSubject, orderBody, amount);
+		PMessage message = AliPayUtil.paySign(uuid, token, orderSubject, orderBody, Long.parseLong(amount));
 		
 		
 		String type = message.getType();
