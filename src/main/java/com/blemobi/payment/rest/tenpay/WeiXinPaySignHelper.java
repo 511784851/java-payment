@@ -45,7 +45,6 @@ public class WeiXinPaySignHelper {
 				fee_type);
 
 		String noncestr = WXUtil.getNonceStr();
-		String timestamp = WXUtil.getTimeStamp();
 		String traceid = "";// 附加信息
 
 		SortedMap<String, String> packageParams = new TreeMap<String, String>();
@@ -79,18 +78,18 @@ public class WeiXinPaySignHelper {
 
 		// 吐回给客户端的参数
 		if (null != prepayid && !"".equals(prepayid)) {
-			SortedMap<String, String> finalpackage = new TreeMap<String, String>();  
-            finalpackage.put("appid", ConstantUtil.APP_ID);    
-            finalpackage.put("timestamp", timestamp);    
-            finalpackage.put("noncestr", noncestr);    
-            finalpackage.put("partnerid", ConstantUtil.PARTNER);   
-            finalpackage.put("package", "Sign=WXPay");                
-            finalpackage.put("prepayid", prepayid);   
+			String timestamp = WXUtil.getTimeStamp();
+			
+			SortedMap<String, String> appPackage = new TreeMap<String, String>();  
+			appPackage.put("appid", ConstantUtil.APP_ID);    
+			appPackage.put("timestamp", timestamp);    
+			appPackage.put("noncestr", noncestr);    
+			appPackage.put("partnerid", ConstantUtil.PARTNER);   
+            appPackage.put("package", "Sign=WXPay");                
+            appPackage.put("prepayid", prepayid);   
             
-            RequestHandler finalReqHandler = new RequestHandler(request, response);
-            finalReqHandler.init(ConstantUtil.APP_ID, ConstantUtil.APP_SECRET, ConstantUtil.PARTNER_KEY);
-            String finalSsign = finalReqHandler.createSign(finalpackage);  
-            log.info("get app final sign: " + finalSsign);
+            String appSign = reqHandler.createSign(appPackage);  
+            log.info("get app sign: " + appSign);
             PWeixinPay weixin = PWeixinPay.newBuilder()
 					.setAppid(ConstantUtil.APP_ID)
 					.setPartnerid(ConstantUtil.PARTNER)
@@ -98,7 +97,7 @@ public class WeiXinPaySignHelper {
 					.setPackage("Sign=WXPay")
 					.setTimestamp(timestamp)
 					.setPrepayid(prepayid)
-					.setSign(finalSsign)
+					.setSign(appSign)
 					.setOrderNo(out_trade_no)
 					.build();
 
