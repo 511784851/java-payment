@@ -26,7 +26,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class AliPayUtil {
 	
-	private final static String notifyUrl="http://47.88.5.139:9006/chat/alipay/notify";
+	private final static String notifyUrl="http://47.88.10.109:8001/payment/alipay/notify";
 
 	public static PMessage paySign(String uuid, String token, String orderSubject, String orderBody,
 			long amount) {
