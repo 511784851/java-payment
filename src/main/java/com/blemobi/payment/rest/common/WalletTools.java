@@ -50,7 +50,7 @@ public class WalletTools {
 		cookies[0] = new Cookie("uuid", uuid);
 		cookies[1] = new Cookie("token", token);
 
-		String url = clientUtil.createAccountUrl(PathGlobal.GetWalletDiamondAdd);
+		String url = clientUtil.createWalletUrl(PathGlobal.GetWalletDiamondAdd);
 		PMessage message = clientUtil.getMethod(url, params, cookies);
 
 		String type = message.getType();
