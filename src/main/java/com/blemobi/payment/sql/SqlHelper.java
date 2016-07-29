@@ -128,6 +128,28 @@ public class SqlHelper {
 	}
 
 	/**
+	 * 根据订单编号查询订单信息
+	 * 
+	 * @param orderNo
+	 *            要查询的订单号
+	 * @return Map 返回订单信息
+	 */
+	public static Map<String, Object> query(String order_no) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM pay_order t WHERE t.order_no=?");
+
+		log.info(sql.toString());
+
+		List<Map<String, Object>> list = JdbcTemplate.executeQuery(sql.toString(), order_no);
+
+		if (list != null && list.size() == 1) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * 批量查询用户支付订单信息
 	 * 
 	 * @param uuid

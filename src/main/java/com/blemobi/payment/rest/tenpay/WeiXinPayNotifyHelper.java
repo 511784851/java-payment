@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.blemobi.payment.rest.common.WalletTools;
 import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.CommonUtil;
 import com.tenpay.util.ConstantUtil;
@@ -52,37 +53,50 @@ public class WeiXinPayNotifyHelper {
 			reqHandler.init(ConstantUtil.APP_ID, ConstantUtil.APP_SECRET, ConstantUtil.PARTNER_KEY);
 			String endsign = reqHandler.createSign(packageParams);
 			if (sign.equals(endsign)) {// 签名ok
-				int pay_statu = 0; // 支付结果 1-支付成功，2-支付失败
-				String result_code = CommonUtil.getMapValue(map, "result_code");
-				if ("SUCCESS".equals(result_code)) {// 交易成功
-					pay_statu = 1;
-				} else if ("FAIL".equals(result_code)) {// 交易失败
-					pay_statu = 2;
-				}
+				String out_trade_no = CommonUtil.getMapValue(map, "out_trade_no");
+				Map<String, Object> orderMap = SqlHelper.query(out_trade_no);
+				if (orderMap != null) {// 订单号存在
+					String uuid = CommonUtil.getMapValue(orderMap, "uuid");
 
-				if (pay_statu != 0) {
-					String out_trade_no = CommonUtil.getMapValue(map, "out_trade_no");
-					String attach = CommonUtil.getMapValue(map, "attach");
-					String total_fee = CommonUtil.getMapValue(map, "total_fee");
-					String fee_type = CommonUtil.getMapValue(map, "fee_type");
-					String bank_type = CommonUtil.getMapValue(map, "bank_type");
-					String cash_fee = CommonUtil.getMapValue(map, "cash_fee");
-					String is_subscribe = CommonUtil.getMapValue(map, "is_subscribe");
-					String nonce_str = CommonUtil.getMapValue(map, "nonce_str");
-					String openid = CommonUtil.getMapValue(map, "openid");
-					String sub_mch_id = CommonUtil.getMapValue(map, "sub_mch_id");
-					String time_end = CommonUtil.getMapValue(map, "time_end");
-					String trade_type = CommonUtil.getMapValue(map, "trade_type");
-					String transaction_id = CommonUtil.getMapValue(map, "transaction_id");
-					String err_code = CommonUtil.getMapValue(map, "err_code");
-					String err_code_des = CommonUtil.getMapValue(map, "err_code_des");
+					int pay_statu = 0; // 支付结果 1-支付成功，2-支付失败
+					String result_code = CommonUtil.getMapValue(map, "result_code");
+					if ("SUCCESS".equals(result_code)) {// 交易成功
+						pay_statu = 1;
+					} else if ("FAIL".equals(result_code)) {// 交易失败
+						pay_statu = 2;
+					}
+					if (pay_statu != 0) {
+						String attach = CommonUtil.getMapValue(map, "attach");
+						String total_fee = CommonUtil.getMapValue(map, "total_fee");
+						String fee_type = CommonUtil.getMapValue(map, "fee_type");
+						String bank_type = CommonUtil.getMapValue(map, "bank_type");
+						String cash_fee = CommonUtil.getMapValue(map, "cash_fee");
+						String is_subscribe = CommonUtil.getMapValue(map, "is_subscribe");
+						String nonce_str = CommonUtil.getMapValue(map, "nonce_str");
+						String openid = CommonUtil.getMapValue(map, "openid");
+						String sub_mch_id = CommonUtil.getMapValue(map, "sub_mch_id");
+						String time_end = CommonUtil.getMapValue(map, "time_end");
+						String trade_type = CommonUtil.getMapValue(map, "trade_type");
+						String transaction_id = CommonUtil.getMapValue(map, "transaction_id");
+						String err_code = CommonUtil.getMapValue(map, "err_code");
+						String err_code_des = CommonUtil.getMapValue(map, "err_code_des");
 
-					long time = CommonUtil.dateTimeStamp(time_end, "yyyyMMddHHmmss");
+						long time = CommonUtil.dateTimeStamp(time_end, "yyyyMMddHHmmss");
 
-					SqlHelper.savePayResultInfo(pay_statu, openid, bank_type, Long.parseLong(total_fee), transaction_id,
-							out_trade_no, err_code, err_code_des, time);
+						// 修改订单支付状态
+						SqlHelper.savePayResultInfo(pay_statu, openid, bank_type, Long.parseLong(total_fee),
+								transaction_id, out_trade_no, err_code, err_code_des, time);
 
-					return setXml("SUCCESS", "ok");
+						if (pay_statu == 1) {
+							// 通知钱包系统支付成功
+							WalletTools.invokeWalletDiamondAdd(uuid, "", Integer.parseInt(total_fee), out_trade_no);
+						}
+						return setXml("SUCCESS", "ok");
+					} else {
+						log.info("支付状态错误:" + pay_statu);
+					}
+				} else {
+					log.info("订单号不存在:" + out_trade_no);
 				}
 			} else {
 				log.info("签名验证失败:" + endsign);
