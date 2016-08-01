@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
 import com.blemobi.payment.dbcp.JdbcTemplate;
+import com.blemobi.payment.rest.common.WalletTools;
 import com.blemobi.payment.rest.util.IDMake;
+import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
 import com.blemobi.sep.probuf.PaymentProtos;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
@@ -36,9 +38,9 @@ public class AliPayUtil {
 		//形成订单号的规则是 uuid+时间+金额
 		String orderNo = IDMake.build(uuid, time, amount);
 		
-		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, amount);
+		boolean saveFlag = saveOrderInfo(uuid,orderNo,orderSubject, orderBody, amount,time);
 		
-		String orderInfo = getOrderInfo(orderNo,orderSubject, orderBody, amount);
+		String orderInfo = getOrderInfo(orderNo,orderSubject, orderBody, amount,uuid,token);
 		
 		/**
 		 * 特别注意，这里的签名逻辑需要放在服务端，切勿将私钥泄露在代码中！
@@ -68,15 +70,10 @@ public class AliPayUtil {
 		
 	}
 
-	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, long amount) {
+	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, long amount,long payTime) {
 		//String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
 
-		String sql = "INSERT INTO pay_order(id,uuid,bank_type,name,order_no,amount,app_ip,fee_type,pay_statu) VALUE('%s','%s','%s','%s','%s','%s','%s','%s','%s')";
-
-		String id = UUID.randomUUID().toString();
-		sql = String.format(sql, id,uuid,"ZFB",orderSubject,orderNo,amount,"127.0.0.1","1","0");
-		log.info(sql.toString());
-		boolean rtn = JdbcTemplate.executeUpdate(sql);
+		boolean rtn = SqlHelper.savePayInfo(uuid, "ZFB", orderSubject, orderBody, orderNo, amount, "127.0.0.1", "1");
 		return rtn;
 	}
 
@@ -130,6 +127,13 @@ public class AliPayUtil {
 		String total_fee = new String(request.getParameter("total_fee").getBytes("ISO-8859-1"),"UTF-8");
 
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+		
+		//uuid
+		String uuid = new String(request.getParameter("payment_uuid").getBytes("ISO-8859-1"),"UTF-8");
+		
+		//token
+		String token = new String(request.getParameter("payment_token").getBytes("ISO-8859-1"),"UTF-8");
+
 
 		if(AlipayNotify.verify(params)){//验证成功
 			//////////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +177,7 @@ public class AliPayUtil {
 					sql = String.format(sql, "1",trade_no,amount);
 					log.info(sql.toString());
 					boolean rtn = JdbcTemplate.executeUpdate(sql);
+					WalletTools.invokeWalletDiamondAdd(uuid, token, amount, trade_no);
 				}
 			}
 
@@ -189,9 +194,11 @@ public class AliPayUtil {
 	
 	/**
 	 * create the order info. 创建订单信息
+	 * @param token 
+	 * @param uuid 
 	 * 
 	 */
-	private static String getOrderInfo(String orderNo, String subject, String body, long amount) {
+	private static String getOrderInfo(String orderNo, String subject, String body, long amount, String uuid, String token) {
 		String yuanAmount = converFenToYuan(amount);
 
 		// 签约合作者身份ID
@@ -241,6 +248,12 @@ public class AliPayUtil {
 
 		// 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
 		// orderInfo += "&paymethod=\"expressGateway\"";
+		
+		// 支付宝支付的用户uuid
+		orderInfo += "&payment_uuid=\""+uuid+"\"";
+
+		// 支付宝支付的用户token
+		orderInfo += "&payment_token=\""+token+"\"";
 
 		return orderInfo;
 	}
