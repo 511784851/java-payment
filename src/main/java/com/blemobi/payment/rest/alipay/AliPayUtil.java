@@ -23,6 +23,7 @@ import com.blemobi.payment.sql.SqlHelper;
 import com.blemobi.payment.util.ReslutUtil;
 import com.blemobi.sep.probuf.PaymentProtos;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.google.common.base.Strings;
 
 import lombok.extern.log4j.Log4j;
 @Log4j
@@ -73,8 +74,8 @@ public class AliPayUtil {
 	private static boolean saveOrderInfo(String uuid, String orderNo, String orderSubject, String orderBody, long amount,long payTime) {
 		//String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
 
-		boolean rtn = SqlHelper.savePayInfo(uuid, "ZFB", orderSubject, orderBody, orderNo, amount, "127.0.0.1", "1");
-		return rtn;
+		String rtn = SqlHelper.savePayInfo(uuid, "ZFB", orderSubject, orderBody, orderNo, amount, "127.0.0.1", "1");
+		return Strings.isNullOrEmpty(rtn);
 	}
 
 	//把金额的元转换成分。
