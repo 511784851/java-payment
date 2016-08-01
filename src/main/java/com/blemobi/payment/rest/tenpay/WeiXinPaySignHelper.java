@@ -35,14 +35,14 @@ public class WeiXinPaySignHelper {
 
 		int errorCode = 190000;
 		String errorMsg = "";
-
+		long pay_time = System.currentTimeMillis();
 		// 金额转化为分为单位
-		String out_trade_no = IDMake.build(uuid, System.currentTimeMillis(), amount);
+		String out_trade_no = IDMake.build(uuid, pay_time, amount);
 		String spbill_create_ip = request.getRemoteAddr();
 
 		// 保存预支付信息
 		SqlHelper.savePayInfo(uuid, bank_type, orderSubject, orderBody, out_trade_no, amount, spbill_create_ip,
-				fee_type);
+				fee_type, pay_time);
 
 		String noncestr = WXUtil.getNonceStr();
 		String traceid = "";// 附加信息
@@ -79,27 +79,20 @@ public class WeiXinPaySignHelper {
 		// 吐回给客户端的参数
 		if (null != prepayid && !"".equals(prepayid)) {
 			String timestamp = WXUtil.getTimeStamp();
-			
-			SortedMap<String, String> appPackage = new TreeMap<String, String>();  
-			appPackage.put("appid", ConstantUtil.APP_ID);    
-			appPackage.put("timestamp", timestamp);    
-			appPackage.put("noncestr", noncestr);    
-			appPackage.put("partnerid", ConstantUtil.PARTNER);   
-            appPackage.put("package", "Sign=WXPay");                
-            appPackage.put("prepayid", prepayid);   
-            
-            String appSign = reqHandler.createSign(appPackage);  
-            log.info("get app sign: " + appSign);
-            PWeixinPay weixin = PWeixinPay.newBuilder()
-					.setAppid(ConstantUtil.APP_ID)
-					.setPartnerid(ConstantUtil.PARTNER)
-					.setNoncestr(noncestr)
-					.setPackage("Sign=WXPay")
-					.setTimestamp(timestamp)
-					.setPrepayid(prepayid)
-					.setSign(appSign)
-					.setOrderNo(out_trade_no)
-					.build();
+
+			SortedMap<String, String> appPackage = new TreeMap<String, String>();
+			appPackage.put("appid", ConstantUtil.APP_ID);
+			appPackage.put("timestamp", timestamp);
+			appPackage.put("noncestr", noncestr);
+			appPackage.put("partnerid", ConstantUtil.PARTNER);
+			appPackage.put("package", "Sign=WXPay");
+			appPackage.put("prepayid", prepayid);
+
+			String appSign = reqHandler.createSign(appPackage);
+			log.info("get app sign: " + appSign);
+			PWeixinPay weixin = PWeixinPay.newBuilder().setAppid(ConstantUtil.APP_ID).setPartnerid(ConstantUtil.PARTNER)
+					.setNoncestr(noncestr).setPackage("Sign=WXPay").setTimestamp(timestamp).setPrepayid(prepayid)
+					.setSign(appSign).setOrderNo(out_trade_no).build();
 
 			return ReslutUtil.createReslutMessage(weixin);
 		} else {

@@ -35,12 +35,10 @@ public class SqlHelper {
 	 *            币种（1-人民币）
 	 * @return String 返回数据ID
 	 */
-	public static String savePayInfo(String uuid, String pay_type, String orderSubject, String orderBody,
-			String order_no, long amount, String spbill_create_ip, String fee_type) {
+	public static boolean savePayInfo(String uuid, String pay_type, String orderSubject, String orderBody,
+			String order_no, long amount, String spbill_create_ip, String fee_type, long pay_time) {
 
-		UUID id = UUID.randomUUID();
 		String pay_statu = "0";// 支付状态（0-支付中，1-支付成功，2-支付失败）
-		long pay_time = System.currentTimeMillis();
 
 		StringBuffer sql = new StringBuffer("INSERT INTO");
 		sql.append(
@@ -52,11 +50,7 @@ public class SqlHelper {
 		boolean rs = JdbcTemplate.executeUpdate(sql.toString(), uuid, pay_type, orderSubject, orderBody, order_no,
 				amount, spbill_create_ip, fee_type, pay_statu, pay_time);
 
-		if (rs) {
-			return id.toString();
-		} else {
-			return "";
-		}
+		return rs;
 	}
 
 	/**
@@ -82,10 +76,8 @@ public class SqlHelper {
 	 *            支付完成时间
 	 * @return String 返回数据ID
 	 */
-	public static String savePayResultInfo(int pay_statu, String openid, String bank_type, long total_fee,
+	public static boolean savePayResultInfo(int pay_statu, String openid, String bank_type, long total_fee,
 			String transaction_id, String order_no, String err_code, String err_code_des, long time_end) {
-
-		UUID id = UUID.randomUUID();
 
 		StringBuffer sql = new StringBuffer();
 		sql.append(
@@ -96,11 +88,7 @@ public class SqlHelper {
 		boolean rs = JdbcTemplate.executeUpdate(sql.toString(), pay_statu, openid, bank_type, total_fee, transaction_id,
 				err_code, err_code_des, time_end, order_no);
 
-		if (rs) {
-			return id.toString();
-		} else {
-			return "";
-		}
+		return rs;
 	}
 
 	/**
