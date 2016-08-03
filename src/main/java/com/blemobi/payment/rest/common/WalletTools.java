@@ -60,7 +60,7 @@ public class WalletTools {
 
 		String type = message.getType();
 		log.info("type=["+type+"]");
-		if ("PDiamondCount".equals(type)) {
+		if ("PDiamondTotalCount".equals(type)) {
 			WalletProtos.PDiamondTotalCount diamond = WalletProtos.PDiamondTotalCount.parseFrom(message.getData().toByteArray());
 			long total = diamond.getTotalVMoney();
 			log.info("diamond=["+diamond+"]");
