@@ -28,7 +28,7 @@ public class WalletTools {
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		return rtn;
@@ -51,7 +51,9 @@ public class WalletTools {
 		cookies[1] = new Cookie("token", token);
 
 		String url = clientUtil.createWalletUrl(PathGlobal.GetWalletDiamondAdd);
-		PMessage message = clientUtil.getMethod(url, params, cookies);
+		url=url+"?"+"from=payment";
+		log.info("post url=["+url+"]");
+		PMessage message = clientUtil.postMethod(url, params, cookies);
 
 		String type = message.getType();
 		log.info("type=["+type+"]");
