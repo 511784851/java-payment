@@ -103,23 +103,4 @@ public class AlipayContrller {
 		//在此添加参数校验的代码
 		return AliPayUtil.payNotify(request, response);
 	}
-	
-	@GET
-	@Path("test")
-	@Produces("text/plain")
-	public String test(@Context HttpServletRequest request, @Context HttpServletResponse response)
-			throws Exception {
-		String uuid = "be5c68e5-3b54-44e9-803a-57bb1ab3efe2";
-		String token = "EiA5NTMyNWQwMzJkNTBjMTAzMTYzMTJmMTkxMDIzY2I3Mhi1oYW9BQ==";
-		String orderNo = "13358548966252038801";
-		long amount = 300L;
-		log.info("uuid=["+uuid+"]");
-		log.info("token=["+token+"]");
-		log.info("orderNo=["+orderNo+"]");
-		log.info("amount=["+amount+"]");
-		WalletTools.invokeWalletDiamondAdd(uuid, token, amount, orderNo);
-		
-		//在此添加参数校验的代码
-		return "OK";
-	}
 }
