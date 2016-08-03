@@ -12,6 +12,9 @@ import com.blemobi.payment.global.PathGlobal;
 import com.blemobi.payment.util.ClientUtilImpl;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PResult;
+import com.google.protobuf.ProtocolStringList;
+import com.blemobi.sep.probuf.ResultProtos;
+import com.blemobi.sep.probuf.WalletProtos;
 
 import lombok.extern.log4j.Log4j;
 @Log4j
@@ -57,7 +60,14 @@ public class WalletTools {
 
 		String type = message.getType();
 		log.info("type=["+type+"]");
-		if ("PUser".equals("PDiamondCount")) {
+		if ("PDiamondCount".equals(type)) {
+			WalletProtos.PDiamondCount all = WalletProtos.PDiamondCount.parseFrom(message.getData().toByteArray());
+			long total = all.getTotalVMoney();
+			long income = all.getIncomeVMoney();
+			long expend = all.getExpendVMoney();
+			log.info("total=["+total+"]");
+			log.info("income=["+income+"]");
+			log.info("expend=["+expend+"]");
 			rtn = true;
 		}else{
 			PResult pr = PResult.parseFrom(message.getData());
