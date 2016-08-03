@@ -35,8 +35,8 @@ public class TestInvokeWalletDiamondAdd {
 	@Test
 	public void testInvokeWalletDiamondAdd() throws Exception {
 		// TODO Auto-generated method stub
-		String uuid = "0efe519d-cddf-412c-a5e0-2e8f14f80edb";
-		String token = "EiBmN2UzMzM5ZWFiOGZmZTJkZTg5MTE2NGQ2YjJiOGRiMBjYtte8BQ==";
+		String uuid = "be5c68e5-3b54-44e9-803a-57bb1ab3efe2";
+		String token = "EiA5NTMyNWQwMzJkNTBjMTAzMTYzMTJmMTkxMDIzY2I3Mhi1oYW9BQ==";
 		String orderNo = "13358548966252038801";
 		long amount = 300L;
 		WalletTools.invokeWalletDiamondAdd(uuid, token, amount, orderNo);
