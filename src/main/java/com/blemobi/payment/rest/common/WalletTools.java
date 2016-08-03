@@ -61,13 +61,9 @@ public class WalletTools {
 		String type = message.getType();
 		log.info("type=["+type+"]");
 		if ("PDiamondCount".equals(type)) {
-			WalletProtos.PDiamondCount all = WalletProtos.PDiamondCount.parseFrom(message.getData().toByteArray());
-			long total = all.getTotalVMoney();
-			long income = all.getIncomeVMoney();
-			long expend = all.getExpendVMoney();
-			log.info("total=["+total+"]");
-			log.info("income=["+income+"]");
-			log.info("expend=["+expend+"]");
+			WalletProtos.PDiamondTotalCount diamond = WalletProtos.PDiamondTotalCount.parseFrom(message.getData().toByteArray());
+			long total = diamond.getTotalVMoney();
+			log.info("diamond=["+diamond+"]");
 			rtn = true;
 		}else{
 			PResult pr = PResult.parseFrom(message.getData());
