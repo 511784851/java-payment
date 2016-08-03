@@ -140,26 +140,7 @@ public class AliPayUtil {
 			//////////////////////////////////////////////////////////////////////////////////////////
 			//请在这里加上商户的业务逻辑程序代码
 
-			//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
-			
-			if(trade_status.equals("TRADE_FINISHED")){
-				//判断该笔订单是否在商户网站中已经做过处理
-					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-					//如果有做过处理，不执行商户的业务程序
-					
-				//注意：
-				//退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-				//请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
-				if(seller_id.equals(AlipayConfig.seller)){
-					//判断商户号，订单号，金额一致。
-					String sql = "update pay_order set pay_statu='%s' where order_no='%s' and amount='%s'";
-					long amount = converYuanToFen(total_fee);
-					sql = String.format(sql, "2",trade_no,amount);
-					log.info(sql.toString());
-					boolean rtn = JdbcTemplate.executeUpdate(sql);
-				}
-				
-			} else if (trade_status.equals("TRADE_SUCCESS")){
+			if (trade_status.equals("TRADE_SUCCESS")){
 				//判断该笔订单是否在商户网站中已经做过处理
 					//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 					//如果有做过处理，不执行商户的业务程序
