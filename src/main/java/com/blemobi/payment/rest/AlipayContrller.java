@@ -15,19 +15,23 @@ import javax.ws.rs.core.Context;
 import org.json.simple.JSONObject;
 
 import com.blemobi.payment.rest.alipay.AliPayUtil;
+import com.blemobi.payment.rest.common.WalletTools;
 import com.blemobi.payment.sql.SqlHelper;
+import com.blemobi.payment.util.ClientUtilImpl;
 import com.blemobi.payment.util.ReslutUtil;
 import com.blemobi.sep.probuf.PaymentProtos;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.google.common.base.Strings;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
+import lombok.extern.log4j.Log4j;
+
 /**
  * 
  * @author 李子才<davis.lee@blemobi.com>
  * 这是支付宝的支付接口。
  */
-
+@Log4j
 @Path("/alipay")
 public class AlipayContrller {
 
@@ -99,5 +103,23 @@ public class AlipayContrller {
 		//在此添加参数校验的代码
 		return AliPayUtil.payNotify(request, response);
 	}
-
+	
+	@GET
+	@Path("test")
+	@Produces("text/plain")
+	public String test(@Context HttpServletRequest request, @Context HttpServletResponse response)
+			throws Exception {
+		String uuid = "be5c68e5-3b54-44e9-803a-57bb1ab3efe2";
+		String token = "EiA5NTMyNWQwMzJkNTBjMTAzMTYzMTJmMTkxMDIzY2I3Mhi1oYW9BQ==";
+		String orderNo = "13358548966252038801";
+		long amount = 300L;
+		log.info("uuid=["+uuid+"]");
+		log.info("token=["+token+"]");
+		log.info("orderNo=["+orderNo+"]");
+		log.info("amount=["+amount+"]");
+		WalletTools.invokeWalletDiamondAdd(uuid, token, amount, orderNo);
+		
+		//在此添加参数校验的代码
+		return "OK";
+	}
 }
