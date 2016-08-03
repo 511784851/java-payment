@@ -63,7 +63,7 @@ public class WalletTools {
 		if ("PDiamondTotalCount".equals(type)) {
 			WalletProtos.PDiamondTotalCount diamond = WalletProtos.PDiamondTotalCount.parseFrom(message.getData().toByteArray());
 			long total = diamond.getTotalVMoney();
-			log.info("diamond=["+diamond+"]");
+			log.info("diamond=["+total+"]");
 			rtn = true;
 		}else{
 			PResult pr = PResult.parseFrom(message.getData());
