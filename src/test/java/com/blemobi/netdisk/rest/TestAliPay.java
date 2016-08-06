@@ -34,7 +34,6 @@ public class TestAliPay {
 		String amount = "1";
 		PMessage message = AliPayUtil.paySign(uuid, token, orderSubject, orderBody, Long.parseLong(amount));
 		
-		
 		String type = message.getType();
 		
 		log.info("type=["+type+"]");
