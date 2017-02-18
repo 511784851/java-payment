@@ -4,8 +4,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.blemobi.payment.model.Transaction;
-import com.blemobi.payment.service.CallbackService;
+import com.blemobi.payment.service.NotifyService;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
@@ -14,8 +16,12 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("/wallet")
-public class CallbackProcess {
+@Path("payment/notify")
+public class NotifyProcess {
+
+	@Autowired
+	private NotifyService notifyService;
+
 	/**
 	 * 钱包支付回调
 	 * 
@@ -27,7 +33,6 @@ public class CallbackProcess {
 	public String callback() {
 		String sign = "";
 		Transaction transaction = new Transaction();
-		CallbackService callbackService = new CallbackService(transaction, sign);
-		return callbackService.callback();
+		return notifyService.callback(transaction, sign);
 	}
 }

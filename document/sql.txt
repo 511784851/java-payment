@@ -1,0 +1,28 @@
+CREATE DATABASE paymentDB;
+
+
+
+CREATE TABLE `red` (
+   `custorderno` VARCHAR(50) NOT NULL COMMENT '红包ID，红包支付交易号',
+   `sendUUID` VARCHAR(50) NOT NULL COMMENT '发送者UUID',
+   `receiveUUID` VARCHAR(50) DEFAULT NULL COMMENT '接受者UUID',
+   `amount` INT(11) NOT NULL COMMENT '红包金额（单位：分）',
+   `title` VARCHAR(100) DEFAULT NULL COMMENT '描述',
+   `sendTime` BIGINT(20) NOT NULL COMMENT '发送时间',
+   `receiveTime` BIGINT(20) DEFAULT NULL COMMENT '领取时间',
+   `invalidTime` BIGINT(20) NOT NULL COMMENT '失效时间',
+   `status` INT(1) NOT NULL COMMENT '状态（-2-未付款，-1-过期退款，0-可领取，1-已领取）',
+   PRIMARY KEY (`custorderno`)
+ ) ENGINE=INNODB DEFAULT CHARSET=utf8;
+ 
+ 
+ 
+ CREATE TABLE `transaction` (
+   `orderAmount` INT(11) DEFAULT NULL,
+   `orderNo` VARCHAR(50) NOT NULL,
+   `orderStatus` INT(1) DEFAULT NULL,
+   `orderTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   `custOrderNo` VARCHAR(50) DEFAULT NULL,
+   `receiveUid` VARCHAR(50) DEFAULT NULL,
+   PRIMARY KEY (`orderNo`)
+ ) ENGINE=INNODB DEFAULT CHARSET=utf8;

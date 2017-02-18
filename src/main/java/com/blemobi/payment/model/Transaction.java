@@ -1,65 +1,64 @@
 package com.blemobi.payment.model;
 
-import java.util.Date;
-
 public class Transaction {
-    private String orderno;
+	private String orderno;
 
-    private Integer orderamount;
+	private int orderamount;
 
-    private Integer orderstatus;
+	private int orderstatus;
 
-    private Date ordertime;
+	private long ordertime;
 
-    private String custorderno;
+	private String custorderno;
 
-    private String receiveuid;
+	private String receiveuid;
 
-    public String getOrderno() {
-        return orderno;
-    }
+	public String getOrderno() {
+		return orderno;
+	}
 
-    public void setOrderno(String orderno) {
-        this.orderno = orderno == null ? null : orderno.trim();
-    }
+	public void setOrderno(String orderno) {
+		this.orderno = orderno;
+	}
 
-    public Integer getOrderamount() {
-        return orderamount;
-    }
+	public int getOrderamount() {
+		return orderamount;
+	}
 
-    public void setOrderamount(Integer orderamount) {
-        this.orderamount = orderamount;
-    }
+	public void setOrderamount(int orderamount) {
+		this.orderamount = orderamount;
+	}
 
-    public Integer getOrderstatus() {
-        return orderstatus;
-    }
+	public int getOrderstatus() {
+		return orderstatus;
+	}
 
-    public void setOrderstatus(Integer orderstatus) {
-        this.orderstatus = orderstatus;
-    }
+	public void setOrderstatus(int orderstatus) {
+		this.orderstatus = orderstatus;
+	}
 
-    public Date getOrdertime() {
-        return ordertime;
-    }
+	public long getOrdertime() {
+		return ordertime;
+	}
 
-    public void setOrdertime(Date ordertime) {
-        this.ordertime = ordertime;
-    }
+	public void setOrdertime(long ordertime) {
+		this.ordertime = ordertime;
+	}
 
-    public String getCustorderno() {
-        return custorderno;
-    }
+	public String getCustorderno() {
+		return custorderno;
+	}
 
-    public void setCustorderno(String custorderno) {
-        this.custorderno = custorderno == null ? null : custorderno.trim();
-    }
+	public void setCustorderno(String custorderno) {
+		this.custorderno = custorderno;
+	}
 
-    public String getReceiveuid() {
-        return receiveuid;
-    }
+	public String getReceiveuid() {
+		return receiveuid;
+	}
 
-    public void setReceiveuid(String receiveuid) {
-        this.receiveuid = receiveuid == null ? null : receiveuid.trim();
-    }
+	public void setReceiveuid(String receiveuid) {
+		this.receiveuid = receiveuid;
+	}
+
 }

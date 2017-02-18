@@ -1,12 +1,7 @@
-package com.blemobi.payment.service;
+package com.blemobi.payment.service.helper;
 
-import org.apache.ibatis.session.SqlSession;
-
-import com.blemobi.payment.mapper.RedMapper;
 import com.blemobi.payment.model.Red;
-import com.blemobi.payment.test.DBTools;
 import com.blemobi.payment.util.OrdernoUtil;
-import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
  * 发送红包
@@ -14,39 +9,22 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
  * @author zhaoyong
  *
  */
-public class SendRedService {
+public class RedHelper {
 	/**
 	 * 红包最大领取时间
 	 */
 	private static final long maxInvalidTime = 24 * 60 * 60 * 1000;
 	private String sendUUID;
 	private String receiveUUID;
-	private int amount;
+	private long amount;
 
-	public SendRedService(String sendUUID, String receiveUUID, int amount) {
+	public RedHelper(String sendUUID, String receiveUUID, long amount) {
 		this.sendUUID = sendUUID;
 		this.receiveUUID = receiveUUID;
 		this.amount = amount;
 	}
 
-	public PMessage send() {
-		SqlSession session = DBTools.getSession();
-		RedMapper mapper = session.getMapper(RedMapper.class);
-		try {
-			Red red = initRed();
-			mapper.insert(red);
-			session.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			session.rollback();
-		} finally {
-			session.close();
-		}
-
-		return null;
-	}
-
-	private Red initRed() {
+	public Red initOne() {
 		long sendTime = System.currentTimeMillis();
 		long invalidTime = sendTime + maxInvalidTime;
 		// 生成订单号

@@ -1,4 +1,4 @@
-package com.blemobi.payment.service;
+package com.blemobi.payment.service.helper;
 
 /**
  * 转账
@@ -6,7 +6,7 @@ package com.blemobi.payment.service;
  * @author zhaoyong
  *
  */
-public class TransferUtil {
+public class TransferHelper {
 
 	private String uuid;
 	private int amount;
@@ -17,7 +17,7 @@ public class TransferUtil {
 	 * @param uuid
 	 * @param amount
 	 */
-	public TransferUtil(String uuid, int amount) {
+	public TransferHelper(String uuid, int amount) {
 		this.uuid = uuid;
 		this.amount = amount;
 	}

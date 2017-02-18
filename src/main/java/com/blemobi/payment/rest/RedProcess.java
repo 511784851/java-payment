@@ -2,14 +2,13 @@ package com.blemobi.payment.rest;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import com.blemobi.payment.model.Red;
-import com.blemobi.payment.service.ReceiveRedService;
-import com.blemobi.payment.service.SendRedService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.blemobi.payment.service.RedService;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -19,8 +18,11 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("/red")
+@Path("payment/red")
 public class RedProcess {
+
+	@Autowired
+	private RedService redService;
 
 	/**
 	 * 发送一对一红包
@@ -29,14 +31,13 @@ public class RedProcess {
 	 * @param token
 	 * @return
 	 */
-	@POST
+	@GET
 	@Path("send")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage send(@CookieParam("uuid") String uuid) {
 		int amount = 100;
 		String receiveUUID = "";
-		SendRedService sendRedService = new SendRedService(uuid, receiveUUID, amount);
-		return sendRedService.send();
+		return redService.send(null);
 	}
 
 	/**
@@ -51,8 +52,7 @@ public class RedProcess {
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage receive(@CookieParam("uuid") String uuid) {
 		String custorderno = "";
-		ReceiveRedService receiveRedService = new ReceiveRedService(uuid, custorderno);
-		return receiveRedService.receive();
+		return null;
 	}
 
 	/**
@@ -66,13 +66,6 @@ public class RedProcess {
 	@Path("deatil")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage deatil(@CookieParam("uuid") String uuid) {
-		long sendTime = System.currentTimeMillis();
-		long invalidTime = sendTime + 24 * 60 * 60 * 1000;
-
-		Red red = new Red();
-		red.setSenduuid(uuid);
-		red.setSendtime(sendTime);
-		red.setInvalidtime(invalidTime);
 
 		return null;
 	}

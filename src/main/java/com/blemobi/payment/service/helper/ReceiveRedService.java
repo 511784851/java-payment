@@ -1,11 +1,11 @@
-package com.blemobi.payment.service;
+package com.blemobi.payment.service.helper;
 
 import org.apache.ibatis.session.SqlSession;
 
 import com.blemobi.library.util.ReslutUtil;
-import com.blemobi.payment.mapper.RedMapper;
+
 import com.blemobi.payment.model.Red;
-import com.blemobi.payment.test.DBTools;
+
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -31,27 +31,27 @@ public class ReceiveRedService {
 	 * @return
 	 */
 	public PMessage receive() {
-		SqlSession session = DBTools.getSession();
-		RedMapper mapper = session.getMapper(RedMapper.class);
-		try {
-			Red red = mapper.selectByPrimaryKey(custorderno);
-
-			if (!check(red))
-				relsut();
-
-			red.setStatus(1);// 红包已领取
-			red.setReceivetime(System.currentTimeMillis());
-
-			// 转账给uuid
-			transfer(red.getAmount());
-
-			session.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			session.rollback();
-		} finally {
-			session.close();
-		}
+//		SqlSession session = DBTools.getSession();
+//		RedMapper mapper = session.getMapper(RedMapper.class);
+//		try {
+//			Red red = mapper.selectByPrimaryKey(custorderno);
+//
+//			if (!check(red))
+//				relsut();
+//
+//			red.setStatus(1);// 红包已领取
+//			red.setReceivetime(System.currentTimeMillis());
+//
+//			// 转账给uuid
+//			transfer(red.getAmount());
+//
+//			session.commit();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			session.rollback();
+//		} finally {
+//			session.close();
+//		}
 
 		return null;
 	}
@@ -85,8 +85,8 @@ public class ReceiveRedService {
 	 * @return
 	 */
 	private boolean transfer(int amount) {
-		TransferUtil transferUtil = new TransferUtil(uuid, amount);
-		return transferUtil.transfer();
+		TransferHelper transferHelper = new TransferHelper(uuid, amount);
+		return transferHelper.transfer();
 	}
 
 	/**

@@ -1,93 +1,94 @@
 package com.blemobi.payment.model;
 
 public class Red {
-    private String custorderno;
+	private String custorderno;
 
-    private String senduuid;
+	private String senduuid;
 
-    private String receiveuuid;
+	private String receiveuuid;
 
-    private Integer amount;
+	private long amount;
 
-    private String title;
+	private String title;
 
-    private Long sendtime;
+	private long sendtime;
 
-    private Long receivetime;
+	private long receivetime;
 
-    private Long invalidtime;
+	private long invalidtime;
 
-    private Integer status;
+	private int status;
 
-    public String getCustorderno() {
-        return custorderno;
-    }
+	public String getCustorderno() {
+		return custorderno;
+	}
 
-    public void setCustorderno(String custorderno) {
-        this.custorderno = custorderno == null ? null : custorderno.trim();
-    }
+	public void setCustorderno(String custorderno) {
+		this.custorderno = custorderno;
+	}
 
-    public String getSenduuid() {
-        return senduuid;
-    }
+	public String getSenduuid() {
+		return senduuid;
+	}
 
-    public void setSenduuid(String senduuid) {
-        this.senduuid = senduuid == null ? null : senduuid.trim();
-    }
+	public void setSenduuid(String senduuid) {
+		this.senduuid = senduuid;
+	}
 
-    public String getReceiveuuid() {
-        return receiveuuid;
-    }
+	public String getReceiveuuid() {
+		return receiveuuid;
+	}
 
-    public void setReceiveuuid(String receiveuuid) {
-        this.receiveuuid = receiveuuid == null ? null : receiveuuid.trim();
-    }
+	public void setReceiveuuid(String receiveuuid) {
+		this.receiveuuid = receiveuuid;
+	}
 
-    public Integer getAmount() {
-        return amount;
-    }
+	public long getAmount() {
+		return amount;
+	}
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
+	public void setAmount(long amount) {
+		this.amount = amount;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public Long getSendtime() {
-        return sendtime;
-    }
+	public long getSendtime() {
+		return sendtime;
+	}
 
-    public void setSendtime(Long sendtime) {
-        this.sendtime = sendtime;
-    }
+	public void setSendtime(long sendtime) {
+		this.sendtime = sendtime;
+	}
 
-    public Long getReceivetime() {
-        return receivetime;
-    }
+	public long getReceivetime() {
+		return receivetime;
+	}
 
-    public void setReceivetime(Long receivetime) {
-        this.receivetime = receivetime;
-    }
+	public void setReceivetime(long receivetime) {
+		this.receivetime = receivetime;
+	}
 
-    public Long getInvalidtime() {
-        return invalidtime;
-    }
+	public long getInvalidtime() {
+		return invalidtime;
+	}
 
-    public void setInvalidtime(Long invalidtime) {
-        this.invalidtime = invalidtime;
-    }
+	public void setInvalidtime(long invalidtime) {
+		this.invalidtime = invalidtime;
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public int getStatus() {
+		return status;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 }
