@@ -17,9 +17,9 @@ public class RedDaoImpl implements RedDao {
 
 	public int insert(Object... args) {
 		StringBuffer sql = new StringBuffer();
-		sql.append("insert into red (");
-		sql.append("custorderno, sendUUID, receiveUUID, amount, title, sendTime, receiveTime, invalidTime, status");
-		sql.append(") values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		sql.append("insert into red_send (");
+		sql.append("orderno, senduuid, type, amount, content, sendTime, invalidTime, status");
+		sql.append(") values (?, ?, ?, ?, ?, ?, ?, ?)");
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 

@@ -2,13 +2,14 @@ package com.blemobi.payment.rest;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.blemobi.payment.service.RedService;
+import com.blemobi.payment.util.InstanceFactory;
+import com.blemobi.sep.probuf.PaymentProtos.PGroupRed;
+import com.blemobi.sep.probuf.PaymentProtos.POneRed;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -18,41 +19,38 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("payment/red")
+@Path("payment/send")
 public class RedProcess {
 
-	@Autowired
-	private RedService redService;
+	// @Autowired
+	private RedService redService = InstanceFactory.getInstance("redService");
 
 	/**
-	 * 发送一对一红包
+	 * 发普通红包
 	 * 
 	 * @param uuid
 	 * @param token
 	 * @return
 	 */
-	@GET
-	@Path("send")
+	@POST
+	@Path("ordinary")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage send(@CookieParam("uuid") String uuid) {
-		int amount = 100;
-		String receiveUUID = "";
-		return redService.send(null);
+	public PMessage ordinary(POneRed oneRed, @CookieParam("uuid") String senduuid) {
+		return redService.sendOrdinary(oneRed, senduuid);
 	}
 
 	/**
-	 * 领取一对一红包
+	 * 发群红包
 	 * 
 	 * @param uuid
 	 * @param token
 	 * @return
 	 */
-	@PUT
-	@Path("receive")
+	@POST
+	@Path("group")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(@CookieParam("uuid") String uuid) {
-		String custorderno = "";
-		return null;
+	public PMessage receive(PGroupRed groupRed, @CookieParam("uuid") String senduuid) {
+		return redService.sendGroup(groupRed, senduuid);
 	}
 
 	/**
