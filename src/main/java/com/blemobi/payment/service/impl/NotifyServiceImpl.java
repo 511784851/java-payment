@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.blemobi.payment.dao.RedDao;
 import com.blemobi.payment.dao.impl.TransactionDaoImpl;
-import com.blemobi.payment.model.Red;
 import com.blemobi.payment.model.Transaction;
 import com.blemobi.payment.service.NotifyService;
 import com.blemobi.payment.util.SignUtil;
@@ -38,15 +37,15 @@ public class NotifyServiceImpl implements NotifyService {
 	public String callback(Transaction transaction, String sign) {
 		if (!checkSign(transaction, sign))
 			return "sign error";
-
-		Red red = redDao.selectByKey(transaction.getCustorderno());
-		if (red != null && red.getStatus() == -2) {
-			red.setAmount(transaction.getOrderamount());
-			red.setStatus(0);// 已支付可以领取了
-			redDao.updateByKey(red);
-			transactionDao.insert(transaction);
-			return "success";
-		}
+//
+//		Red red = redDao.selectByKey(transaction.getCustorderno());
+//		if (red != null && red.getStatus() == -2) {
+//			red.setAmount(transaction.getOrderamount());
+//			red.setStatus(0);// 已支付可以领取了
+//			redDao.updateByKey(red);
+//			transactionDao.insert(transaction);
+//			return "success";
+//		}
 
 		return "fail";
 	}

@@ -1,12 +1,11 @@
 package com.blemobi.payment.rest;
 
 import javax.ws.rs.CookieParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import com.blemobi.payment.service.RedService;
+import com.blemobi.payment.service.SendRedService;
 import com.blemobi.payment.util.InstanceFactory;
 import com.blemobi.sep.probuf.PaymentProtos.PGroupRed;
 import com.blemobi.sep.probuf.PaymentProtos.POneRed;
@@ -19,11 +18,11 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("payment/send")
+@Path("payment/v1/send")
 public class RedProcess {
 
 	// @Autowired
-	private RedService redService = InstanceFactory.getInstance("redService");
+	private SendRedService sendRedService = InstanceFactory.getInstance("sendRedService");
 
 	/**
 	 * 发普通红包
@@ -35,8 +34,9 @@ public class RedProcess {
 	@POST
 	@Path("ordinary")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage ordinary(POneRed oneRed, @CookieParam("uuid") String senduuid) {
-		return redService.sendOrdinary(oneRed, senduuid);
+	public PMessage ordinary(POneRed oneRed, @CookieParam("uuid") long senduuid) {
+		senduuid = 1468419313301436967l;
+		return sendRedService.sendOrdinary(oneRed, senduuid);
 	}
 
 	/**
@@ -49,22 +49,7 @@ public class RedProcess {
 	@POST
 	@Path("group")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(PGroupRed groupRed, @CookieParam("uuid") String senduuid) {
-		return redService.sendGroup(groupRed, senduuid);
-	}
-
-	/**
-	 * 查看一对一红包
-	 * 
-	 * @param uuid
-	 * @param token
-	 * @return
-	 */
-	@GET
-	@Path("deatil")
-	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage deatil(@CookieParam("uuid") String uuid) {
-
-		return null;
+	public PMessage receive(PGroupRed groupRed, @CookieParam("uuid") long senduuid) {
+		return sendRedService.sendGroup(groupRed, senduuid);
 	}
 }

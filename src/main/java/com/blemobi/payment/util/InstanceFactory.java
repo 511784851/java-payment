@@ -23,8 +23,6 @@ package com.blemobi.payment.util;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.blemobi.payment.service.LotteryService;
-
 import lombok.extern.log4j.Log4j;
 
 /**

@@ -1,11 +1,15 @@
 package com.blemobi.payment.dao;
 
-import com.blemobi.payment.model.Red;
+import java.util.Set;
+
+import com.blemobi.payment.model.RedSend;
 
 public interface RedDao {
 	public int insert(Object... args);
 
-	public Red selectByKey(String custorderno);
+	public RedSend selectByKey(String custorderno);
 
-	public int updateByKey(Red record);
+	public int saveRecUUIDS(String ord_no, String... uuids);
+
+	public Set<String> findByOrdNo(String ord_no);
 }
