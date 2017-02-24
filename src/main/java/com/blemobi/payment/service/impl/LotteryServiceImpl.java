@@ -32,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.service.LotteryService;
+import com.blemobi.payment.service.order.IdWorker;
+import com.blemobi.payment.service.order.OrderEnum;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PLocation;
 import com.blemobi.sep.probuf.PaymentProtos.PLottery;
@@ -65,8 +67,8 @@ public class LotteryServiceImpl implements LotteryService {
     public PMessage createLottery(String uuid, PLottery lottery) {
         long currTm = System.currentTimeMillis();
         // 生成订单号
-        // String orderno = OrdernoUtil.build(uuid, currTm, amount);
-        String orderno = (currTm + "").substring(6);
+        IdWorker idWorder = IdWorker.getInstance();
+        String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
         uuid = "123";
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getType(), lottery.getWinners(), lottery.getTotAmt(),
                 lottery.getTotAmt(), 1, uuid, currTm, currTm };
