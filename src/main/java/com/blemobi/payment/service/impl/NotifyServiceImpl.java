@@ -3,9 +3,6 @@ package com.blemobi.payment.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.blemobi.payment.dao.RedDao;
 import com.blemobi.payment.dao.impl.TransactionDaoImpl;
 import com.blemobi.payment.model.Transaction;
 import com.blemobi.payment.service.NotifyService;
@@ -18,15 +15,10 @@ import com.blemobi.payment.util.SignUtil;
  *
  */
 public class NotifyServiceImpl implements NotifyService {
-	/**
-	 * 签名密钥
-	 */
+	/** 签名密钥 */
 	private static final String seckey = "3EDA7B432E238BAD1208BADC65E39B01";
 
-	@Autowired
-	private RedDao redDao;
-
-	@Autowired
+	// @Autowired
 	private TransactionDaoImpl transactionDao;
 
 	/**
@@ -37,15 +29,9 @@ public class NotifyServiceImpl implements NotifyService {
 	public String callback(Transaction transaction, String sign) {
 		if (!checkSign(transaction, sign))
 			return "sign error";
-//
-//		Red red = redDao.selectByKey(transaction.getCustorderno());
-//		if (red != null && red.getStatus() == -2) {
-//			red.setAmount(transaction.getOrderamount());
-//			red.setStatus(0);// 已支付可以领取了
-//			redDao.updateByKey(red);
-//			transactionDao.insert(transaction);
-//			return "success";
-//		}
+
+		// 业务处理
+		// ...
 
 		return "fail";
 	}

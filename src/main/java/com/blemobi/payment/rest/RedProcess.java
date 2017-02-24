@@ -1,14 +1,17 @@
 package com.blemobi.payment.rest;
 
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
-import com.blemobi.payment.service.SendRedService;
+import com.blemobi.payment.service.RedReceiveService;
+import com.blemobi.payment.service.RedSendService;
 import com.blemobi.payment.util.InstanceFactory;
 import com.blemobi.sep.probuf.PaymentProtos.PGroupRed;
-import com.blemobi.sep.probuf.PaymentProtos.POneRed;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -22,7 +25,10 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 public class RedProcess {
 
 	// @Autowired
-	private SendRedService sendRedService = InstanceFactory.getInstance("sendRedService");
+	private RedSendService redSendService = InstanceFactory.getInstance("redSendService");
+
+	// @Autowired
+	private RedReceiveService redReceiveService = InstanceFactory.getInstance("redReceiveService");
 
 	/**
 	 * 发普通红包
@@ -34,9 +40,9 @@ public class RedProcess {
 	@POST
 	@Path("ordinary")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage ordinary(POneRed oneRed, @CookieParam("uuid") long senduuid) {
+	public PMessage ordinary(POrdinaryRed ordinaryRed, @CookieParam("uuid") long senduuid) {
 		senduuid = 1468419313301436967l;
-		return sendRedService.sendOrdinary(oneRed, senduuid);
+		return redSendService.sendOrdinary(ordinaryRed, senduuid);
 	}
 
 	/**
@@ -49,7 +55,23 @@ public class RedProcess {
 	@POST
 	@Path("group")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(PGroupRed groupRed, @CookieParam("uuid") long senduuid) {
-		return sendRedService.sendGroup(groupRed, senduuid);
+	public PMessage group(PGroupRed groupRed, @CookieParam("uuid") long send_uuid) {
+		send_uuid = 1468419313301436967l;
+		return redSendService.sendGroup(groupRed, send_uuid);
+	}
+
+	/**
+	 * 领红包
+	 * 
+	 * @param uuid
+	 * @param token
+	 * @return
+	 */
+	@GET
+	@Path("receive")
+	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+	public PMessage receive(@CookieParam("uuid") long rece_uuid, @QueryParam("ord_no") String ord_no) {
+		rece_uuid = 1468419313301436968L;
+		return redReceiveService.receive(ord_no, rece_uuid);
 	}
 }

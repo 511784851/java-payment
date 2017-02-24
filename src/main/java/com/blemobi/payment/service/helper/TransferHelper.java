@@ -8,8 +8,11 @@ package com.blemobi.payment.service.helper;
  */
 public class TransferHelper {
 
-	private String uuid;
-	private int amount;
+	/** 领取人 */
+	private long rece_uuid;
+
+	/** 领取金额（单位：分） */
+	private int money;
 
 	/**
 	 * 构造方法
@@ -17,9 +20,9 @@ public class TransferHelper {
 	 * @param uuid
 	 * @param amount
 	 */
-	public TransferHelper(String uuid, int amount) {
-		this.uuid = uuid;
-		this.amount = amount;
+	public TransferHelper(long rece_uuid, int money) {
+		this.rece_uuid = rece_uuid;
+		this.money = money;
 	}
 
 	/**
@@ -27,7 +30,7 @@ public class TransferHelper {
 	 * 
 	 * @return
 	 */
-	public boolean transfer() {
+	public boolean execute() {
 
 		return true;
 	}

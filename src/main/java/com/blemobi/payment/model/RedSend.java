@@ -6,23 +6,27 @@ public class RedSend {
 
 	private String send_uuid;
 
-	private int red_type;
+	private int type;
 
-	private int tot_amount;
+	private int tota_money;
 
-	private int any_amount;
+	private int each_money;
 
-	private int num;
+	private int tota_number;
+
+	private int rece_money;
+
+	private int rece_number;
 
 	private String content;
 
 	private long send_tm;
 
-	private long invalid_tm;
-
-	private int rec_status;
+	private long over_tm;
 
 	private int pay_status;
+
+	private int ref_status;
 
 	public String getOrd_no() {
 		return ord_no;
@@ -40,36 +44,52 @@ public class RedSend {
 		this.send_uuid = send_uuid;
 	}
 
-	public int getRed_type() {
-		return red_type;
+	public int getType() {
+		return type;
 	}
 
-	public void setRed_type(int red_type) {
-		this.red_type = red_type;
+	public void setType(int type) {
+		this.type = type;
 	}
 
-	public int getTot_amount() {
-		return tot_amount;
+	public int getTota_money() {
+		return tota_money;
 	}
 
-	public void setTot_amount(int tot_amount) {
-		this.tot_amount = tot_amount;
+	public void setTota_money(int tota_money) {
+		this.tota_money = tota_money;
 	}
 
-	public int getAny_amount() {
-		return any_amount;
+	public int getEach_money() {
+		return each_money;
 	}
 
-	public void setAny_amount(int any_amount) {
-		this.any_amount = any_amount;
+	public void setEach_money(int each_money) {
+		this.each_money = each_money;
 	}
 
-	public int getNum() {
-		return num;
+	public int getTota_number() {
+		return tota_number;
 	}
 
-	public void setNum(int num) {
-		this.num = num;
+	public void setTota_number(int tota_number) {
+		this.tota_number = tota_number;
+	}
+
+	public int getRece_money() {
+		return rece_money;
+	}
+
+	public void setRece_money(int rece_money) {
+		this.rece_money = rece_money;
+	}
+
+	public int getRece_number() {
+		return rece_number;
+	}
+
+	public void setRece_number(int rece_number) {
+		this.rece_number = rece_number;
 	}
 
 	public String getContent() {
@@ -88,20 +108,12 @@ public class RedSend {
 		this.send_tm = send_tm;
 	}
 
-	public long getInvalid_tm() {
-		return invalid_tm;
+	public long getOver_tm() {
+		return over_tm;
 	}
 
-	public void setInvalid_tm(long invalid_tm) {
-		this.invalid_tm = invalid_tm;
-	}
-
-	public int getRec_status() {
-		return rec_status;
-	}
-
-	public void setRec_status(int rec_status) {
-		this.rec_status = rec_status;
+	public void setOver_tm(long over_tm) {
+		this.over_tm = over_tm;
 	}
 
 	public int getPay_status() {
@@ -110,6 +122,14 @@ public class RedSend {
 
 	public void setPay_status(int pay_status) {
 		this.pay_status = pay_status;
+	}
+
+	public int getRef_status() {
+		return ref_status;
+	}
+
+	public void setRef_status(int ref_status) {
+		this.ref_status = ref_status;
 	}
 
 }

@@ -1,7 +1,14 @@
-package com.blemobi.payment.util;
+package com.blemobi.payment.service.order;
 
-import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
+/**
+ * 业务订单号生成器
+ * 
+ * @author zhaoyong
+ *
+ */
 public class IdWorker {
 
 	// ==============================Fields===========================================
@@ -47,61 +54,55 @@ public class IdWorker {
 	/** 上次生成ID的时间截 */
 	private long lastTimestamp = -1L;
 
-	private OrderEnum orderEnum;
-	// ==============================Constructors=====================================
-	/**
-	 * 构造函数
-	 * 
-	 * @param workerId
-	 *            工作ID (0~31)
-	 * @param datacenterId
-	 *            数据中心ID (0~31)
-	 */
-	public IdWorker(OrderEnum orderEnum) {
-		this.orderEnum=orderEnum;
+	private IdWorker() {
+
 	}
 
-	// ==============================Methods==========================================
 	/**
 	 * 获得下一个ID (该方法是线程安全的)
 	 * 
-	 * @return SnowflakeId
+	 * @return
 	 */
-	public synchronized String nextId() {
-		int oev =  orderEnum.getValue();
+	public synchronized String nextId(int type) {
 		long timestamp = timeGen();
-		return oev+""+timestamp;
-		
-//		long timestamp = timeGen();
-//
-//		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
-//		if (timestamp < lastTimestamp) {
-//			throw new RuntimeException(String.format(
-//					"Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
-//		}
-//
-//		// 如果是同一时间生成的，则进行毫秒内序列
-//		if (lastTimestamp == timestamp) {
-//			sequence = (sequence + 1) & sequenceMask;
-//			// 毫秒内序列溢出
-//			if (sequence == 0) {
-//				// 阻塞到下一个毫秒,获得新的时间戳
-//				timestamp = tilNextMillis(lastTimestamp);
-//			}
-//		}
-//		// 时间戳改变，毫秒内序列重置
-//		else {
-//			sequence = 0L;
-//		}
-//
-//		// 上次生成ID的时间截
-//		lastTimestamp = timestamp;
-//
-//		// 移位并通过或运算拼到一起组成64位的ID
-//		return ((timestamp - twepoch) << timestampLeftShift) //
-//				| (datacenterId << datacenterIdShift) //
-//				| (workerId << workerIdShift) //
-//				| sequence;
+
+		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
+		if (timestamp < lastTimestamp) {
+			throw new RuntimeException(String.format(
+					"Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+		}
+
+		// 如果是同一时间生成的，则进行毫秒内序列
+		if (lastTimestamp == timestamp) {
+			sequence = (sequence + 1) & sequenceMask;
+			// 毫秒内序列溢出
+			if (sequence == 0) {
+				// 阻塞到下一个毫秒,获得新的时间戳
+				timestamp = tilNextMillis(lastTimestamp);
+			}
+		}
+		// 时间戳改变，毫秒内序列重置
+		else {
+			sequence = 0L;
+		}
+
+		// 上次生成ID的时间截
+		lastTimestamp = timestamp;
+
+		// 移位并通过或运算拼到一起组成64位的ID
+		long id = ((timestamp - twepoch) << timestampLeftShift) //
+				| (datacenterId << datacenterIdShift) //
+				| (workerId << workerIdShift) //
+				| sequence;
+
+		String date = formatDate(timestamp);
+
+		StringBuffer ord_no = new StringBuffer();
+		ord_no.append(type);
+		ord_no.append(date);
+		ord_no.append(id);
+
+		return ord_no.toString();
 	}
 
 	/**
@@ -129,17 +130,38 @@ public class IdWorker {
 	}
 
 	// ==============================Test=============================================
-	/** 测试 */
 	public static void main(String[] args) {
-		String h = "FFFFFFFF";
-		BigInteger srch = new BigInteger(h, 16);
-		System.out.println(Integer.toBinaryString(Integer.parseInt(srch.toString())));
-		// System.out.println(Long.toBinaryString(1L << 63));
-		// SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
-		// for (int i = 0; i < 1; i++) {
-		// long id = idWorker.nextId();
-		// System.out.println(Long.toBinaryString(id));
-		// System.out.println(id);
-		// }
+		IdWorker idWorker = new IdWorker();
+		System.out.println(idWorker.nextId(OrderEnum.RED_ORDINARY.getValue()));
+	}
+
+	/**
+	 * 日期格式化
+	 * 
+	 * @param date
+	 * @return
+	 */
+	private String formatDate(long date) {
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		return df.format(date);
+	}
+
+	/**
+	 * 使用内部类来维护单例
+	 * 
+	 * @author zhaoyong
+	 *
+	 */
+	private static class SingletonFactory {
+		private static final IdWorker instance = new IdWorker();
+	}
+
+	/**
+	 * 获得IdWorker对象
+	 * 
+	 * @return
+	 */
+	public static IdWorker getInstance() {
+		return SingletonFactory.instance;
 	}
 }
