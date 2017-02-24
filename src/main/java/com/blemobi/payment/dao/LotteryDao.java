@@ -20,6 +20,9 @@
  *****************************************************************/
 package com.blemobi.payment.dao;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @ClassName LotteryDao
  * @Description TODO
@@ -28,5 +31,13 @@ package com.blemobi.payment.dao;
  * @version 1.0.0
  */
 public interface LotteryDao {
-
+    public int createLottery(Object[] param);
+    public int createLotteryLoc(List<Object[]> param);
+    public int createWinners(List<Object[]> param);
+    public List<Map<String, Object>> lotteryList(String keywords, int startIdx, int size);
+    public List<String> top5UUID(String lotteryId);
+    public Map<String, Object> lotteryDetail(String lotteryId);
+    public List<Map<String, Object>> lotteryLocations(String lotteryId);
+    public List<Map<String, Object>> lotteryUsers(String lotteryId, String keywords, int type);
+    
 }

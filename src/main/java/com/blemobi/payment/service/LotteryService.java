@@ -20,6 +20,8 @@
  *****************************************************************/
 package com.blemobi.payment.service;
 
+import com.blemobi.sep.probuf.PaymentProtos.PLottery;
+import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
  * @ClassName LotteryService
@@ -29,5 +31,32 @@ package com.blemobi.payment.service;
  * @version 1.0.0
  */
 public interface LotteryService {
-
+    /**
+     * @Description 创建抽奖 
+     * @author HUNTER.POON
+     * @param uuid 创建人
+     * @param lottery 抽奖包对象
+     * @return
+     */
+    public PMessage createLottery(String uuid, PLottery lottery);
+    
+    /**
+     * @Description 抽奖包历史列表 
+     * @author HUNTER.POON
+     * @param keywords 抽奖标题关键字
+     * @param startIdx 开始下标
+     * @param size 结果集大小
+     * @return
+     */
+    public PMessage lotteryList(String keywords, int startIdx, int size);
+    
+    /**
+     * @Description 抽奖包详情 
+     * @author HUNTER.POON
+     * @param lotteryId 抽奖包ID
+     * @param keywords 中奖者名称关键字
+     * @param type 类型(0:全部，1:男，2:女)
+     * @return
+     */
+    public PMessage lotteryDetail(String lotteryId, String keywords, int type);
 }
