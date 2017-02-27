@@ -67,18 +67,20 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     }
 
     @Override
-    public List<Map<String, Object>> lotteryList(String keywords, int startIdx, int size) {
+    public List<Map<String, Object>> lotteryList(String uuid, String keywords, int startIdx, int size) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE crt_tm > ? ");
+        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE uuid = ? AND crt_tm > ? ");
+        param.add(uuid);
         param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
         if (!StringUtils.isEmpty(keywords)) {
             sql.append(" AND title LIKE ?");
             param.add("%" + keywords + "%");
         }
-        sql.append(" LIMIT ?, ?");
+        sql.append(" ORDER BY crt_tm DESC LIMIT ?, ?");
         param.add(startIdx);
         param.add(size);
+        log.debug(sql.toString() + "----" + StringUtils.join(param, ","));
         List<Map<String, Object>> result = this.queryForList(sql.toString(), param.toArray(new Object[] {}));
         return result;
     }
@@ -91,7 +93,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public List<Map<String, Object>> lotteryLocations(String lotteryId) {
-        String sql = "SELECT loc_cd, loc_nm from t_lottery_locations where lottery_id = ?";
+        String sql = "SELECT loc_cd, loc_nm from t_lottery_locations where lottery_id = ? ORDER BY id ASC";
         return this.queryForList(sql, new Object[] {lotteryId });
     }
 
@@ -109,6 +111,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
             param.add( "%" + keywords + "%");
             sql.append(" AND nick_nm LIKE ?");
         }
+        sql.append(" ORDER BY id ASC");
         log.info(sql.toString());
         return this.queryForList(sql.toString(), param.toArray(new Object[] {}));
     }

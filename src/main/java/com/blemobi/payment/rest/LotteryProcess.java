@@ -33,8 +33,6 @@ import com.blemobi.sep.probuf.PaymentProtos.PLottery;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
-import lombok.extern.log4j.Log4j;
-
 /**
  * @ClassName LotteryProcess
  * @Description 抽奖接口
@@ -42,8 +40,7 @@ import lombok.extern.log4j.Log4j;
  * @Date 2017年2月18日 下午12:05:45
  * @version 1.0.0
  */
-@Log4j
-@Path("payment/v1/lottery")
+@Path("v1/payment/lottery")
 public class LotteryProcess {
 
     //@Autowired
@@ -61,10 +58,8 @@ public class LotteryProcess {
     @Path("create")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage createLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLottery lottery) {
-        log.debug("create new lottery begin.");
-        //TODO 数据校验、token校验
+        //TODO 数据校验
         PMessage ret = lotteryService.createLottery(uuid, lottery);
-        log.debug("create new lottery end.");
         return ret;
     }
     
@@ -82,10 +77,9 @@ public class LotteryProcess {
     @Path("list")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage lotteryList(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("startIndex") int startIndex, @QueryParam("size") int size, @QueryParam("keywords") String keywords) {
-        log.debug("lottery list begin.");
-        //TODO 数据校验、token校验
-        PMessage ret = lotteryService.lotteryList(keywords, startIndex, size);
-        log.debug("lottery list end.");
+        //TODO PRD TO BE REMOVED
+        uuid = "123";
+        PMessage ret = lotteryService.lotteryList(uuid, keywords, startIndex, size);
         return ret;
     }
     
@@ -103,10 +97,8 @@ public class LotteryProcess {
     @Path("detail")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage lotteryDetail(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("lotteryId") String lotteryId, @QueryParam("keywords") String keywords, @QueryParam("type") int type) {
-        log.debug("lottery:[" + lotteryId + "] detail begin.");
-        //TODO 数据校验、token校验
+        //TODO 数据校验
         PMessage ret = lotteryService.lotteryDetail(lotteryId, keywords, type);
-        log.debug("lottery:[" + lotteryId + "] detail end.");
         return ret;
     }
     

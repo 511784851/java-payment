@@ -18,16 +18,19 @@ public final class DateTimeUtils {
         long ret = 0;
         long curr = System.currentTimeMillis();
         if(tu == TimeUnit.DAYS){
-            ret = curr - (num * DAY);
+            ret = curr + (num * DAY);
         }else if(tu == TimeUnit.HOURS){
-            ret = curr - (num * HOURS);
+            ret = curr + (num * HOURS);
         }else if(tu == TimeUnit.MINUTES){
-            ret = curr - (num * MINUTES);
+            ret = curr + (num * MINUTES);
         }else if(tu == TimeUnit.SECONDS){
-            ret = curr - (num * SECONDS);
+            ret = curr + (num * SECONDS);
         }else{
             throw new IllegalArgumentException("timeunit error");
         }
         return ret;
+    }
+    public static void main(String[] args) {
+        System.out.println(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
     }
 }

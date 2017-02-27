@@ -10,7 +10,6 @@ import org.junit.Test;
 import com.blemobi.library.client.BaseHttpClient;
 import com.blemobi.library.client.LocalHttpClient;
 import com.blemobi.payment.core.PaymentManager;
-import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetailRet;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 public class LotteryProcessTest {
@@ -24,7 +23,7 @@ public class LotteryProcessTest {
 
 		String[] arg = new String[] { "-env", "local" };
 		try {
-			PaymentManager.main(arg);
+		    PaymentManager.main(arg);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,7 +33,7 @@ public class LotteryProcessTest {
 	@Test
 	public void test() throws Exception {
 	    /**
-	    StringBuffer path = new StringBuffer("/payment/v1/lottery/create");
+	    StringBuffer path = new StringBuffer("/v1/payment/lottery/create");
 	    List<String> winners = new ArrayList<String>();
 	    winners.add("1468419313301436961");
 	    winners.add("1468419313301436962");
@@ -57,13 +56,20 @@ public class LotteryProcessTest {
 	    PMessage message = httpClient.postBodyMethod();
 	    assertEquals("PRedPay", message.getType());http://127.0.0.1:8081/customers/1
 	    */
-	    StringBuffer path = new StringBuffer("/payment/v1/lottery/list?startIndex=0&size=2");
+	    /***/
+	    StringBuffer path = new StringBuffer("/v1/payment/lottery/list?startIndex=0&size=5&keywords=2");
         BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, path, null, null, "application/x-protobuf");
         PMessage message = httpClient.getMethod();
         assertEquals("PLotteryListRet", message.getType());
         
+	    /**
+	    StringBuffer path = new StringBuffer("/customers/2");
+        BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 8081, path, null, null, "application/x-protobuf");
+        PMessage message = httpClient.getMethod();
+        assertEquals("Josh", message.getType());
+        */
 	    /** 
-	    StringBuffer path = new StringBuffer("/payment/v1/lottery/detail?lotteryId=7967124&type=1&keywords=ff");
+	    StringBuffer path = new StringBuffer("/v1/payment/lottery/detail?lotteryId=7967124&type=1&keywords=ff");
 	    BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, path, null, null, "application/x-protobuf");
         PMessage message = httpClient.getMethod();
         

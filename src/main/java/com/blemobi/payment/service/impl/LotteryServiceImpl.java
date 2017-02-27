@@ -44,6 +44,8 @@ import com.blemobi.sep.probuf.PaymentProtos.PRedPay;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
+import lombok.extern.log4j.Log4j;
+
 /**
  * @ClassName LotteryServiceImpl
  * @Description 抽奖业务类
@@ -51,6 +53,7 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
  * @Date 2017年2月18日 下午12:07:19
  * @version 1.0.0
  */
+@Log4j
 @Service("lotteryService")
 public class LotteryServiceImpl implements LotteryService {
 
@@ -65,11 +68,11 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public PMessage createLottery(String uuid, PLottery lottery) {
+        //TODO PRD TO BE REMOVED
+        uuid = "123";
         long currTm = System.currentTimeMillis();
-        // 生成订单号
         IdWorker idWorder = IdWorker.getInstance();
         String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
-        uuid = "123";
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getType(), lottery.getWinners(), lottery.getTotAmt(),
                 lottery.getTotAmt(), 1, uuid, currTm, currTm };
         int ret = lotteryDao.createLottery(params);
@@ -117,15 +120,16 @@ public class LotteryServiceImpl implements LotteryService {
     }
 
     @Override
-    public PMessage lotteryList(String keywords, int startIdx, int size) {
-        List<Map<String, Object>> lotteriesList = lotteryDao.lotteryList(keywords, startIdx, size);
+    public PMessage lotteryList(String uuid, String keywords, int startIdx, int size) {
+        List<Map<String, Object>> lotteriesList = lotteryDao.lotteryList(uuid, keywords, startIdx, size);
         PLotteryListRet.Builder builder = PLotteryListRet.newBuilder();
         if (lotteriesList != null) {
             for (Map<String, Object> entity : lotteriesList) {
+                log.debug(entity.get("id").toString() + "--------");
                 PLotterySingleRet.Builder sBuilder = PLotterySingleRet.newBuilder();
                 List<String> uuids = lotteryDao.top5UUID(entity.get("id").toString());
                 sBuilder.setCrtTm(entity.get("crt_tm").toString());
-                sBuilder.setLotteryId(Integer.parseInt(entity.get("id").toString()));
+                sBuilder.setLotteryId(Integer.parseInt(entity.get("id").toString().substring(8)));
                 sBuilder.setTitle(entity.get("title").toString());
                 sBuilder.setWinners(Integer.parseInt(entity.get("winners").toString()));
                 // TODO 缓存中获取用户头像
