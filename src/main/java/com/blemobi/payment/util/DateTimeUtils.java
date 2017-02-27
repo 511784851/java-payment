@@ -30,6 +30,10 @@ public final class DateTimeUtils {
         }
         return ret;
     }
+    
+    public static long currTime(){
+        return System.currentTimeMillis();
+    }
     public static void main(String[] args) {
         System.out.println(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
     }

@@ -15,7 +15,7 @@ import com.blemobi.payment.model.Reward;
  * @author zhaoyong
  *
  */
-@Repository("rewarDao")
+@Repository("rewardDao")
 public class RewardDaoImpl implements RewardDao {
 
 	@Autowired
@@ -44,5 +44,12 @@ public class RewardDaoImpl implements RewardDao {
 		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
 		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, ord_no);
 	}
+
+    @Override
+    public int paySucc(String ordNo, int amt) {
+        String sql = "UPDATE t_reward SET pay_status = 1 WHERE ord_no = ? AND amount = ? AND pay_status = 0";
+        Object[] param = new Object[]{ordNo, amt};
+        return jdbcTemplate.update(sql, param);
+    }
 
 }

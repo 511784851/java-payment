@@ -19,4 +19,13 @@ public interface RewardDao {
 	 * 根据订单号查询详情
 	 */
 	public Reward selectByKey(String ord_no);
+	
+	/**
+     * @Description 红包支付成功 
+     * @author HUNTER.POON
+     * @param ordNo 订单号
+     * @param amt
+     * @return
+     */
+    public int paySucc(String ordNo, int amt);
 }

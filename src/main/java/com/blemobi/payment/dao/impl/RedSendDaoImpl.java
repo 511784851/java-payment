@@ -58,4 +58,11 @@ public class RedSendDaoImpl implements RedSendDao {
 		return jdbcTemplate.update(sql.toString(), rece_money, ord_no, rece_money);
 	}
 
+    @Override
+    public int paySucc(String ordNo, int amt) {
+        String sql = "UPDATE t_red_send SET pay_status = 1 WHERE ord_no = ? AND tot_amount = ? AND pay_status = 0";
+        Object[] param = new Object[]{ordNo, amt};
+        return jdbcTemplate.update(sql, param);
+    }
+
 }

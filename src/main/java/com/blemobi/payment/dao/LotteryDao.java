@@ -39,5 +39,5 @@ public interface LotteryDao {
     public Map<String, Object> lotteryDetail(String lotteryId);
     public List<Map<String, Object>> lotteryLocations(String lotteryId);
     public List<Map<String, Object>> lotteryUsers(String lotteryId, String keywords, int type);
-    
+    public int paySucc(String ordNo, int amt);
 }
