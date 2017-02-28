@@ -30,7 +30,7 @@ import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.dao.TransactionDao;
 import com.blemobi.payment.service.CallbackService;
-import com.blemobi.payment.service.order.OrderEnum;
+import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 
 import lombok.extern.log4j.Log4j;
