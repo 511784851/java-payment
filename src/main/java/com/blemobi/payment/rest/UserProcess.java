@@ -17,7 +17,7 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("payment/v1/user")
+@Path("v1/payment/user")
 public class UserProcess {
 
 	/**
@@ -30,7 +30,6 @@ public class UserProcess {
 	@Path("thirdToken")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage thirdToken(@CookieParam("uuid") String uuid) {
-		uuid = "1468419313301436967";
 		SignHelper signHelper = new SignHelper(uuid);
 		String sign = signHelper.getThirdToken();
 		PStringSingle stringSingle = PStringSingle.newBuilder().setVal(sign).build();

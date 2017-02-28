@@ -67,4 +67,5 @@ public interface RedJedisDao {
 	 * @return 单日已发送总金额（单位：分）
 	 */
 	public int findDailySendMoney(String send_uuid);
+
 }

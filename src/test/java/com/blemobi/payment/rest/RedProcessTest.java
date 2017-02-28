@@ -22,7 +22,7 @@ public class RedProcessTest {
 
 	// @Test
 	public void testordinary() throws Exception {
-		basePath = new StringBuffer("/payment/v1/send/ordinary");
+		basePath = new StringBuffer("/v1/payment/send/ordinary");
 		POrdinRedEnve ordinaryRed = POrdinRedEnve.newBuilder().setMoney(20000).setContent("恭喜发财，大吉大利")
 				.setReceUuid("1468419313301436968").build();
 		byte[] body = ordinaryRed.toByteArray();
@@ -34,8 +34,8 @@ public class RedProcessTest {
 
 	// @Test
 	public void testGroup() throws Exception {
-		basePath = new StringBuffer("/payment/v1/send/group");
-		PGroupRedEnve oneRed = PGroupRedEnve.newBuilder().setIsRandom(true).setMoney(80000).setNumber(5)
+		basePath = new StringBuffer("/v1/payment/send/group");
+		PGroupRedEnve oneRed = PGroupRedEnve.newBuilder().setIsRandom(true).setMoney(2200).setNumber(5)
 				.setContent("恭喜发财，大吉大利").addReceUuid("1468419313301436968").addReceUuid("1468419313301436969")
 				.addReceUuid("1468419313301436910").build();
 		byte[] body = oneRed.toByteArray();
@@ -53,7 +53,7 @@ public class RedProcessTest {
 		assertEquals("PRedInfo", message.getType());
 	}
 
-	@Test
+	// @Test
 	public void tesHistory() throws Exception {
 		basePath = new StringBuffer("/payment/v1/send/history?id=-1&size=10");
 		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, null, null);

@@ -143,4 +143,5 @@ public class RedJedisDaoImpl implements RedJedisDao {
 		Date time = calendar.getTime();
 		return time.getTime() / 1000;
 	}
+	
 }

@@ -2,6 +2,8 @@ package com.blemobi.payment.service.helper;
 
 import java.util.Random;
 
+import com.blemobi.payment.util.Constants;
+
 /**
  * 随机红包分配算法（将分配好的随机金额存储在Redis的队列中，当有用户领取红宝时，从队列顶部弹出一个金额）
  * 
@@ -18,12 +20,6 @@ import java.util.Random;
  *
  */
 public class RandomRedHelper {
-
-	/** 单个随机红包最小金额（单位：分） */
-	private final int min_each_money = 1;
-
-	/** 单个随机红包最大金额（单位：分） */
-	private final int max_each_money = 20000;
 
 	/** 随机红包总金额 */
 	private int tota_money;
@@ -116,11 +112,11 @@ public class RandomRedHelper {
 	 */
 	private int get_min_random_money(int surplus_money, int next_surplus_number) {
 		// 为了保证领完本次剩余的红包单个金额不超过max_each_money，计算出本次领取后最多剩余金额
-		int max_surplus_money = next_surplus_number * max_each_money;
+		int max_surplus_money = next_surplus_number * Constants.max_each_money;
 		// 根据上一步计算出本次最少要领取的金额
 		int min_random_money = surplus_money - max_surplus_money;
-		if (min_random_money < min_each_money)
-			min_random_money = min_each_money;
+		if (min_random_money < Constants.min_each_money)
+			min_random_money = Constants.min_each_money;
 		return min_random_money;
 	}
 
@@ -138,11 +134,11 @@ public class RandomRedHelper {
 
 		// 初步计算出本次最多可领取的金额 （需求：随机金额在0.1到剩余平均值×2之间）
 		int max_random_money = avg_money * 2;
-		if (max_random_money > max_each_money)
-			max_random_money = max_each_money;
+		if (max_random_money > Constants.max_each_money)
+			max_random_money = Constants.max_each_money;
 
 		// 为了保证领完本次剩余的红包单个金额不不低于min_each_money，计算出本次领取后最少剩余金额为
-		int min_surplus_money = next_surplus_number * min_each_money;
+		int min_surplus_money = next_surplus_number * Constants.min_each_money;
 		// 根据上一步计算出本次最多可领取的金额
 		if (max_random_money > surplus_money - min_surplus_money)
 			max_random_money = surplus_money - min_surplus_money;
@@ -156,7 +152,7 @@ public class RandomRedHelper {
 		int random_tota_money = 0;
 		for (int i = 0; i < random_money_array.length; i++) {
 			int random_money = random_money_array[i];
-			if (random_money < min_each_money || random_money > max_each_money)
+			if (random_money < Constants.min_each_money || random_money > Constants.max_each_money)
 				throw new RuntimeException("随机红包单个金额不符合规则：" + random_money);
 			random_tota_money += random_money;
 		}

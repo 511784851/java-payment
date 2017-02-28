@@ -8,7 +8,7 @@ import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.service.order.IdWorker;
-import com.blemobi.payment.service.order.OrderEnum;
+import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;

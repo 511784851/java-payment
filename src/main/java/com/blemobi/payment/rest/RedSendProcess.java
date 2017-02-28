@@ -22,8 +22,8 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("payment/v1/send")
-public class RedProcess {
+@Path("v1/payment/send")
+public class RedSendProcess {
 
 	// @Autowired
 	private RedSendService redSendService = InstanceFactory.getInstance(RedSendService.class);
@@ -43,7 +43,7 @@ public class RedProcess {
 	@Path("ordinary")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage ordinary(POrdinRedEnve ordinRedEnve, @CookieParam("uuid") String send_uuid) {
-		send_uuid = "1468419313301436967";
+		send_uuid = "1471175703665920835";
 		return redSendService.sendOrdinary(ordinRedEnve, send_uuid);
 	}
 
@@ -58,7 +58,7 @@ public class RedProcess {
 	@Path("group")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage group(PGroupRedEnve groupRedEnve, @CookieParam("uuid") String send_uuid) {
-		send_uuid = "1468419313301436967";
+		send_uuid = "1471175703665920835";
 		return redSendService.sendGroup(groupRedEnve, send_uuid);
 	}
 
@@ -73,7 +73,7 @@ public class RedProcess {
 	@Path("receive")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage receive(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
-		rece_uuid = "1468419313301436969";
+		rece_uuid = "1471175703665920835";
 		return redReceiveService.receive(ord_no, rece_uuid);
 	}
 
@@ -81,7 +81,7 @@ public class RedProcess {
 	@Path("history")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage history(@CookieParam("uuid") String uuid, @QueryParam("id") int id, @QueryParam("size") int size) {
-		uuid = "1468419313301436967";
+		uuid = "1471175703665920835";
 		return redFindService.history(uuid, id, size);
 	}
 

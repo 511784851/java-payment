@@ -17,7 +17,7 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
  * @author zhaoyong
  *
  */
-@Path("payment/v1/reward")
+@Path("v1/payment/reward")
 public class RewardProcess {
 
 	// @Autowired

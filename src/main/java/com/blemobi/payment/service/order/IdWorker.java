@@ -3,6 +3,8 @@ package com.blemobi.payment.service.order;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import com.blemobi.payment.util.Constants.OrderEnum;
+
 /**
  * 业务订单号生成器
  * 
