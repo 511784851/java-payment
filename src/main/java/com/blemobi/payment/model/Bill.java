@@ -10,8 +10,6 @@ public class Bill {
 
 	private int money;
 
-	private int number;
-
 	private long time;
 
 	private int type;
@@ -46,14 +44,6 @@ public class Bill {
 
 	public void setMoney(int money) {
 		this.money = money;
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
 	}
 
 	public long getTime() {
