@@ -1,5 +1,7 @@
 package com.blemobi.payment.dao;
 
+import java.util.List;
+
 import com.blemobi.payment.model.RedSend;
 
 /**
@@ -23,6 +25,11 @@ public interface RedSendDao {
 	 * 领红包时更新数据
 	 */
 	public int update(String ord_no, int rece_money);
+
+	/**
+	 * 批量查询红包发送记录
+	 */
+	public List<RedSend> selectByPage(String uuid, int id, int size);
 	
 	/**
 	 * @Description 红包支付成功 

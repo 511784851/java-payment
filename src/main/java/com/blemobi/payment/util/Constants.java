@@ -44,7 +44,7 @@ public final class Constants {
         SUCCESS("0000");
         private String value;
         private RESPSTS(String value) {
-            this.value = value;
+            this.value = value; 
         }
         public String getValue() {
             return value;

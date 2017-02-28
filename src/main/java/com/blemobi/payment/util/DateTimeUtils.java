@@ -24,7 +24,7 @@ public final class DateTimeUtils {
         }else if(tu == TimeUnit.MINUTES){
             ret = curr + (num * MINUTES);
         }else if(tu == TimeUnit.SECONDS){
-            ret = curr + (num * SECONDS);
+            ret = curr + (num * SECONDS); 
         }else{
             throw new IllegalArgumentException("timeunit error");
         }

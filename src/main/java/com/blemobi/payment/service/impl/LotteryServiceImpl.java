@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.service.LotteryService;
+import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.service.order.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
@@ -41,7 +42,7 @@ import com.blemobi.sep.probuf.PaymentProtos.PLottery;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetailRet;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryListRet;
 import com.blemobi.sep.probuf.PaymentProtos.PLotterySingleRet;
-import com.blemobi.sep.probuf.PaymentProtos.PRedPay;
+import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
@@ -116,8 +117,9 @@ public class LotteryServiceImpl implements LotteryService {
                 throw new RuntimeException("添加中奖者失败，请重试。");
             }
         }
-        PRedPay redPay = PRedPay.newBuilder().setOrderNum(orderno).setFenMoney(lottery.getTotAmt()).build();
-        return ReslutUtil.createReslutMessage(redPay);
+        SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
+		POrderPay orderPay = signHelper.getOrderPay();
+        return ReslutUtil.createReslutMessage(orderPay);
     }
 
     @Override
@@ -232,6 +234,8 @@ public class LotteryServiceImpl implements LotteryService {
         if(remainCnt > 1 && ((remainAmt + bonus) < totAmt)){
             status = 2;
         }
+        remainCnt--;
+        remainAmt -= bonus;
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, updTm, status);
         return null;
     }

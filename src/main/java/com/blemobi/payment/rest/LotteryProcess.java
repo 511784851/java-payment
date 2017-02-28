@@ -75,7 +75,7 @@ public class LotteryProcess {
      */
     @POST
     @Path("accept")
-    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF) 
     public PMessage acceptPrize(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PAcceptPrize prize) {
         PMessage ret = lotteryService.acceptPrize(uuid, prize.getLotteryId());
         return ret;

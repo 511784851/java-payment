@@ -145,7 +145,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     }
     @Override
     public Map<String, Object> queryLotteryInf(String lotteryId) {
-        String sql = "SELECT crt_tm, tot_amt, remain_cnt, remain_amt, status FROM t_lotteries WHERE id = ?";
+        String sql = "SELECT crt_tm, tot_amt, remain_cnt, remain_amt, status FROM t_lotteries WHERE id = ? ";
         Map<String, Object> inf = this.queryForMap(sql, lotteryId);
         return inf;
     }

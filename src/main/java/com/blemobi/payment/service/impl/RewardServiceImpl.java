@@ -9,8 +9,8 @@ import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.service.order.OrderEnum;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
-import com.blemobi.sep.probuf.PaymentProtos.PRedPay;
+import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.google.common.base.Strings;
 
@@ -38,16 +38,16 @@ public class RewardServiceImpl implements RewardService {
 	 * 打赏
 	 */
 	@Transactional
-	public PMessage reward(POrdinaryRed ordinaryRed, long send_uuid) {
-		String content = ordinaryRed.getContent();
-		int money = ordinaryRed.getMoney();
-		String rece_uuid = ordinaryRed.getReceUuid();
+	public PMessage reward(POrdinRedEnve ordinRedEnve, String send_uuid) {
+		String content = ordinRedEnve.getContent();
+		int money = ordinRedEnve.getMoney();
+		String rece_uuid = ordinRedEnve.getReceUuid();
 
 		String ord_no = initRewardInfo(money, send_uuid, content, rece_uuid);
 		if (Strings.isNullOrEmpty(ord_no))
 			return message;
 
-		PRedPay redPay = PRedPay.newBuilder().setOrderNum(ord_no).setFenMoney(money).build();
+		POrderPay redPay = POrderPay.newBuilder().setOrderNum(ord_no).setFenMoney(money).build();
 		return ReslutUtil.createReslutMessage(redPay);
 	}
 
@@ -60,7 +60,7 @@ public class RewardServiceImpl implements RewardService {
 	 * @param rece_uuid
 	 * @return
 	 */
-	private String initRewardInfo(int money, long send_uuid, String content, String rece_uuid) {
+	private String initRewardInfo(int money, String send_uuid, String content, String rece_uuid) {
 		boolean bool = checkMoney(money);
 		if (!bool)
 			return "";

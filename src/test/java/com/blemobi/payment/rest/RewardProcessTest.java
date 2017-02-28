@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.blemobi.library.client.BaseHttpClient;
 import com.blemobi.library.client.LocalHttpClient;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 public class RewardProcessTest {
@@ -20,7 +20,7 @@ public class RewardProcessTest {
 	@Test
 	public void Reward() throws Exception {
 		StringBuffer basePath = new StringBuffer("/payment/v1/reward/ordinary");
-		POrdinaryRed ordinaryRed = POrdinaryRed.newBuilder().setMoney(20000).setContent("恭喜发财，大吉大利")
+		POrdinRedEnve ordinaryRed = POrdinRedEnve.newBuilder().setMoney(20000).setContent("恭喜发财，大吉大利")
 				.setReceUuid("1468419313301436968").build();
 		byte[] body = ordinaryRed.toByteArray();
 		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, body,

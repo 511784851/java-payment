@@ -51,7 +51,7 @@ public class RedReceiveDaoImpl implements RedReceiveDao {
 	/**
 	 * 查询领红包数据（根据红包ID和领取人）
 	 */
-	public RedReceive selectByKey(String ord_no, long rece_uuid) {
+	public RedReceive selectByKey(String ord_no, String rece_uuid) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append("id, ord_no, rece_uuid, money, rece_tm ");

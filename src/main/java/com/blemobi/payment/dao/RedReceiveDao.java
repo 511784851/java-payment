@@ -25,6 +25,6 @@ public interface RedReceiveDao {
 	/**
 	 * 查询领红包数据（根据红包ID和领取人）
 	 */
-	public RedReceive selectByKey(String ord_no, long rece_uuid);
+	public RedReceive selectByKey(String ord_no, String rece_uuid);
 
 }

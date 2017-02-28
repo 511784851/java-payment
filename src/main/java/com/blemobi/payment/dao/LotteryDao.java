@@ -28,7 +28,7 @@ import java.util.Map;
  * @Description TODO
  * @author HUNTER.POON
  * @Date 2017年2月18日 下午12:09:11
- * @version 1.0.0
+ * @version 1.0.0 
  */
 public interface LotteryDao {
     public int createLottery(Object[] param);
