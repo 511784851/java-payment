@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
+import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.service.order.IdWorker;
@@ -76,7 +77,7 @@ public class LotteryServiceImpl implements LotteryService {
         IdWorker idWorder = IdWorker.getInstance();
         String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getType(), lottery.getWinners(),
-                lottery.getWinners(), lottery.getTotAmt(), lottery.getTotAmt(), 1, uuid, currTm, currTm };
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm };
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new RuntimeException("创建抽奖失败，请重试。");
@@ -185,31 +186,25 @@ public class LotteryServiceImpl implements LotteryService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public PMessage acceptPrize(String uuid, String lotteryId) {
         Map<String, Object> inf = lotteryDao.queryLotteryInf(lotteryId);
-        lotteryDao.acceptPrize(lotteryId, uuid);
         Integer remainCnt = Integer.parseInt(inf.get("remain_cnt").toString());
         Integer remainAmt = Integer.parseInt(inf.get("remain_amt").toString());
-        Integer totAmt = Integer.parseInt(inf.get("tot_amt").toString());
         long updTm = DateTimeUtils.currTime();
         if(inf == null || inf.isEmpty()){
-            // TODO 没找到对应的抽奖包 
-            throw new RuntimeException("");
+            throw new BizException(2015000, "没找到对应的抽奖包");
         }
         if (!DateTimeUtils.in24Hours(Long.parseLong(inf.get("crt_tm").toString()))) {
-            // TODO 抽奖包已过期
-            throw new RuntimeException("");
+            throw new BizException(2015001, "抽奖包已过期");
         }
         Integer lotterySts = Integer.parseInt(inf.get("status").toString());
         if(lotterySts.intValue() == 1){
-            // TODO 抽奖包未支付
-            throw new RuntimeException("");
+            throw new BizException(2015002, "抽奖包未支付");
         }else if(lotterySts.intValue() == 3 || remainCnt.intValue() < 1 || remainAmt.intValue() < 1){
-            // TODO 抽奖包已完成领奖
-            throw new RuntimeException("");
+            throw new BizException(2015003, "抽奖包已完成领奖");
         }else if(lotterySts.intValue() == 4){
-            // TODO 抽奖包已过期
-            throw new RuntimeException("");
+            throw new BizException(2015001, "抽奖包已过期");
         }else{
             
         }
@@ -218,25 +213,23 @@ public class LotteryServiceImpl implements LotteryService {
         Integer sts = Integer.parseInt(winnerInf.get("status").toString());
         Integer bonus = Integer.parseInt(winnerInf.get("bonus").toString());
         if (sts.intValue() == 1) {
-            // TODO 已领奖
-            throw new RuntimeException("");
+            throw new BizException(2015003, "抽奖包已完成领奖");
         } else if (sts.intValue() == 2) {
-            // TODO 已过期
-            throw new RuntimeException("");
+            throw new BizException(2015001, "抽奖包已过期");
         } else {
 
         }
-        if((remainAmt + bonus) > totAmt){
-            // TODO 领奖包金额异常
-            throw new RuntimeException("");
+        if((remainAmt - bonus) < 0){
+            throw new BizException(2015004, "领奖金额异常");
         }
         int status = 3;
-        if(remainCnt > 1 && ((remainAmt + bonus) < totAmt)){
+        if(remainCnt > 1 && ((remainAmt - bonus) > 0)){
             status = 2;
         }
         remainCnt--;
         remainAmt -= bonus;
+        lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, updTm, status);
-        return null;
+        return ReslutUtil.createSucceedMessage();
     }
 }
