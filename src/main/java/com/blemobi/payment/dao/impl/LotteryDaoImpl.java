@@ -51,7 +51,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createLottery(Object[] param) {
-        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, status, uuid, crt_tm, upd_tm) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, param);
     }
     @Override
@@ -132,5 +132,26 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
         String sql = "UPDATE t_lotteries SET status = 2 WHERE id = ? AND status = 1 AND tot_amt = ?";
         Object[] param = new Object[]{ordNo, amt};
         return this.update(sql, param);
+    }
+    @Override
+    public int acceptPrize(String lotteryId, String uuid) {
+        String sql = "UPDATE t_winners SET status = 1, accept_tm = ? WHERE lottery_id = ? AND uuid = ? AND status = 0";
+        return this.update(sql, new Object[]{DateTimeUtils.currTime(), lotteryId, uuid});
+    }
+    @Override
+    public int updateLottery(String lotteryId, int remainCnt, int remainAmt, long updTm, int status) {
+        String sql = "UPDATE t_lotteries SET remain_cnt = ?, remain_amt = ?, status = ?, upd_tm = ? WHERE id = ?";
+        return this.update(sql, new Object[]{remainCnt, remainAmt, status, updTm, lotteryId});
+    }
+    @Override
+    public Map<String, Object> queryLotteryInf(String lotteryId) {
+        String sql = "SELECT crt_tm, tot_amt, remain_cnt, remain_amt, status FROM t_lotteries WHERE id = ?";
+        Map<String, Object> inf = this.queryForMap(sql, lotteryId);
+        return inf;
+    }
+    @Override
+    public Map<String, Object> getPrizeInf(String lotteryId, String uuid) {
+        String sql = "SELECT status, bonus FROM t_winners WHERE lottery_id = ? AND uuid = ?";
+        return this.queryForMap(sql, new Object[]{lotteryId, uuid});
     }
 }

@@ -41,6 +41,15 @@ public interface LotteryService {
     public PMessage createLottery(String uuid, PLottery lottery);
     
     /**
+     * @Description 中奖者领奖
+     * @author HUNTER.POON
+     * @param uuid 中奖者uuid
+     * @param lotteryId 抽奖包ID
+     * @return 
+     */
+    public PMessage acceptPrize(String uuid, String lotteryId);
+    
+    /**
      * @Description 抽奖包历史列表 
      * @author HUNTER.POON
      * @param uuid 红包所属者

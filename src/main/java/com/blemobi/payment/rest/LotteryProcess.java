@@ -29,6 +29,7 @@ import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.util.InstanceFactory;
+import com.blemobi.sep.probuf.PaymentProtos.PAcceptPrize;
 import com.blemobi.sep.probuf.PaymentProtos.PLottery;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
@@ -60,6 +61,23 @@ public class LotteryProcess {
     public PMessage createLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLottery lottery) {
         //TODO 数据校验
         PMessage ret = lotteryService.createLottery(uuid, lottery);
+        return ret;
+    }
+    
+    
+    /**
+     * @Description 中奖者领奖 
+     * @author HUNTER.POON
+     * @param uuid 用户uuid
+     * @param token 令牌
+     * @param lottery 抽奖包
+     * @return
+     */
+    @POST
+    @Path("accept")
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+    public PMessage acceptPrize(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PAcceptPrize prize) {
+        PMessage ret = lotteryService.acceptPrize(uuid, prize.getLotteryId());
         return ret;
     }
     
@@ -97,7 +115,6 @@ public class LotteryProcess {
     @Path("detail")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage lotteryDetail(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("lotteryId") String lotteryId, @QueryParam("keywords") String keywords, @QueryParam("type") int type) {
-        //TODO 数据校验
         PMessage ret = lotteryService.lotteryDetail(lotteryId, keywords, type);
         return ret;
     }

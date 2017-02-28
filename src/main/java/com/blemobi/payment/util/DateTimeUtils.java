@@ -34,6 +34,12 @@ public final class DateTimeUtils {
     public static long currTime(){
         return System.currentTimeMillis();
     }
+    
+    public static boolean in24Hours(long ms){
+        long sub = currTime() - ms;
+        return DAY > sub;
+    }
+    
     public static void main(String[] args) {
         System.out.println(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
     }
