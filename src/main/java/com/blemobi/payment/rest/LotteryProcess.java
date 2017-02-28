@@ -77,6 +77,8 @@ public class LotteryProcess {
     @Path("accept")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF) 
     public PMessage acceptPrize(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PAcceptPrize prize) {
+        //TODO prd to be removed
+        uuid = "1468419313301436965";
         PMessage ret = lotteryService.acceptPrize(uuid, prize.getLotteryId());
         return ret;
     }

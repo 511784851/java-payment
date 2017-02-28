@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `paymentDB`.`t_transaction_serial` (
   `upd_tm` BIGINT(18) NOT NULL DEFAULT '0' COMMENT '修改时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------

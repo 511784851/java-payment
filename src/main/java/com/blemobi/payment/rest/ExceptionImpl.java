@@ -5,6 +5,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.blemobi.library.util.ReslutUtil;
+import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -25,7 +26,13 @@ public class ExceptionImpl implements ExceptionMapper<Exception> {
 	public Response toResponse(Exception e) {
 		log.error("Payment server catch an exception, MSG=[" + e.getMessage() + "]");
 		e.printStackTrace();
-		PMessage msg = ReslutUtil.createErrorMessage(1001012, "系统繁忙");
+		PMessage msg = null;
+		if(e instanceof BizException){
+		    BizException ex = (BizException) e;
+		    msg = ReslutUtil.createErrorMessage(ex.getErrCd(), ex.getMsg(), ex.getExtMsg());
+		}else{
+		    msg = ReslutUtil.createErrorMessage(1001012, "系统繁忙");
+		}
 		return Response.ok(msg, MediaTypeExt.APPLICATION_PROTOBUF).status(200).build();
 	}
 }

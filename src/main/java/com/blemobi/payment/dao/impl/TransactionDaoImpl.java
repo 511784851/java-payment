@@ -14,7 +14,7 @@ public class TransactionDaoImpl extends JdbcTemplate implements TransactionDao {
 
 
     public int insert(Object... args) {
-        String sql = "INSERT INTO t_tra_pay(amount, status, time, ord_no, rec_uid, corg_ord_id, corg_sts, corg_msg) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_transaction_serial(uuid, biz_ord_no, biz_typ, amt, ptf_sts, ptf_msg, trans_desc, corg_ord_no, corg_sts, corg_msg, crt_tm, upd_tm) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, args);
     }
 

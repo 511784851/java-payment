@@ -23,10 +23,10 @@ package com.blemobi.payment.rest;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.util.Constants;
@@ -71,14 +71,14 @@ public class RongYunNotifyProcess {
      *            摘要
      * @return
      */
-    @GET
+    @POST
     @Path("notify")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
-    public String callback(@QueryParam("respstat") String respstat, @QueryParam("respmsg") String respmsg,
-            @QueryParam("orderAmount") String orderAmount, @QueryParam("orderNo") String orderNo,
-            @QueryParam("orderStatus") String orderStatus, @QueryParam("orderTime") String orderTime,
-            @QueryParam("custOrderNo") String custOrderNo, @QueryParam("receiveUid") String receiveUid,
-            @QueryParam("sign") String sign) {
+    @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
+    public String callback(@FormParam("respstat") String respstat, @FormParam("respmsg") String respmsg,
+            @FormParam("orderAmount") String orderAmount, @FormParam("orderNo") String orderNo,
+            @FormParam("orderStatus") String orderStatus, @FormParam("orderTime") String orderTime,
+            @FormParam("custOrderNo") String custOrderNo, @FormParam("receiveUid") String receiveUid,
+            @FormParam("sign") String sign) {
         try {
             Map<String, String> param = new HashMap<String, String>();
             param.put("respstat", respstat);
@@ -90,9 +90,9 @@ public class RongYunNotifyProcess {
             param.put("custOrderNo", custOrderNo);
             param.put("receiveUid", receiveUid);
             String signLocal = SignUtil.sign(param);
-            log.debug(signLocal);
+            log.info(signLocal);
             //融云支付失败，不予处理
-            if(!Constants.RESPSTS.SUCCESS.getValue().equals(respstat) || !"1".equals(orderStatus)){
+            if(!Constants.RESPSTS.SUCCESS.getValue().equals(respstat) || !Constants.RONGYUN_ORD_STS.SUCCESS.getValue().equals(orderStatus)){
                 return Constants.HTMLSTS.SUCCESS.getValue();
             }
             // 验签失败

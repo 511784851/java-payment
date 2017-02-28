@@ -50,4 +50,15 @@ public final class Constants {
             return value;
         }
     }
+    
+    public enum RONGYUN_ORD_STS{
+        SUCCESS("1");
+        private String value;
+        private RONGYUN_ORD_STS(String value) {
+            this.value = value; 
+        }
+        public String getValue() {
+            return value;
+        }
+    }
 }
