@@ -1,6 +1,6 @@
 package com.blemobi.payment.service;
 
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -13,5 +13,5 @@ public interface RewardService {
 	/**
 	 * 打赏
 	 */
-	public PMessage reward(POrdinaryRed ordinaryRed, long send_uuid);
+	public PMessage reward(POrdinRedEnve ordinRedEnve, String send_uuid);
 }

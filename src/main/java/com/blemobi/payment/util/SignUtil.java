@@ -60,6 +60,17 @@ public class SignUtil {
 		return sign;
 	}
 
+	public static String sign(String value) {
+		String sign = "";
+		try {
+			sign = toHexValue(encryptMD5(value.getBytes(Charset.forName("utf-8"))));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("md5 error");
+		}
+		return sign;
+	}
+
 	private static byte[] encryptMD5(byte[] data) throws Exception {
 		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		md5.update(data);

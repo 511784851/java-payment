@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.util.InstanceFactory;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -21,7 +21,7 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 public class RewardProcess {
 
 	// @Autowired
-	private RewardService rewardService = InstanceFactory.getInstance("rewardService");
+	private RewardService rewardService = InstanceFactory.getInstance(RewardService.class);
 
 	/**
 	 * 打赏
@@ -33,8 +33,8 @@ public class RewardProcess {
 	@POST
 	@Path("ordinary")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage ordinary(POrdinaryRed ordinaryRed, @CookieParam("uuid") long send_uuid) {
-		send_uuid = 1468419313301436967l;
-		return rewardService.reward(ordinaryRed, send_uuid);
+	public PMessage ordinary(POrdinRedEnve ordinRedEnve, @CookieParam("uuid") String send_uuid) {
+		send_uuid = "1468419313301436967";
+		return rewardService.reward(ordinRedEnve, send_uuid);
 	}
 }

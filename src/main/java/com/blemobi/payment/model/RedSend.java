@@ -2,6 +2,8 @@ package com.blemobi.payment.model;
 
 public class RedSend {
 
+	private int id;
+
 	private String ord_no;
 
 	private String send_uuid;
@@ -27,6 +29,14 @@ public class RedSend {
 	private int pay_status;
 
 	private int ref_status;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getOrd_no() {
 		return ord_no;

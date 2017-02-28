@@ -7,11 +7,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import com.blemobi.payment.service.RedFindService;
 import com.blemobi.payment.service.RedReceiveService;
 import com.blemobi.payment.service.RedSendService;
 import com.blemobi.payment.util.InstanceFactory;
-import com.blemobi.sep.probuf.PaymentProtos.PGroupRed;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
+import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -25,10 +26,11 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 public class RedProcess {
 
 	// @Autowired
-	private RedSendService redSendService = InstanceFactory.getInstance("redSendService");
-
+	private RedSendService redSendService = InstanceFactory.getInstance(RedSendService.class);
 	// @Autowired
-	private RedReceiveService redReceiveService = InstanceFactory.getInstance("redReceiveService");
+	private RedReceiveService redReceiveService = InstanceFactory.getInstance(RedReceiveService.class);
+	// @Autowired
+	private RedFindService redFindService = InstanceFactory.getInstance(RedFindService.class);
 
 	/**
 	 * 发普通红包
@@ -40,9 +42,9 @@ public class RedProcess {
 	@POST
 	@Path("ordinary")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage ordinary(POrdinaryRed ordinaryRed, @CookieParam("uuid") long senduuid) {
-		senduuid = 1468419313301436967l;
-		return redSendService.sendOrdinary(ordinaryRed, senduuid);
+	public PMessage ordinary(POrdinRedEnve ordinRedEnve, @CookieParam("uuid") String send_uuid) {
+		send_uuid = "1468419313301436967";
+		return redSendService.sendOrdinary(ordinRedEnve, send_uuid);
 	}
 
 	/**
@@ -55,9 +57,9 @@ public class RedProcess {
 	@POST
 	@Path("group")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage group(PGroupRed groupRed, @CookieParam("uuid") long send_uuid) {
-		send_uuid = 1468419313301436967l;
-		return redSendService.sendGroup(groupRed, send_uuid);
+	public PMessage group(PGroupRedEnve groupRedEnve, @CookieParam("uuid") String send_uuid) {
+		send_uuid = "1468419313301436967";
+		return redSendService.sendGroup(groupRedEnve, send_uuid);
 	}
 
 	/**
@@ -70,8 +72,17 @@ public class RedProcess {
 	@GET
 	@Path("receive")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(@CookieParam("uuid") long rece_uuid, @QueryParam("ord_no") String ord_no) {
-		rece_uuid = 1468419313301436968L;
+	public PMessage receive(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+		rece_uuid = "1468419313301436969";
 		return redReceiveService.receive(ord_no, rece_uuid);
 	}
+
+	@GET
+	@Path("history")
+	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+	public PMessage history(@CookieParam("uuid") String uuid, @QueryParam("id") int id, @QueryParam("size") int size) {
+		uuid = "1468419313301436967";
+		return redFindService.history(uuid, id, size);
+	}
+
 }

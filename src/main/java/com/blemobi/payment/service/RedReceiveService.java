@@ -12,5 +12,5 @@ public interface RedReceiveService {
 	/**
 	 * 领红包
 	 */
-	public PMessage receive(String ord_no, long rece_uuid);
+	public PMessage receive(String ord_no, String rece_uuid);
 }

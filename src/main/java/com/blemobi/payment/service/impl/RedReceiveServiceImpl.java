@@ -17,8 +17,8 @@ import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.RedReceiveService;
 import com.blemobi.payment.service.helper.TransferHelper;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
-import com.blemobi.sep.probuf.PaymentProtos.PReceive;
-import com.blemobi.sep.probuf.PaymentProtos.PRedInfo;
+import com.blemobi.sep.probuf.PaymentProtos.PRedEnveInfo;
+import com.blemobi.sep.probuf.PaymentProtos.PRedEnveRece;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -45,22 +45,20 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * 领红包
 	 */
 	@Transactional
-	public PMessage receive(String ord_no, long rece_uuid) {
-		int status = 0;// 红包当前针对用户状态（0-无权限领取，1-可领取，2-已领取，3-已领完，4-已过期）
+	public PMessage receive(String ord_no, String rece_uuid) {
+		int status = 0;// 红包当前针对用户状态（0-无权限领取，1-已领取，2-领取成功，3-已领完，4-已过期）
 
-		RedSend redSend = redSendDao.selectByKey(ord_no);
 		RedReceive receive = redReceiveDao.selectByKey(ord_no, rece_uuid);
-		if (receive != null) {
-			status = 2;
-		} else {
-			boolean bool = check(ord_no, rece_uuid, redSend);
+		RedSend redSend = redSendDao.selectByKey(ord_no);
+		if (receive == null) {// 还未领取
+			long rece_tm = System.currentTimeMillis();
+			boolean bool = check(ord_no, rece_uuid, redSend, rece_tm);
 			if (!bool)
 				return message;
-
+			// 可以领红包
 			int type = redSend.getType();
 			int each_money = redSend.getEach_money();
-			long rece_tm = System.currentTimeMillis();
-			if (type == 1 || type == 2) {// 普通红包 &等额群红包
+			if (type == 1 || type == 2) {// 普通红包&等额群红包
 				receiveing(ord_no, rece_uuid, each_money, rece_tm);
 			} else if (type == 3) {// 随机群红包
 				String random_money_str = redJedisDao.findRandomMoneyByOrdNoAndIdx(ord_no, redSend.getRece_number());
@@ -69,7 +67,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 			}
 		}
 
-		PRedInfo redInfo = buildRedInfo(redSend, ord_no, status);
+		PRedEnveInfo redInfo = buildRedInfo(redSend, ord_no, status);
 
 		return ReslutUtil.createReslutMessage(redInfo);
 	}
@@ -82,22 +80,22 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * @param p_receive_list
 	 * @return
 	 */
-	private PRedInfo buildRedInfo(RedSend redSend, String ord_no, int status) {
+	private PRedEnveInfo buildRedInfo(RedSend redSend, String ord_no, int status) {
 		List<RedReceive> receiveList = redReceiveDao.selectByKey(ord_no);
-		List<PReceive> p_receive_list = new ArrayList<PReceive>();
+		List<PRedEnveRece> p_receive_list = new ArrayList<PRedEnveRece>();
 		for (RedReceive redReceive : receiveList) {
 			PUserBase userBase = PUserBase.newBuilder().setUUID(redReceive.getRece_uuid() + "").build();
-			PReceive p_receive = PReceive.newBuilder().setId(redReceive.getId()).setMoney(redReceive.getMoney())
+			PRedEnveRece p_receive = PRedEnveRece.newBuilder().setId(redReceive.getId()).setMoney(redReceive.getMoney())
 					.setReceTm(redReceive.getRece_tm()).setUserBase(userBase).build();
 			p_receive_list.add(p_receive);
 		}
 
 		PUserBase userBase = PUserBase.newBuilder().setUUID(redSend.getSend_uuid() + "").build();
-		PRedInfo redInfo = PRedInfo.newBuilder().setOrdNo(redSend.getOrd_no()).setUserBase(userBase).setStatus(status)
-				.setType(redSend.getType()).setTotaMoney(redSend.getTota_money())
+		PRedEnveInfo redInfo = PRedEnveInfo.newBuilder().setOrdNo(redSend.getOrd_no()).setUserBase(userBase)
+				.setStatus(status).setType(redSend.getType()).setTotaMoney(redSend.getTota_money())
 				.setTotaNumber(redSend.getTota_number()).setReceMoney(redSend.getRece_money())
 				.setReceNumber(redSend.getRece_number()).setContent(redSend.getContent())
-				.setSendTm(redSend.getSend_tm()).addAllReceive(p_receive_list).build();
+				.setSendTm(redSend.getSend_tm()).addAllRedEnveRece(p_receive_list).build();
 		return redInfo;
 	}
 
@@ -109,7 +107,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * @param each_money
 	 * @param rece_tm
 	 */
-	private void receiveing(String ord_no, long rece_uuid, int each_money, long rece_tm) {
+	private void receiveing(String ord_no, String rece_uuid, int each_money, long rece_tm) {
 		TransferHelper th = new TransferHelper(rece_uuid, each_money);
 		boolean th_bool = th.execute();
 		if (th_bool) {
@@ -126,7 +124,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * @param redSend
 	 * @return
 	 */
-	private boolean check(String ord_no, long rece_uuid, RedSend redSend) {
+	private boolean check(String ord_no, String rece_uuid, RedSend redSend, long rece_tm) {
 		Set<String> set = redJedisDao.findUsersByOrdNo(ord_no);
 		if (!set.contains(rece_uuid + "")) {
 			message = ReslutUtil.createErrorMessage(2101001, "没有权限领取红包");
@@ -144,8 +142,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 			return false;
 		}
 
-		long now = System.currentTimeMillis();
-		if (now >= redSend.getOver_tm()) {
+		if (rece_tm >= redSend.getOver_tm()) {
 			message = ReslutUtil.createErrorMessage(2101003, "红包已过期");
 			return false;
 		}

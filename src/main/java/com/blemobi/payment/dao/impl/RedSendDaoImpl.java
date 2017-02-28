@@ -1,5 +1,7 @@
 package com.blemobi.payment.dao.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -58,11 +60,25 @@ public class RedSendDaoImpl implements RedSendDao {
 		return jdbcTemplate.update(sql.toString(), rece_money, ord_no, rece_money);
 	}
 
-    @Override
-    public int paySucc(String ordNo, int amt) {
-        String sql = "UPDATE t_red_send SET pay_status = 1 WHERE ord_no = ? AND tot_amount = ? AND pay_status = 0";
-        Object[] param = new Object[]{ordNo, amt};
-        return jdbcTemplate.update(sql, param);
-    }
+	/**
+	 * 批量查询红包发送记录
+	 */
+	public List<RedSend> selectByPage(String uuid, int id, int size) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select ");
+		sql.append(
+				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, pay_status, ref_status ");
+		sql.append("from t_red_send ");
+		sql.append("where pay_status=1 and id<? and send_uuid=? order by id desc limit ?");
+		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);
+		return jdbcTemplate.query(sql.toString(), rowMapper, id, uuid, size);
+	}
+
+	@Override
+	public int paySucc(String ordNo, int amt) {
+		String sql = "UPDATE t_red_send SET pay_status = 1 WHERE ord_no = ? AND tot_amount = ? AND pay_status = 0";
+		Object[] param = new Object[] { ordNo, amt };
+		return jdbcTemplate.update(sql, param);
+	}
 
 }

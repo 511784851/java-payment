@@ -1,7 +1,7 @@
 package com.blemobi.payment.service;
 
-import com.blemobi.sep.probuf.PaymentProtos.PGroupRed;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
+import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -15,10 +15,10 @@ public interface RedSendService {
 	/**
 	 * 发普通红包
 	 */
-	public PMessage sendOrdinary(POrdinaryRed ordinaryRed, long send_uuid);
+	public PMessage sendOrdinary(POrdinRedEnve ordinRedEnve, String send_uuid);
 
 	/**
 	 * 发群红包
 	 */
-	public PMessage sendGroup(PGroupRed groupRed, long send_uuid);
+	public PMessage sendGroup(PGroupRedEnve groupRedEnve, String send_uuid);
 }

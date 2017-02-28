@@ -9,7 +9,7 @@ package com.blemobi.payment.service.helper;
 public class TransferHelper {
 
 	/** 领取人 */
-	private long rece_uuid;
+	private String rece_uuid;
 
 	/** 领取金额（单位：分） */
 	private int money;
@@ -20,7 +20,7 @@ public class TransferHelper {
 	 * @param uuid
 	 * @param amount
 	 */
-	public TransferHelper(long rece_uuid, int money) {
+	public TransferHelper(String rece_uuid, int money) {
 		this.rece_uuid = rece_uuid;
 		this.money = money;
 	}

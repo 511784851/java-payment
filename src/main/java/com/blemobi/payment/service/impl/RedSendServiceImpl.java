@@ -9,11 +9,12 @@ import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.service.RedSendService;
 import com.blemobi.payment.service.helper.RandomRedHelper;
+import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.service.order.OrderEnum;
-import com.blemobi.sep.probuf.PaymentProtos.PGroupRed;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinaryRed;
-import com.blemobi.sep.probuf.PaymentProtos.PRedPay;
+import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
+import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
+import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.google.common.base.Strings;
 import com.google.protobuf.ProtocolStringList;
@@ -51,56 +52,58 @@ public class RedSendServiceImpl implements RedSendService {
 	 * 发普通红包
 	 */
 	@Transactional
-	public PMessage sendOrdinary(POrdinaryRed ordinaryRed, long send_uuid) {
+	public PMessage sendOrdinary(POrdinRedEnve ordinRedEnve, String send_uuid) {
 		final int type = OrderEnum.RED_ORDINARY.getValue();// 红包类型
 		final int tota_number = 1;// 红包数量
+		final String goodsName = "红包";
 
-		String content = ordinaryRed.getContent();
-		int tota_money = ordinaryRed.getMoney();
-		int each_money = ordinaryRed.getMoney();
+		String content = ordinRedEnve.getContent();
+		int tota_money = ordinRedEnve.getMoney();
+		int each_money = ordinRedEnve.getMoney();
 
-		String rece_uuid = ordinaryRed.getReceUuid();
+		String rece_uuid = ordinRedEnve.getReceUuid();
 		String ord_no = initOrderInfo(tota_money, each_money, tota_number, type, send_uuid, content, rece_uuid);
 		if (Strings.isNullOrEmpty(ord_no))
 			return message;
 
-		PRedPay redPay = PRedPay.newBuilder().setOrderNum(ord_no).setFenMoney(tota_money).build();
-		return ReslutUtil.createReslutMessage(redPay);
+		SignHelper signHelper = new SignHelper(send_uuid, tota_money, ord_no, goodsName);
+		POrderPay orderPay = signHelper.getOrderPay();
+		return ReslutUtil.createReslutMessage(orderPay);
 	}
 
 	/**
 	 * 发群红包
 	 */
 	@Transactional
-	public PMessage sendGroup(PGroupRed groupRed, long send_uuid) {
-		final int type = getGroupRedType(groupRed);// 红包类型
-		final int tota_number = groupRed.getCount();// 红包数量
+	public PMessage sendGroup(PGroupRedEnve groupRedEnve, String send_uuid) {
+		final int type = getGroupRedType(groupRedEnve);// 红包类型
+		final int tota_number = groupRedEnve.getNumber();// 红包数量
 
-		String content = groupRed.getContent();
+		String content = groupRedEnve.getContent();
 		int tota_money = 0;
 		int each_money = 0;
-		if (groupRed.getIsRandom()) {
-			tota_money = groupRed.getMoney();
+		if (groupRedEnve.getIsRandom()) {
+			tota_money = groupRedEnve.getMoney();
 			each_money = tota_money / tota_number;
 		} else {
-			each_money = groupRed.getMoney();
+			each_money = groupRedEnve.getMoney();
 			tota_money = each_money * tota_number;
 		}
 
-		ProtocolStringList rece_uuid = groupRed.getReceUuidList();
+		ProtocolStringList rece_uuid = groupRedEnve.getReceUuidList();
 		String ord_no = initOrderInfo(tota_money, each_money, tota_number, type, send_uuid, content,
 				rece_uuid.toArray());
 		if (Strings.isNullOrEmpty(ord_no))
 			return message;
 
 		/** 如果是随机群红包，分配随机金额 */
-		if (groupRed.getIsRandom()) {
+		if (groupRedEnve.getIsRandom()) {
 			RandomRedHelper rdrHelper = new RandomRedHelper(tota_money, tota_number);
 			int[] random_money = rdrHelper.distribution();
 			redJedisDao.putRedRandDomMoney(ord_no, random_money);
 		}
 
-		PRedPay redPay = PRedPay.newBuilder().setOrderNum(ord_no).setFenMoney(tota_money).build();
+		POrderPay redPay = POrderPay.newBuilder().setOrderNum(ord_no).setFenMoney(tota_money).build();
 		return ReslutUtil.createReslutMessage(redPay);
 	}
 
@@ -116,7 +119,7 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @param rece_uuid
 	 * @return
 	 */
-	private String initOrderInfo(int tota_money, int each_money, int tota_number, int type, long send_uuid,
+	private String initOrderInfo(int tota_money, int each_money, int tota_number, int type, String send_uuid,
 			String content, Object... rece_uuid) {
 		boolean bool = checkMoney(tota_money, each_money, tota_number);
 		if (!bool)
@@ -165,8 +168,9 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @param groupRed
 	 * @return
 	 */
-	private int getGroupRedType(PGroupRed groupRed) {
-		return groupRed.getIsRandom() ? OrderEnum.RED_GROUP_RANDOM.getValue() : OrderEnum.RED_GROUP_EQUAL.getValue();
+	private int getGroupRedType(PGroupRedEnve groupRedEnve) {
+		return groupRedEnve.getIsRandom() ? OrderEnum.RED_GROUP_RANDOM.getValue()
+				: OrderEnum.RED_GROUP_EQUAL.getValue();
 	}
 
 	/**
