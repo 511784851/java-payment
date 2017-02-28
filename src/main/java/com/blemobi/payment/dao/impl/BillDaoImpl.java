@@ -28,9 +28,9 @@ public class BillDaoImpl implements BillDao {
 	 */
 	public int insert(Object... args) {
 		StringBuffer sql = new StringBuffer();
-		sql.append("insert into `t_bill (");
+		sql.append("insert into t_bill (");
 		sql.append("uuid, ord_no, money, time, type ");
-		sql.append(") values (?, ?, ?, ?, ?, ?)");
+		sql.append(") values (?, ?, ?, ?, ?)");
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 

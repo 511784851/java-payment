@@ -31,10 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
+import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.service.order.IdWorker;
+import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
@@ -62,6 +64,8 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Autowired
     private LotteryDao lotteryDao;
+    @Autowired
+    private RedJedisDao redJedisDao;
 
     /**
      * 领奖有效时限
@@ -73,6 +77,10 @@ public class LotteryServiceImpl implements LotteryService {
     public PMessage createLottery(String uuid, PLottery lottery) {
         // TODO PRD TO BE REMOVED
         uuid = "123";
+        int amt = redJedisDao.findDailySendMoney(uuid);
+        if((amt + lottery.getTotAmt()) > Constants.max_daily_money){//支出超出上限
+            throw new BizException(2015005, "单日支出超出上限");
+        }
         long currTm = System.currentTimeMillis();
         IdWorker idWorder = IdWorker.getInstance();
         String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());

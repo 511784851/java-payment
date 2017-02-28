@@ -70,7 +70,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public List<Map<String, Object>> lotteryList(String uuid, String keywords, int startIdx, int size) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE uuid = ? AND crt_tm > ? ");
+        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE uuid = ? AND crt_tm >= ? ");
         param.add(uuid);
         param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
         if (!StringUtils.isEmpty(keywords)) {
@@ -87,7 +87,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public Map<String, Object> lotteryDetail(String lotteryId) {
-        String sql = "SELECT title, typ, crt_tm, tot_amt,winners from t_lotteries where id = ?";
+        String sql = "SELECT title, typ, crt_tm, tot_amt,winners, uuid from t_lotteries where id = ?";
         return this.queryForMap(sql, lotteryId);
     }
 
