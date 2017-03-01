@@ -85,10 +85,10 @@ public class LotteryServiceImpl implements LotteryService {
         IdWorker idWorder = IdWorker.getInstance();
         String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getType(), lottery.getWinners(),
-                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm };
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, lottery.getObjKey()};
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
-            throw new RuntimeException("创建抽奖失败，请重试。");
+            throw new BizException(2015006, "创建抽奖失败，请重试");
         }
         if (lottery.getLocsCount() > 0) {
             List<Object[]> param = new ArrayList<Object[]>();
@@ -102,7 +102,7 @@ public class LotteryServiceImpl implements LotteryService {
             }
             ret = lotteryDao.createLotteryLoc(param);
             if (ret != lottery.getLocsCount()) {
-                throw new RuntimeException("添加抽奖位置失败，请重试。");
+                throw new BizException(2015007, "添加抽奖位置失败，请重试");
             }
         }
         if (lottery.getUuidListCount() > 0) {
@@ -123,7 +123,7 @@ public class LotteryServiceImpl implements LotteryService {
             }
             ret = lotteryDao.createWinners(param);
             if (ret != lottery.getUuidListCount()) {
-                throw new RuntimeException("添加中奖者失败，请重试。");
+                throw new BizException(2015008, "添加中奖者失败，请重试");
             }
         }
         SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
@@ -145,7 +145,7 @@ public class LotteryServiceImpl implements LotteryService {
                 sBuilder.setTitle(entity.get("title").toString());
                 sBuilder.setWinners(Integer.parseInt(entity.get("winners").toString()));
                 // TODO 缓存中获取用户头像
-                // sBuilder.addAllIcons();
+                sBuilder.setPortrait("TODO");
                 builder.addLotteries(sBuilder.build());
             }
         }
@@ -238,6 +238,7 @@ public class LotteryServiceImpl implements LotteryService {
         remainAmt -= bonus;
         lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, updTm, status);
+        //TODO 转账
         return ReslutUtil.createSucceedMessage();
     }
 }

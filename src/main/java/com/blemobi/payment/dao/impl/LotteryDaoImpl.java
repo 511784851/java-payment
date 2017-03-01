@@ -51,7 +51,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createLottery(Object[] param) {
-        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, obj_key) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, param);
     }
     @Override
@@ -70,7 +70,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public List<Map<String, Object>> lotteryList(String uuid, String keywords, int startIdx, int size) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE uuid = ? AND crt_tm >= ? ");
+        sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ? AND crt_tm >= ? ");
         param.add(uuid);
         param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
         if (!StringUtils.isEmpty(keywords)) {
