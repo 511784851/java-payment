@@ -40,12 +40,12 @@ import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
-import com.blemobi.sep.probuf.PaymentProtos.PLocation;
-import com.blemobi.sep.probuf.PaymentProtos.PLottery;
+import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetailRet;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryListRet;
 import com.blemobi.sep.probuf.PaymentProtos.PLotterySingleRet;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
+import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
@@ -67,67 +67,59 @@ public class LotteryServiceImpl implements LotteryService {
     @Autowired
     private RedJedisDao redJedisDao;
 
-    /**
-     * 领奖有效时限
-     */
-    private static final long maxInvalidTime = 24 * 60 * 60 * 1000;
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public PMessage createLottery(String uuid, PLottery lottery) {
+    public PMessage createLottery(String uuid, PLotteryConfirm lottery) {
         // TODO PRD TO BE REMOVED
         uuid = "123";
         int amt = redJedisDao.findDailySendMoney(uuid);
-        if((amt + lottery.getTotAmt()) > Constants.max_daily_money){//支出超出上限
+        if ((amt + lottery.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
             throw new BizException(2015005, "单日支出超出上限");
         }
         long currTm = System.currentTimeMillis();
         IdWorker idWorder = IdWorker.getInstance();
         String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
-        Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getType(), lottery.getWinners(),
-                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, lottery.getObjKey()};
+        Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ', lottery.getRemark()};
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new BizException(2015006, "创建抽奖失败，请重试");
         }
-        if (lottery.getLocsCount() > 0) {
+        List<String> regions = lottery.getRegionList();
+        if (regions != null && regions.size() > 0) {
             List<Object[]> param = new ArrayList<Object[]>();
-            ret = lotteryDao.createLotteryLoc(param);
-            for (PLocation loc : lottery.getLocsList()) {
+            for (String loc : regions) {
                 Object[] arr = new Object[3];
                 arr[0] = orderno;
-                arr[1] = loc.getLocCd();
-                arr[2] = loc.getLocNm();
+                arr[1] = loc;
+                arr[2] = ' ';
+                arr[3] = 0;
                 param.add(arr);
             }
             ret = lotteryDao.createLotteryLoc(param);
-            if (ret != lottery.getLocsCount()) {
+            if (ret != regions.size()) {
                 throw new BizException(2015007, "添加抽奖位置失败，请重试");
             }
         }
-        if (lottery.getUuidListCount() > 0) {
-            List<Object[]> param = new ArrayList<Object[]>();
-            // uuid, lottery_id, nick_nm, sex, bonus, status, crt_tm, accept_tm
-            for (String uid : lottery.getUuidListList().toArray(new String[] {})) {
-                Object[] arr = new Object[8];
-                arr[0] = uid;
-                arr[1] = orderno;
-                // TODO 从缓存中获取用户基本信息
-                arr[2] = "11";
-                arr[3] = 1;
-                arr[4] = lottery.getBonus();
-                arr[5] = 0;
-                arr[6] = currTm;
-                arr[7] = currTm;
-                param.add(arr);
-            }
-            ret = lotteryDao.createWinners(param);
-            if (ret != lottery.getUuidListCount()) {
-                throw new BizException(2015008, "添加中奖者失败，请重试");
-            }
+        List<PUserBaseEx> userExList = lottery.getUserListList();
+        if(userExList == null || userExList.isEmpty()){
+            throw new BizException(2015008, "没有产生中奖者，抽奖异常");
+        }
+        List<Object[]> param = new ArrayList<>();
+        
+        for(PUserBaseEx user : userExList){
+            //uuid, lottery_id, nick_nm, sex, bonus, status, crt_tm, accept_tm
+            PUserBase info = user.getInfo();
+            Object[] arr = new Object[]{info.getUUID(), orderno, info.getNickname(), user.getGender(), user.getAmt(), 0, currTm, currTm};
+            param.add(arr);
+        }
+        
+        ret = lotteryDao.createWinners(param);
+        if(ret != userExList.size()){
+            throw new BizException(2015009, "中奖者数量不正确，抽奖异常");
         }
         SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
-		POrderPay orderPay = signHelper.getOrderPay();
+        POrderPay orderPay = signHelper.getOrderPay();
         return ReslutUtil.createReslutMessage(orderPay);
     }
 
@@ -137,7 +129,6 @@ public class LotteryServiceImpl implements LotteryService {
         PLotteryListRet.Builder builder = PLotteryListRet.newBuilder();
         if (lotteriesList != null) {
             for (Map<String, Object> entity : lotteriesList) {
-                log.debug(entity.get("id").toString() + "--------");
                 PLotterySingleRet.Builder sBuilder = PLotterySingleRet.newBuilder();
                 List<String> uuids = lotteryDao.top5UUID(entity.get("id").toString());
                 sBuilder.setCrtTm(entity.get("crt_tm").toString());
@@ -145,7 +136,12 @@ public class LotteryServiceImpl implements LotteryService {
                 sBuilder.setTitle(entity.get("title").toString());
                 sBuilder.setWinners(Integer.parseInt(entity.get("winners").toString()));
                 // TODO 缓存中获取用户头像
-                sBuilder.setPortrait("TODO");
+                List<PUserBase> uList = new ArrayList<PUserBase>();
+                for(String u : uuids){
+                    PUserBase inf = PUserBase.newBuilder().setUUID(u).build();
+                    uList.add(inf);
+                }
+                sBuilder.addAllUserList(uList);
                 builder.addLotteries(sBuilder.build());
             }
         }
@@ -162,17 +158,15 @@ public class LotteryServiceImpl implements LotteryService {
             builder.setTotAmt(Integer.parseInt(detail.get("tot_amt").toString()));
             builder.setType(Integer.parseInt(detail.get("typ").toString()));
             builder.setWinners(Integer.parseInt(detail.get("winners").toString()));
+            builder.setRemark(detail.get("remark").toString());
         }
         List<Map<String, Object>> locations = lotteryDao.lotteryLocations(lotteryId);
+        List<String> regions = new ArrayList<>();
         if (locations != null && !locations.isEmpty()) {
-            List<PLocation> locs = new ArrayList<PLocation>();
             for (Map<String, Object> loc : locations) {
-                PLocation.Builder lBuilder = PLocation.newBuilder();
-                lBuilder.setLocCd(loc.get("loc_cd").toString());
-                lBuilder.setLocNm(loc.get("loc_nm").toString());
-                locs.add(lBuilder.build());
+                regions.add(loc.get("loc_cd").toString());
             }
-            builder.addAllLocs(locs);
+            builder.addAllRegion(regions);
         }
         List<Map<String, Object>> users = lotteryDao.lotteryUsers(lotteryId, keywords, type);
         if (users != null && !users.isEmpty()) {
@@ -185,10 +179,10 @@ public class LotteryServiceImpl implements LotteryService {
                 PUserBase.Builder infBuilder = PUserBase.newBuilder();
                 infBuilder.setUUID(uuid);
                 uBuilder.setInfo(infBuilder.build());
-                uBuilder.setSex(Integer.parseInt(usr.get("sex").toString()));
+                uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));
                 userList.add(uBuilder.build());
             }
-            builder.addAllUsers(userList);
+            builder.addAllUserList(userList);
         }
         return ReslutUtil.createReslutMessage(builder.build());
     }
@@ -200,23 +194,23 @@ public class LotteryServiceImpl implements LotteryService {
         Integer remainCnt = Integer.parseInt(inf.get("remain_cnt").toString());
         Integer remainAmt = Integer.parseInt(inf.get("remain_amt").toString());
         long updTm = DateTimeUtils.currTime();
-        if(inf == null || inf.isEmpty()){
+        if (inf == null || inf.isEmpty()) {
             throw new BizException(2015000, "没找到对应的抽奖包");
         }
         if (!DateTimeUtils.in24Hours(Long.parseLong(inf.get("crt_tm").toString()))) {
             throw new BizException(2015001, "抽奖包已过期");
         }
         Integer lotterySts = Integer.parseInt(inf.get("status").toString());
-        if(lotterySts.intValue() == 1){
+        if (lotterySts.intValue() == 1) {
             throw new BizException(2015002, "抽奖包未支付");
-        }else if(lotterySts.intValue() == 3 || remainCnt.intValue() < 1 || remainAmt.intValue() < 1){
+        } else if (lotterySts.intValue() == 3 || remainCnt.intValue() < 1 || remainAmt.intValue() < 1) {
             throw new BizException(2015003, "抽奖包已完成领奖");
-        }else if(lotterySts.intValue() == 4){
+        } else if (lotterySts.intValue() == 4) {
             throw new BizException(2015001, "抽奖包已过期");
-        }else{
-            
+        } else {
+
         }
-        
+
         Map<String, Object> winnerInf = lotteryDao.getPrizeInf(lotteryId, uuid);
         Integer sts = Integer.parseInt(winnerInf.get("status").toString());
         Integer bonus = Integer.parseInt(winnerInf.get("bonus").toString());
@@ -227,18 +221,43 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
 
         }
-        if((remainAmt - bonus) < 0){
+        if ((remainAmt - bonus) < 0) {
             throw new BizException(2015004, "领奖金额异常");
         }
         int status = 3;
-        if(remainCnt > 1 && ((remainAmt - bonus) > 0)){
+        if (remainCnt > 1 && ((remainAmt - bonus) > 0)) {
             status = 2;
         }
         remainCnt--;
         remainAmt -= bonus;
         lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, updTm, status);
-        //TODO 转账
+        // TODO 转账
         return ReslutUtil.createSucceedMessage();
+    }
+
+    @Override
+    public PMessage delPrize(String uuid, String lotteryId) {
+        int ret = lotteryDao.delPrize(lotteryId, uuid);
+        if(ret != 1){
+            throw new BizException(2015009, "删除失败");
+        }
+        return ReslutUtil.createSucceedMessage();
+    }
+
+    @Override
+    public PMessage shuffleLottery(String uuid, PShuffle shuffle) {
+        int amt = redJedisDao.findDailySendMoney(uuid);
+        if ((amt + shuffle.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
+            throw new BizException(2015005, "单日支出超出上限");
+        }
+        Integer times = redJedisDao.getUserLotteryRefreshTimes(uuid);
+        if(times > 1){
+            throw new BizException(2015010, "5分钟内仅能重抽2次，请稍后再试");
+        }
+        
+        
+        redJedisDao.setUserLotteryRefreshTimes(uuid);
+        return null;
     }
 }

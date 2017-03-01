@@ -10,6 +10,15 @@ import java.util.Set;
  */
 public interface RedJedisDao {
 
+    public void setUserLotteryRefreshTimes(String uuid);
+    /**
+     * @Description 获取用户5分钟内刷新次数 
+     * @author HUNTER.POON
+     * @param uuid
+     * @return
+     */
+    public Integer getUserLotteryRefreshTimes(String uuid);
+    
 	/**
 	 * 存储有权限领红包的用户
 	 * 

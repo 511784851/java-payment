@@ -20,7 +20,10 @@
  *****************************************************************/
 package com.blemobi.payment.service;
 
-import com.blemobi.sep.probuf.PaymentProtos.PLottery;
+import javax.ws.rs.CookieParam;
+
+import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
+import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -31,14 +34,24 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
  * @version 1.0.0
  */
 public interface LotteryService {
+    
     /**
-     * @Description 创建抽奖 
+     * @Description 摇奖 
+     * @author HUNTER.POON
+     * @param uuid
+     * @param shuffle
+     * @return
+     */
+    public PMessage shuffleLottery(String uuid, PShuffle shuffle);
+    
+    /**
+     * @Description 确认抽奖 
      * @author HUNTER.POON
      * @param uuid 创建人
      * @param lottery 抽奖包对象
      * @return
      */
-    public PMessage createLottery(String uuid, PLottery lottery);
+    public PMessage createLottery(String uuid, PLotteryConfirm lottery);
     
     /**
      * @Description 中奖者领奖
@@ -48,6 +61,15 @@ public interface LotteryService {
      * @return 
      */
     public PMessage acceptPrize(String uuid, String lotteryId);
+    
+    /**
+     * @Description B端删除发奖记录 
+     * @author HUNTER.POON
+     * @param uuid
+     * @param lotteryId
+     * @return
+     */
+    public PMessage delPrize(String uuid, String lotteryId);
     
     /**
      * @Description 抽奖包历史列表 
@@ -69,4 +91,5 @@ public interface LotteryService {
      * @return
      */
     public PMessage lotteryDetail(String lotteryId, String keywords, int type);
+    
 }

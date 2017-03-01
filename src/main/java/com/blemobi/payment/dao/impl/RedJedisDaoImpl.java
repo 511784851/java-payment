@@ -6,6 +6,7 @@ import java.util.List;
 
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.blemobi.library.redis.RedisManager;
@@ -143,5 +144,25 @@ public class RedJedisDaoImpl implements RedJedisDao {
 		Date time = calendar.getTime();
 		return time.getTime() / 1000;
 	}
+
+    @Override
+    public Integer getUserLotteryRefreshTimes(String uuid) {
+        String key = "LOTTERY:CD:" + uuid;
+        Jedis jedis = RedisManager.getRedis();
+        String times = jedis.get(key);
+        RedisManager.returnResource(jedis);
+        return StringUtils.isEmpty(times) ? 0 : Integer.parseInt(times);
+    }
+
+    @Override
+    public void setUserLotteryRefreshTimes(String uuid) {
+        String key = "LOTTERY:CD:" + uuid;
+        Jedis jedis = RedisManager.getRedis();
+        String times = jedis.get(key);
+        int time = StringUtils.isEmpty(times) ? 1 : Integer.parseInt(times);
+        jedis.incrBy(key, time);
+        jedis.expire(key, 5 * 60);// 5mins
+        RedisManager.returnResource(jedis);
+    }
 	
 }

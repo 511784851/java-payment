@@ -51,13 +51,19 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createLottery(Object[] param) {
-        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, obj_key) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, obj_key, remark) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, param);
     }
     @Override
     public int createLotteryLoc(List<Object[]> param) {
-        String sql = "INSERT INTO t_lottery_locations(lottery_id, loc_cd, loc_nm) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO t_lottery_locations(lottery_id, loc_cd, loc_nm, negate) VALUES(?, ?, ?, ?)";
         return this.batchUpdate(sql, param).length;
+    }
+    
+    @Override
+    public int delPrize(String lotteryId, String uuid) {
+        String sql = "UPDATE t_lotteries SET status = 0 WHERE id = ? AND uuid = ?";
+        return this.update(sql, new Object[]{lotteryId, uuid});
     }
 
     @Override
@@ -87,7 +93,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public Map<String, Object> lotteryDetail(String lotteryId) {
-        String sql = "SELECT title, typ, crt_tm, tot_amt,winners, uuid from t_lotteries where id = ?";
+        String sql = "SELECT title, typ, crt_tm, tot_amt,winners, uuid, remark from t_lotteries where id = ?";
         return this.queryForMap(sql, lotteryId);
     }
 

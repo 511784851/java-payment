@@ -30,7 +30,9 @@ import javax.ws.rs.QueryParam;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.util.InstanceFactory;
 import com.blemobi.sep.probuf.PaymentProtos.PAcceptPrize;
-import com.blemobi.sep.probuf.PaymentProtos.PLottery;
+import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
+import com.blemobi.sep.probuf.PaymentProtos.PLotteryDel;
+import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -47,6 +49,7 @@ public class LotteryProcess {
     //@Autowired
     private LotteryService lotteryService = InstanceFactory.getInstance(LotteryService.class);
 
+    
     /**
      * @Description 创建新抽奖 
      * @author HUNTER.POON
@@ -56,10 +59,25 @@ public class LotteryProcess {
      * @return
      */
     @POST
-    @Path("create")
+    @Path("shuffle")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-    public PMessage createLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLottery lottery) {
-        //TODO 数据校验
+    public PMessage shuffleLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PShuffle shuffle) {
+        return null;
+    }
+    
+    /**
+     * @Description 确认新抽奖 
+     * @author HUNTER.POON
+     * @param uuid 用户uuid
+     * @param token 令牌
+     * @param lottery 抽奖包
+     * @return
+     */
+    @POST
+    @Path("confirm")
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+    public PMessage confirmLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLotteryConfirm lottery) {
+        //TODO 验证中奖者是否在参与者列表
         PMessage ret = lotteryService.createLottery(uuid, lottery);
         return ret;
     }
@@ -70,7 +88,7 @@ public class LotteryProcess {
      * @author HUNTER.POON
      * @param uuid 用户uuid
      * @param token 令牌
-     * @param lottery 抽奖包
+     * @param prize 抽奖包
      * @return
      */
     @POST
@@ -80,6 +98,24 @@ public class LotteryProcess {
         //TODO prd to be removed
         uuid = "1468419313301436965";
         PMessage ret = lotteryService.acceptPrize(uuid, prize.getLotteryId());
+        return ret;
+    }
+    
+    /**
+     * @Description B端删除发奖记录 
+     * @author HUNTER.POON
+     * @param uuid 用户uuid
+     * @param token 令牌
+     * @param lotteryDel 抽奖包
+     * @return
+     */
+    @POST
+    @Path("delete")
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF) 
+    public PMessage delete(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLotteryDel lotteryDel) {
+        //TODO prd to be removed
+        uuid = "1468419313301436965";
+        PMessage ret = lotteryService.delPrize(uuid, lotteryDel.getLotteryId());
         return ret;
     }
     
