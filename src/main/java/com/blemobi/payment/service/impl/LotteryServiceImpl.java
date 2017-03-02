@@ -39,6 +39,7 @@ import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
+import com.blemobi.payment.util.rongyun.B2CResp;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetailRet;
@@ -232,7 +233,9 @@ public class LotteryServiceImpl implements LotteryService {
         remainAmt -= bonus;
         lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, updTm, status);
-        // TODO 转账
+        //TODO 转账
+        //B2CResp req = new B2CResp();
+        //RongYunWallet.b2cTransfer(req);
         return ReslutUtil.createSucceedMessage();
     }
 

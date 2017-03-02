@@ -1,5 +1,7 @@
 package com.blemobi.payment.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public final class DateTimeUtils {
@@ -7,6 +9,15 @@ public final class DateTimeUtils {
     private static final long HOURS = 1 * 60 * 60 * 1000;
     private static final long MINUTES = 1 * 60 * 1000;
     private static final long SECONDS = 1 * 1000;
+    
+    public static String getDateTime14() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        return sdf.format(new Date());
+    }
+    public static String getDate8() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.format(new Date());
+    }
     /**
      * @Description 时间计算
      * @author HUNTER.POON
