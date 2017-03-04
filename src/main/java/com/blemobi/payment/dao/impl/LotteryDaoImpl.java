@@ -51,13 +51,19 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createLottery(Object[] param) {
-        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, obj_key, remark) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, param);
     }
     @Override
     public int createLotteryLoc(List<Object[]> param) {
-        String sql = "INSERT INTO t_lottery_locations(lottery_id, loc_cd, loc_nm) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO t_lottery_locations(lottery_id, loc_cd, loc_nm, negate) VALUES(?, ?, ?, ?)";
         return this.batchUpdate(sql, param).length;
+    }
+    
+    @Override
+    public int delPrize(String lotteryId, String uuid) {
+        String sql = "UPDATE t_lotteries SET status = 0 WHERE id = ? AND uuid = ?";
+        return this.update(sql, new Object[]{lotteryId, uuid});
     }
 
     @Override
@@ -70,7 +76,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public List<Map<String, Object>> lotteryList(String uuid, String keywords, int startIdx, int size) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE uuid = ? AND crt_tm > ? ");
+        sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ? AND crt_tm >= ? ");
         param.add(uuid);
         param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
         if (!StringUtils.isEmpty(keywords)) {
@@ -87,7 +93,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public Map<String, Object> lotteryDetail(String lotteryId) {
-        String sql = "SELECT title, typ, crt_tm, tot_amt,winners from t_lotteries where id = ?";
+        String sql = "SELECT title, typ, crt_tm, tot_amt,winners, uuid, remark from t_lotteries where id = ?";
         return this.queryForMap(sql, lotteryId);
     }
 
