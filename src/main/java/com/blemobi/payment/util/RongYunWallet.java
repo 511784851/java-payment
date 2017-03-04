@@ -21,6 +21,7 @@
 package com.blemobi.payment.util;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
@@ -52,7 +53,6 @@ public final class RongYunWallet {
      * @return
      */
     public static final B2CResp b2cTransfer(B2CReq req) {
-        B2CResp resp = new B2CResp();
         Map<String, String> param = BeanMapUtils.bean2Map(req);
         String sign = SignUtil.sign(param);
         param.put("sign", sign);
@@ -91,5 +91,19 @@ public final class RongYunWallet {
             log.error("request rong yun wallet failed", e);
             throw new BizException(2106000, "请求融云钱包出现异常");
         }
+    }
+    
+    public static void main(String[] args) {
+        B2CReq req = new B2CReq();
+        req.setArtnerId("123");
+        req.setCustImg("ddd");
+        req.setCustMobile("18890333333");
+        req.setCustNickname("nick name");
+        req.setCustOrderno("1234555");
+        req.setCustUid("232232346345");
+        req.setTimeStamp(DateTimeUtils.getDateTime14());
+        req.setTransferAmount(new BigDecimal("10.33"));
+        req.setTransferDesc("ssss");
+        System.out.println(b2cTransfer(req));
     }
 }
