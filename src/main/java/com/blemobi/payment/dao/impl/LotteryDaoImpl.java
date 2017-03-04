@@ -61,9 +61,9 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     }
     
     @Override
-    public int delPrize(List<String> lotteryId, String uuid) {
-        String sql = "UPDATE t_lotteries SET status = 0 WHERE id IN (?) AND uuid = ?";
-        return this.update(sql, new Object[]{StringUtils.join(lotteryId, ","), uuid});
+    public int delPrize(String lotteryId, String uuid) {
+        String sql = "UPDATE t_lotteries SET status = 0 WHERE id = ? AND uuid = ?";
+        return this.update(sql, new Object[]{lotteryId, uuid});
     }
 
     @Override
@@ -76,14 +76,13 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public List<Map<String, Object>> lotteryList(String uuid, String keywords, int startIdx, int size) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ?");
+        sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ? AND crt_tm >= ? ");
         param.add(uuid);
-        //param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
+        param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
         if (!StringUtils.isEmpty(keywords)) {
             sql.append(" AND title LIKE ?");
             param.add("%" + keywords + "%");
         }
-        sql.append("AND status <> 0");
         sql.append(" ORDER BY crt_tm DESC LIMIT ?, ?");
         param.add(startIdx);
         param.add(size);

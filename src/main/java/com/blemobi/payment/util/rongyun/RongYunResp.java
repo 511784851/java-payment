@@ -20,7 +20,6 @@
  *****************************************************************/
 package com.blemobi.payment.util.rongyun;
 
-import com.alibaba.fastjson.JSON;
 
 /**
  * @ClassName RongYunResp
@@ -61,7 +60,4 @@ public abstract class RongYunResp {
         this.respmsg = respmsg;
     }
     
-    public String toString(){
-        return JSON.toJSONString(this);
-    }
 }

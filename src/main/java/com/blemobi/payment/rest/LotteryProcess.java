@@ -62,7 +62,7 @@ public class LotteryProcess {
     @Path("shuffle")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage shuffleLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PShuffle shuffle) {
-        return lotteryService.shuffleLottery(uuid, shuffle);
+        return null;
     }
     
     /**
@@ -77,6 +77,7 @@ public class LotteryProcess {
     @Path("confirm")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage confirmLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLotteryConfirm lottery) {
+        //TODO 验证中奖者是否在参与者列表
         PMessage ret = lotteryService.createLottery(uuid, lottery);
         return ret;
     }
@@ -114,7 +115,7 @@ public class LotteryProcess {
     public PMessage delete(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLotteryDel lotteryDel) {
         //TODO prd to be removed
         uuid = "1468419313301436965";
-        PMessage ret = lotteryService.delPrize(uuid, lotteryDel.getLotteryIdList());
+        PMessage ret = lotteryService.delPrize(uuid, lotteryDel.getLotteryId());
         return ret;
     }
     

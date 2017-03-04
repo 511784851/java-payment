@@ -20,7 +20,7 @@
  *****************************************************************/
 package com.blemobi.payment.service;
 
-import java.util.List;
+import javax.ws.rs.CookieParam;
 
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
@@ -69,7 +69,7 @@ public interface LotteryService {
      * @param lotteryId
      * @return
      */
-    public PMessage delPrize(String uuid, List<String> lotteryId);
+    public PMessage delPrize(String uuid, String lotteryId);
     
     /**
      * @Description 抽奖包历史列表 
