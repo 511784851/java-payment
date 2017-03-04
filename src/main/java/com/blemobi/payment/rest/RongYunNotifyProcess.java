@@ -20,7 +20,9 @@
  *****************************************************************/
 package com.blemobi.payment.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.FormParam;
@@ -28,6 +30,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import com.blemobi.library.grpc.SaveFansGRPCClient;
 import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.DateTimeUtils;
@@ -100,6 +103,24 @@ public class RongYunNotifyProcess {
                 return Constants.HTMLSTS.FAILED.getValue();
             }
             callbackService.paySucc(orderAmount, DateTimeUtils.currTime(), custOrderNo, receiveUid, orderNo, orderStatus, respmsg);
+        } catch (Exception ex) {
+            log.error("payment callback failed", ex);
+            return Constants.HTMLSTS.FAILED.getValue();
+        }
+        return Constants.HTMLSTS.SUCCESS.getValue();
+    }
+    
+    @Path("test")
+    @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
+    public String callback() {
+        try {
+            log.info("grpc test.......");
+            SaveFansGRPCClient client = new SaveFansGRPCClient();
+            List<String> list = new ArrayList<String>();
+            list.add("aa");
+            list.add("bb");
+            client.doExec(new Object[]{"hello world", 1, list, "12353463456345734"});
+            log.info("success...........");
         } catch (Exception ex) {
             log.error("payment callback failed", ex);
             return Constants.HTMLSTS.FAILED.getValue();
