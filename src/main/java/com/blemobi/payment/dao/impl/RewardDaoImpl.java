@@ -1,5 +1,7 @@
 package com.blemobi.payment.dao.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,9 +23,7 @@ public class RewardDaoImpl implements RewardDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	/**
-	 * 添加打赏数据
-	 */
+	@Override
 	public int insert(Object... args) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_reward (");
@@ -32,24 +32,71 @@ public class RewardDaoImpl implements RewardDao {
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 
-	/**
-	 * 根据订单号查询详情
-	 */
+	@Override
 	public Reward selectByKey(String ord_no) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
-		sql.append("ord_no, send_uuid, rece_uuid, money, content, send_tm, pay_status ");
+		sql.append("id, ord_no, send_uuid, rece_uuid, money, content, send_tm ");
 		sql.append("from t_reward ");
-		sql.append("where ord_no=?");
+		sql.append("where pay_status=1 and ord_no=?");
 		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
 		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, ord_no);
 	}
 
-    @Override
-    public int paySucc(String ordNo, int amt) {
-        String sql = "UPDATE t_reward SET pay_status = 1 WHERE ord_no = ? AND amount = ? AND pay_status = 0";
-        Object[] param = new Object[]{ordNo, amt};
-        return jdbcTemplate.update(sql, param);
-    }
+	@Override
+	public int selectrTotalMoony(String send_uuid, String rece_uuid) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select ");
+		sql.append("ifnull(sum(money),0) total ");
+		sql.append("from t_reward ");
+		sql.append("where pay_status=1 and send_uuid=? and rece_uuid=?");
+		return jdbcTemplate.queryForObject(sql.toString(), Integer.class, send_uuid, rece_uuid);
+	}
 
+	@Override
+	public List<Reward> selectByPage(String send_uuid, String rece_uuid, int idx, int count) {
+		StringBuffer sql = selectSQL();
+		sql.append("where pay_status=1 and send_uuid=? and rece_uuid=? and id<? order by id desc limit ?");
+		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
+		return jdbcTemplate.query(sql.toString(), rowMapper, send_uuid, rece_uuid, idx, count);
+	}
+
+	@Override
+	public List<Reward> selectReceByPage(String rece_uuid, int idx, int count) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select ");
+		sql.append("id, ord_no, send_uuid uuid, money, send_tm, content ");
+		sql.append("from t_reward ");
+		sql.append("where pay_status=1 and rece_uuid=? and id<? order by id desc limit ?");
+		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
+		return jdbcTemplate.query(sql.toString(), rowMapper, rece_uuid, idx, count);
+	}
+
+	@Override
+	public List<Reward> selectSendByPage(String send_uuid, int idx, int count) {
+		StringBuffer sql = selectSQL();
+		sql.append("where pay_status=1 and send_uuid=? and id<? order by id desc limit ?");
+		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
+		return jdbcTemplate.query(sql.toString(), rowMapper, send_uuid, idx, count);
+	}
+
+	@Override
+	public int paySucc(String ordNo, int amt) {
+		String sql = "UPDATE t_reward SET pay_status = 1 WHERE ord_no = ? AND amount = ? AND pay_status = 0";
+		Object[] param = new Object[] { ordNo, amt };
+		return jdbcTemplate.update(sql, param);
+	}
+
+	/**
+	 * 查询列表SQL
+	 * 
+	 * @return
+	 */
+	private StringBuffer selectSQL() {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select ");
+		sql.append("id, ord_no, rece_uuid uuid, money, send_tm, content ");
+		sql.append("from t_reward ");
+		return sql;
+	}
 }

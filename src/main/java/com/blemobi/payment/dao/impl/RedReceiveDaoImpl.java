@@ -35,21 +35,21 @@ public class RedReceiveDaoImpl implements RedReceiveDao {
 	}
 
 	/**
-	 * 批量查询领红包数据（根据红包ID）
+	 * 批量查询领红包数据
 	 */
-	public List<RedReceive> selectByKey(String ord_no) {
+	public List<RedReceive> selectByKey(String ord_no, int last_id, int count) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append("id, ord_no, rece_uuid, money, rece_tm ");
 		sql.append("from t_red_receive ");
-		sql.append("where ord_no=?");
+		sql.append("where ord_no=? and id>? order by id asc limit ?");
 
 		RowMapper<RedReceive> rowMapper = new BeanPropertyRowMapper<RedReceive>(RedReceive.class);
-		return jdbcTemplate.query(sql.toString(), rowMapper, ord_no);
+		return jdbcTemplate.query(sql.toString(), rowMapper, ord_no, last_id, count);
 	}
 
 	/**
-	 * 查询领红包数据（根据红包ID和领取人）
+	 * 查询领红包数据
 	 */
 	public RedReceive selectByKey(String ord_no, String rece_uuid) {
 		StringBuffer sql = new StringBuffer();
@@ -60,6 +60,23 @@ public class RedReceiveDaoImpl implements RedReceiveDao {
 
 		RowMapper<RedReceive> rowMapper = new BeanPropertyRowMapper<RedReceive>(RedReceive.class);
 		List<RedReceive> list = jdbcTemplate.query(sql.toString(), rowMapper, ord_no, rece_uuid);
-		return (list == null || list.size() == 0) ? null : list.get(0);
+		if (list == null || list.size() == 0)
+			return null;
+		else if (list.size() == 1)
+			return list.get(0);
+		else
+			throw new RuntimeException("根据订单号和领取人查询领取信息超出一条数据行");
+	}
+
+	/**
+	 * 查询已领取用户谁手气最佳，并列时取先领取的用户
+	 */
+	public String selectMaxMoney(String ord_no) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select ");
+		sql.append("rece_uuid ");
+		sql.append("from t_red_receive ");
+		sql.append("where ord_no=? order by money desc,id asc limit 1");
+		return jdbcTemplate.queryForObject(sql.toString(), String.class, ord_no);
 	}
 }

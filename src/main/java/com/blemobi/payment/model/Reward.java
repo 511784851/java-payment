@@ -2,6 +2,8 @@ package com.blemobi.payment.model;
 
 public class Reward {
 
+	private int id;
+
 	private String ord_no;
 
 	private String send_uuid;
@@ -15,6 +17,17 @@ public class Reward {
 	private long send_tm;
 
 	private int pay_status;
+
+	// 非数据库字段
+	private String uuid;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getOrd_no() {
 		return ord_no;
@@ -70,6 +83,14 @@ public class Reward {
 
 	public void setPay_status(int pay_status) {
 		this.pay_status = pay_status;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }

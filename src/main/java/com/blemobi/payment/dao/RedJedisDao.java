@@ -1,7 +1,5 @@
 package com.blemobi.payment.dao;
 
-import java.util.Set;
-
 /**
  * Redis操作接口类
  * 
@@ -9,7 +7,15 @@ import java.util.Set;
  *
  */
 public interface RedJedisDao {
-
+    public void setUserLotteryRefreshTimes(String uuid);
+    /**
+     * @Description 获取用户5分钟内刷新次数 
+     * @author HUNTER.POON
+     * @param uuid
+     * @return
+     */
+    public Integer getUserLotteryRefreshTimes(String uuid);
+   
 	/**
 	 * 存储有权限领红包的用户
 	 * 
@@ -18,15 +24,15 @@ public interface RedJedisDao {
 	 * @param uuids
 	 *            用户uuid
 	 */
-	public int putReceiveUsers(String ord_no, Object... uuids);
+	public int putReceiveUsers(String ord_no, String... uuids);
 
 	/**
-	 * 查询有权限领红包的用户（根据订单号）
+	 * 检查用户是否有权限领红包（根据订单号）
 	 * 
 	 * @param ord_no
 	 *            订单号
 	 */
-	public Set<String> findUsersByOrdNo(String ord_no);
+	public boolean sismemberByOrdNo(String ord_no, String uuid);
 
 	/**
 	 * 存储随机红包金额

@@ -1,16 +1,27 @@
 package com.blemobi.payment.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.util.ReslutUtil;
+import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RewardDao;
+import com.blemobi.payment.model.Reward;
 import com.blemobi.payment.service.RewardService;
+import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.service.order.IdWorker;
+import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
+import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
+import com.blemobi.sep.probuf.PaymentProtos.PRewardInfo;
+import com.blemobi.sep.probuf.PaymentProtos.PRewardInfoList;
+import com.blemobi.sep.probuf.PaymentProtos.PRewardList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.google.common.base.Strings;
 
@@ -26,73 +37,143 @@ public class RewardServiceImpl implements RewardService {
 	@Autowired
 	private RewardDao rewardDao;
 
-	/** 打赏最小金额（单位：分） */
-	private final int min_money = 1;
+	@Autowired
+	private RedJedisDao redJedisDao;
 
-	/** 打赏最大金额（单位：分） */
-	private final int max_money = 1000000;
-
-	private PMessage message;
-
-	/**
-	 * 打赏
-	 */
+	@Override
 	@Transactional
 	public PMessage reward(POrdinRedEnve ordinRedEnve, String send_uuid) {
 		String content = ordinRedEnve.getContent();
 		int money = ordinRedEnve.getMoney();
 		String rece_uuid = ordinRedEnve.getReceUuid();
 
-		String ord_no = initRewardInfo(money, send_uuid, content, rece_uuid);
-		if (Strings.isNullOrEmpty(ord_no))
+		PMessage message = verification(send_uuid, money, content, rece_uuid);
+		if (message != null)
 			return message;
 
-		POrderPay redPay = POrderPay.newBuilder().setOrderNum(ord_no).setFenMoney(money).build();
-		return ReslutUtil.createReslutMessage(redPay);
-	}
-
-	/**
-	 * 初始化订单信息
-	 * 
-	 * @param money
-	 * @param send_uuid
-	 * @param content
-	 * @param rece_uuid
-	 * @return
-	 */
-	private String initRewardInfo(int money, String send_uuid, String content, String rece_uuid) {
-		boolean bool = checkMoney(money);
-		if (!bool)
-			return "";
-
 		long send_tm = System.currentTimeMillis();
-
 		String ord_no = createOrdNo(OrderEnum.REWARD.getValue());
 		int rs = rewardDao.insert(ord_no, send_uuid, rece_uuid, money, content, send_tm);
 		if (rs != 1)
-			throw new RuntimeException("添加发送红包数据异常");
+			throw new RuntimeException("保存打赏数据失败");
 
-		return ord_no;
+		// 生成支付信息给APP端
+		SignHelper signHelper = new SignHelper(send_uuid, money, ord_no, "打赏", rece_uuid);
+		POrderPay orderPay = signHelper.getOrderPay();
+		return ReslutUtil.createReslutMessage(orderPay);
+	}
+
+	@Override
+	public PMessage list(String uuid, int type, int idx, int count) {
+		idx = checkIdx(idx);
+
+		List<Reward> list = null;
+		if (type == 0)
+			list = rewardDao.selectReceByPage(uuid, idx, count);
+		else if (type == 1)
+			list = rewardDao.selectSendByPage(uuid, idx, count);
+
+		List<PRewardInfo> rewardInfoList = buildRewardList(list);
+
+		PRewardList rewardList = PRewardList.newBuilder().addAllRewardInfo(rewardInfoList).build();
+		return ReslutUtil.createReslutMessage(rewardList);
+	}
+
+	@Override
+	public PMessage info(String ord_no, String uuid, int idx, int count) {
+		idx = checkIdx(idx);
+
+		PUserBase userBase = null;// 对方信息
+		int money = 0;// 打赏总金额
+		List<Reward> list = null;// 打赏记录
+
+		Reward reward = rewardDao.selectByKey(ord_no);
+		if (uuid.equals(reward.getSend_uuid())) {// 用户为发送者，需要处理接受者数据
+			userBase = PUserBase.newBuilder().setUUID(reward.getRece_uuid()).build();
+			money = rewardDao.selectrTotalMoony(uuid, reward.getRece_uuid());
+			list = rewardDao.selectByPage(uuid, reward.getRece_uuid(), idx, count);
+		} else if (uuid.equals(reward.getRece_uuid())) {// 用户为接受者，需要处理发送者数量
+			userBase = PUserBase.newBuilder().setUUID(reward.getSend_uuid()).build();
+			money = rewardDao.selectrTotalMoony(reward.getSend_uuid(), uuid);
+			list = rewardDao.selectByPage(reward.getSend_uuid(), uuid, idx, count);
+		} else
+			throw new RuntimeException("没有权限查看打赏详情");
+
+		// 打赏信息
+		PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
+		// 历史打赏记录
+		List<PRewardInfo> rewardList = buildRewardList(list);
+		// 返回数据内容
+		PRewardInfoList rewardInfoList = PRewardInfoList.newBuilder().setRewardInfo(rewardInfo).setMoney(money)
+				.addAllRewardList(rewardList).build();
+
+		return ReslutUtil.createReslutMessage(rewardInfoList);
 	}
 
 	/**
-	 * 验证金额是否符合规则
+	 * 处理分页起始值
 	 * 
-	 * @param tota_money
-	 * @param each_money
-	 * @param tota_number
+	 * @param idx
 	 * @return
 	 */
-	private boolean checkMoney(int money) {
-		if (money < min_money) {
-			message = ReslutUtil.createErrorMessage(2101001, "单个红包金额不能少于0.01元");
-			return false;
+	private int checkIdx(int idx) {
+		return idx > 0 ? idx : Integer.MAX_VALUE;
+	}
+
+	/**
+	 * 构建 RawardInfo对象
+	 * 
+	 * @param userBase
+	 * @param reward
+	 * @return
+	 */
+	private PRewardInfo buildRawardInfo(PUserBase userBase, Reward reward) {
+		PRewardInfo rewardInfo = PRewardInfo.newBuilder().setId(reward.getId()).setOrdNo(reward.getOrd_no())
+				.setMoney(reward.getMoney()).setContent(reward.getContent()).setTime(reward.getSend_tm())
+				.setUserBase(userBase).build();
+		return rewardInfo;
+	}
+
+	/**
+	 * 构建PRewardInfo列表对象
+	 * 
+	 * @param list
+	 * @return
+	 */
+	private List<PRewardInfo> buildRewardList(List<Reward> list) {
+		List<PRewardInfo> rewardList = new ArrayList<PRewardInfo>();
+		for (Reward reward : list) {
+			PUserBase userBase = PUserBase.newBuilder().setUUID(reward.getUuid()).build();
+			PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
+			rewardList.add(rewardInfo);
 		}
-		if (money > max_money) {
-			message = ReslutUtil.createErrorMessage(2101003, "单次支付总额不可超过10000元");
-			return false;
-		}
-		return true;
+		return rewardList;
+	}
+
+	/**
+	 * 验证是否符合打赏规则
+	 * 
+	 * @param send_uuid
+	 * @param money
+	 * @param content
+	 * @return
+	 */
+	private PMessage verification(String send_uuid, int money, String content, String rece_uuid) {
+		if (Strings.isNullOrEmpty(rece_uuid))
+			return ReslutUtil.createErrorMessage(2101002, "打赏没有选择领赏人");
+		if (Strings.isNullOrEmpty(content))
+			return ReslutUtil.createErrorMessage(2101002, "打赏描述不能为空");
+		if (content.length() > 100)
+			return ReslutUtil.createErrorMessage(2101003, "打赏描述不能超过100个字符");
+		if (money < Constants.min_each_money)
+			return ReslutUtil.createErrorMessage(2101004, "打赏金额不能少于0.01元");
+		if (money > Constants.max_each_money)
+			return ReslutUtil.createErrorMessage(2101005, "打赏金额不能超过200元");
+
+		int has_send_money = redJedisDao.findDailySendMoney(send_uuid);
+		if (has_send_money + money > Constants.max_daily_money)
+			return ReslutUtil.createErrorMessage(2101007, "每天发送总金额（红包、抽奖、打赏）不能超过30000元 ");
+		return null;
 	}
 
 	/**
@@ -105,4 +186,5 @@ public class RewardServiceImpl implements RewardService {
 		IdWorker idWorder = IdWorker.getInstance();
 		return idWorder.nextId(type);
 	}
+
 }

@@ -11,19 +11,22 @@ import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
-public class RedProcessTest {
-
-	private StringBuffer basePath;
+public class SendProcessTest {
 
 	@Before
 	public void setup() {
 
 	}
 
+	/**
+	 * 发普通红包
+	 * 
+	 * @throws Exception
+	 */
 	// @Test
-	public void testordinary() throws Exception {
-		basePath = new StringBuffer("/v1/payment/send/ordinary");
-		POrdinRedEnve ordinaryRed = POrdinRedEnve.newBuilder().setMoney(20000).setContent("恭喜发财，大吉大利")
+	public void testOrdinary() throws Exception {
+		StringBuffer basePath = new StringBuffer("/v1/payment/redEnve/send-ordin?uuid=1471175703665920835");
+		POrdinRedEnve ordinaryRed = POrdinRedEnve.newBuilder().setMoney(2600).setContent("恭喜发财，大吉大利")
 				.setReceUuid("1468419313301436968").build();
 		byte[] body = ordinaryRed.toByteArray();
 		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, body,
@@ -32,12 +35,16 @@ public class RedProcessTest {
 		assertEquals("PRedPay", message.getType());
 	}
 
-	// @Test
+	/**
+	 * 发群红包
+	 * 
+	 * @throws Exception
+	 */
+	@Test
 	public void testGroup() throws Exception {
-		basePath = new StringBuffer("/v1/payment/send/group");
-		PGroupRedEnve oneRed = PGroupRedEnve.newBuilder().setIsRandom(true).setMoney(2200).setNumber(5)
-				.setContent("恭喜发财，大吉大利").addReceUuid("1468419313301436968").addReceUuid("1468419313301436969")
-				.addReceUuid("1468419313301436910").build();
+		StringBuffer basePath = new StringBuffer("/v1/payment/redEnve/send-group?uuid=1471175703665920835");
+		PGroupRedEnve oneRed = PGroupRedEnve.newBuilder().setIsRandom(false).setMoney(8000).setNumber(2)
+				.setContent("恭喜发财，大吉大利").build();
 		byte[] body = oneRed.toByteArray();
 		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, body,
 				"application/x-protobuf");
@@ -45,17 +52,14 @@ public class RedProcessTest {
 		assertEquals("PRedPay", message.getType());
 	}
 
-	// @Test
-	public void tesReceive() throws Exception {
-		basePath = new StringBuffer("/payment/v1/send/receive?ord_no=320170224284697062589730816");
-		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, null, null);
-		PMessage message = httpClient.getMethod();
-		assertEquals("PRedInfo", message.getType());
-	}
-
-	// @Test
-	public void tesHistory() throws Exception {
-		basePath = new StringBuffer("/payment/v1/send/history?id=-1&size=10");
+	/**
+	 * 查询红包发送列表
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void lst() throws Exception {
+		StringBuffer basePath = new StringBuffer("/v1/payment/redEnve/list?uuid=1471175703665920835&count=10");
 		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, null, null);
 		PMessage message = httpClient.getMethod();
 		assertEquals("PRedInfo", message.getType());

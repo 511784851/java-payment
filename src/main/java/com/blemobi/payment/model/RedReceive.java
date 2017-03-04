@@ -6,7 +6,7 @@ public class RedReceive {
 
 	private String ord_no;
 
-	private long rece_uuid;
+	private String rece_uuid;
 
 	private int money;
 
@@ -28,11 +28,11 @@ public class RedReceive {
 		this.ord_no = ord_no;
 	}
 
-	public long getRece_uuid() {
+	public String getRece_uuid() {
 		return rece_uuid;
 	}
 
-	public void setRece_uuid(long rece_uuid) {
+	public void setRece_uuid(String rece_uuid) {
 		this.rece_uuid = rece_uuid;
 	}
 

@@ -17,15 +17,15 @@ public class SignHelper {
 	public static final String seckey = "test";
 
 	/** 接受者账户类型（0-个人，1-企业） */
-	private int recAccountType = 0;
+	private int recAccountType;
 	/** 用户id */
 	private String cusId;
 	/** 接受者id */
-	private String receivedId = "";
+	private String receivedId;
 	/** 支付金额（单位：分） */
 	private int fenMoney;
 	/** 业务订单号 */
-	private String orderNum;
+	private String ord_no;
 	/** 商品名称 */
 	private String goodsName;
 
@@ -51,11 +51,38 @@ public class SignHelper {
 	 * @param goodsName
 	 *            商品名称
 	 */
-	public SignHelper(String cusId, int fenMoney, String orderNum, String goodsName) {
+	public SignHelper(String cusId, int fenMoney, String ord_no, String goodsName) {
 		this.cusId = cusId;
 		this.fenMoney = fenMoney;
-		this.orderNum = orderNum;
+		this.ord_no = ord_no;
 		this.goodsName = goodsName;
+		this.recAccountType = 1;// 企业
+		this.receivedId = "";// 企业账户
+
+	}
+
+	/**
+	 * 构造方法
+	 * 
+	 * @param cusId
+	 *            用户uuid
+	 * @param fenMoney
+	 *            支付金额（单位：分）
+	 * @param orderNum
+	 *            业务订单号
+	 * @param goodsName
+	 *            商品名称
+	 * @param receivedId
+	 *            个人账户
+	 */
+	public SignHelper(String cusId, int fenMoney, String ord_no, String goodsName, String receivedId) {
+		this.cusId = cusId;
+		this.fenMoney = fenMoney;
+		this.ord_no = ord_no;
+		this.goodsName = goodsName;
+		this.recAccountType = 0;// 个人
+		this.receivedId = receivedId;// 个人账户
+
 	}
 
 	/**
@@ -90,7 +117,7 @@ public class SignHelper {
 		params.put("cusId", cusId);
 		params.put("receivedId", receivedId);
 		params.put("fenMoney", fenMoney + "");
-		params.put("orderNum", orderNum);
+		params.put("orderNum", ord_no);
 		params.put("goodsName", goodsName);
 		params.put("seckey", seckey);
 		return params;
@@ -104,6 +131,6 @@ public class SignHelper {
 	 */
 	private POrderPay buildPay(String sign) {
 		return POrderPay.newBuilder().setRecAccountType(recAccountType).setCusId(cusId).setReceivedId(receivedId)
-				.setFenMoney(fenMoney).setOrderNum(orderNum).setGoodsName(goodsName).setSign(sign).build();
+				.setFenMoney(fenMoney).setOrdNo(ord_no).setGoodsName(goodsName).setSign(sign).build();
 	}
 }

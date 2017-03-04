@@ -29,12 +29,13 @@ public interface RedSendDao {
 	/**
 	 * 批量查询红包发送记录
 	 */
-	public List<RedSend> selectByPage(String uuid, int id, int size);
-	
+	public List<RedSend> selectByPage(String uuid, int idx, int count);
+
 	/**
-	 * @Description 红包支付成功 
+	 * @Description 红包支付成功
 	 * @author HUNTER.POON
-	 * @param ordNo 订单号
+	 * @param ordNo
+	 *            订单号
 	 * @param amt
 	 * @return
 	 */

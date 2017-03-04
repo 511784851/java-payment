@@ -30,6 +30,10 @@ public class RedSend {
 
 	private int ref_status;
 
+	private int rece_tota_num;
+
+	private String rece_uuid5;
+
 	public int getId() {
 		return id;
 	}
@@ -140,6 +144,22 @@ public class RedSend {
 
 	public void setRef_status(int ref_status) {
 		this.ref_status = ref_status;
+	}
+
+	public int getRece_tota_num() {
+		return rece_tota_num;
+	}
+
+	public void setRece_tota_num(int rece_tota_num) {
+		this.rece_tota_num = rece_tota_num;
+	}
+
+	public String getRece_uuid5() {
+		return rece_uuid5;
+	}
+
+	public void setRece_uuid5(String rece_uuid5) {
+		this.rece_uuid5 = rece_uuid5;
 	}
 
 }

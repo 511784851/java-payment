@@ -4,7 +4,7 @@ public class Bill {
 
 	private int id;
 
-	private long uuid;
+	private String uuid;
 
 	private String ord_no;
 
@@ -22,11 +22,11 @@ public class Bill {
 		this.id = id;
 	}
 
-	public long getUuid() {
+	public String getUuid() {
 		return uuid;
 	}
 
-	public void setUuid(long uuid) {
+	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 

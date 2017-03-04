@@ -30,8 +30,8 @@ public class RedSendDaoImpl implements RedSendDao {
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_red_send (");
 		sql.append(
-				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, pay_status, ref_status");
-		sql.append(") values (?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?, 0, 0)");
+				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, rece_tota_num, rece_uuid5, pay_status, ref_status");
+		sql.append(") values (?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?, ?, ?,0, 0)");
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 
@@ -44,7 +44,7 @@ public class RedSendDaoImpl implements RedSendDao {
 		sql.append(
 				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, pay_status, ref_status ");
 		sql.append("from t_red_send ");
-		sql.append("where ord_no=?");
+		sql.append("where pay_status=1 and ord_no=?");
 		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);
 		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, ord_no);
 	}
@@ -63,15 +63,14 @@ public class RedSendDaoImpl implements RedSendDao {
 	/**
 	 * 批量查询红包发送记录
 	 */
-	public List<RedSend> selectByPage(String uuid, int id, int size) {
+	public List<RedSend> selectByPage(String uuid, int idx, int count) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
-		sql.append(
-				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, pay_status, ref_status ");
+		sql.append("id, ord_no, type, content, send_tm, rece_tota_num, rece_uuid5 ");
 		sql.append("from t_red_send ");
 		sql.append("where pay_status=1 and id<? and send_uuid=? order by id desc limit ?");
 		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);
-		return jdbcTemplate.query(sql.toString(), rowMapper, id, uuid, size);
+		return jdbcTemplate.query(sql.toString(), rowMapper, idx, uuid, count);
 	}
 
 	@Override

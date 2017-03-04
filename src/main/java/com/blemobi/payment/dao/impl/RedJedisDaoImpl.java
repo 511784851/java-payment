@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import java.util.Set;
-
 import org.springframework.stereotype.Repository;
 
 import com.blemobi.library.redis.RedisManager;
@@ -40,27 +38,26 @@ public class RedJedisDaoImpl implements RedJedisDao {
 	 * @param uuids
 	 *            用户uuid
 	 */
-	public int putReceiveUsers(String ord_no, Object... uuids) {
+	public int putReceiveUsers(String ord_no, String... uuids) {
 		String key = RECEIVE_KEY + ord_no;
 		Jedis jedis = RedisManager.getRedis();
-		for (Object uuid : uuids)
-			jedis.zadd(key, 0, uuid.toString());
+		jedis.sadd(key, uuids);
 		RedisManager.returnResource(jedis);
 		return 0;
 	}
 
 	/**
-	 * 查询有权限领红包的用户（根据订单号）
+	 * 检查用户是否有权限领红包（根据订单号）
 	 * 
 	 * @param ord_no
 	 *            订单号
 	 */
-	public Set<String> findUsersByOrdNo(String ord_no) {
+	public boolean sismemberByOrdNo(String ord_no, String uuid) {
 		String key = RECEIVE_KEY + ord_no;
 		Jedis jedis = RedisManager.getRedis();
-		Set<String> set = jedis.zrange(key, 0, -1);
+		boolean bool = jedis.sismember(key, uuid);
 		RedisManager.returnResource(jedis);
-		return set;
+		return bool;
 	}
 
 	/**
@@ -143,5 +140,24 @@ public class RedJedisDaoImpl implements RedJedisDao {
 		Date time = calendar.getTime();
 		return time.getTime() / 1000;
 	}
-	
+
+    @Override
+    public Integer getUserLotteryRefreshTimes(String uuid) {
+        String key = "LOTTERY:CD:" + uuid;
+        Jedis jedis = RedisManager.getRedis();
+        String times = jedis.get(key);
+        RedisManager.returnResource(jedis);
+        return StringUtils.isEmpty(times) ? 0 : Integer.parseInt(times);
+    }
+
+    @Override
+    public void setUserLotteryRefreshTimes(String uuid) {
+        String key = "LOTTERY:CD:" + uuid;
+        Jedis jedis = RedisManager.getRedis();
+        String times = jedis.get(key);
+        int time = StringUtils.isEmpty(times) ? 1 : Integer.parseInt(times);
+        jedis.incrBy(key, time);
+        jedis.expire(key, 5 * 60);// 5mins
+        RedisManager.returnResource(jedis);
+    }
 }
