@@ -54,7 +54,7 @@
 		<!-- commons -->
 		<dependency>
 			<groupId>commons-lang</groupId>
-			
+
 			<artifactId>commons-lang</artifactId>
 			<version>${commons_lang_version}</version>
 		</dependency>
@@ -292,6 +292,12 @@
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.aliyun.openservices/tablestore -->
+		<dependency>
+			<groupId>com.aliyun.openservices</groupId>
+			<artifactId>tablestore</artifactId>
+			<version>4.2.2</version>
 		</dependency>
 
 	</dependencies>
