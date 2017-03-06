@@ -20,6 +20,7 @@
  *****************************************************************/
 package com.blemobi.payment.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.SelectFansGRPCClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
@@ -151,9 +153,14 @@ public class LotteryServiceImpl implements LotteryService {
                 sBuilder.setWinners(Integer.parseInt(entity.get("winners").toString()));
                 List<PUserBase> uList = new ArrayList<PUserBase>();
                 for(String u : uuids){
-                    // TODO 缓存中获取用户头像
-                    PUserBase inf = PUserBase.newBuilder().setUUID(u).build();
-                    uList.add(inf);
+                    try {
+                        PUserBase userBase = UserBaseCache.get(u);
+                        uList.add(userBase);
+                    } catch (IOException e) {
+                        log.error("uuid:[" + u + "]在缓存中没有找到");
+                        throw new BizException(2015100, "用户没有找到");
+                    }
+                    
                 }
                 sBuilder.addAllUserList(uList);
                 builder.addLotteries(sBuilder.build());
@@ -190,10 +197,16 @@ public class LotteryServiceImpl implements LotteryService {
                 PUserBaseEx.Builder uBuilder = PUserBaseEx.newBuilder();
                 uBuilder.setAmt(Integer.parseInt(usr.get("bonus").toString()));
                 String uuid = usr.get("uuid").toString();
-                // TODO 缓存中获取用户信息
                 PUserBase.Builder infBuilder = PUserBase.newBuilder();
                 infBuilder.setUUID(uuid);
-                uBuilder.setInfo(infBuilder.build());
+                try {
+                    PUserBase userBase = UserBaseCache.get(uuid);
+                    uBuilder.setInfo(userBase);
+                } catch (IOException e) {
+                    log.error("uuid:[" + uuid + "]在缓存中没有找到");
+                    throw new BizException(2015100, "用户没有找到");
+                }
+                
                 uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));
                 userList.add(uBuilder.build());
             }
@@ -280,13 +293,19 @@ public class LotteryServiceImpl implements LotteryService {
         }
         List<PUserBaseEx> winnerList = new ArrayList<PUserBaseEx>();
         for(int idx = 0; idx < shuffle.getWinners(); idx++){
-            PUserBase.Builder b = PUserBase.newBuilder();
             Random r = new Random();
             int win = r.nextInt(uuidList.size());
             String uid = uuidList.get(win);
-            b.setUUID(uid);
+            PUserBase userBase = null;
+            try {
+                userBase = UserBaseCache.get(uid);
+            } catch (IOException e) {
+                log.error("uuid:[" + uuid + "]在缓存中没有找到");
+                throw new BizException(2015100, "用户没有找到");
+            }
             uuidList.remove(win);
-            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(0).setInfo(b.build()).build();
+            //TODO 设置性别
+            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(0).setInfo(userBase).build();
             winnerList.add(w);
         }
         builder.setCrtTm(System.currentTimeMillis() + "");
