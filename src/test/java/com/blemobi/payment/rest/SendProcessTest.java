@@ -40,7 +40,7 @@ public class SendProcessTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void testGroup() throws Exception {
 		StringBuffer basePath = new StringBuffer("/v1/payment/redEnve/send-group?uuid=1471175703665920835");
 		PGroupRedEnve oneRed = PGroupRedEnve.newBuilder().setIsRandom(false).setMoney(8000).setNumber(2)
@@ -59,9 +59,10 @@ public class SendProcessTest {
 	 */
 	@Test
 	public void lst() throws Exception {
-		StringBuffer basePath = new StringBuffer("/v1/payment/redEnve/list?uuid=1471175703665920835&count=10");
-		BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, basePath, null, null, null);
+		StringBuffer basePath = new StringBuffer("/v1/payment/redEnve/send-list?uuid=1471175703665920835&count=10");
+		BaseHttpClient httpClient = new LocalHttpClient("192.168.7.245", 9014, basePath, null, null, null);
 		PMessage message = httpClient.getMethod();
+		System.out.println(message.getType());
 		assertEquals("PRedInfo", message.getType());
 	}
 }

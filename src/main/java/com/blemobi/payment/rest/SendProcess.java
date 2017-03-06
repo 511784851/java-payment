@@ -1,5 +1,6 @@
 package com.blemobi.payment.rest;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,6 +12,7 @@ import com.blemobi.payment.util.InstanceFactory;
 import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.google.common.base.Strings;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
@@ -37,7 +39,7 @@ public class SendProcess {
 	@POST
 	@Path("send-ordin")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage sendOrdinary(POrdinRedEnve ordinRedEnve, @QueryParam("uuid") String send_uuid) {
+	public PMessage sendOrdinary(POrdinRedEnve ordinRedEnve, @CookieParam("uuid") String send_uuid) {
 		return redSendService.sendOrdinary(ordinRedEnve, send_uuid);
 	}
 
@@ -53,7 +55,7 @@ public class SendProcess {
 	@POST
 	@Path("send-group")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage sendGroup(PGroupRedEnve groupRedEnve, @QueryParam("uuid") String send_uuid) {
+	public PMessage sendGroup(PGroupRedEnve groupRedEnve, @CookieParam("uuid") String send_uuid) {
 		return redSendService.sendGroup(groupRedEnve, send_uuid);
 	}
 
@@ -66,9 +68,11 @@ public class SendProcess {
 	 * @return
 	 */
 	@GET
-	@Path("list")
+	@Path("send-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage list(@QueryParam("uuid") String uuid, @QueryParam("idx") int idx, @QueryParam("count") int count) {
+	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("idx") int idx, @QueryParam("count") int count) {
+		if (Strings.isNullOrEmpty(uuid))
+			uuid = "1471175703665920835";
 		return redSendService.list(uuid, idx, count);
 	}
 

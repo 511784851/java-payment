@@ -1,5 +1,6 @@
 package com.blemobi.payment.rest;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,7 +37,7 @@ public class RewardProcess {
 	@POST
 	@Path("send")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage reward(POrdinRedEnve ordinRedEnve, @QueryParam("uuid") String send_uuid) {
+	public PMessage reward(POrdinRedEnve ordinRedEnve, @CookieParam("uuid") String send_uuid) {
 		return rewardService.reward(ordinRedEnve, send_uuid);
 	}
 
@@ -52,7 +53,7 @@ public class RewardProcess {
 	@GET
 	@Path("list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage list(@QueryParam("uuid") String uuid, @QueryParam("type") int type, @QueryParam("idx") int idx,
+	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("type") int type, @QueryParam("idx") int idx,
 			@QueryParam("count") int count) {
 		return rewardService.list(uuid, type, idx, count);
 	}
@@ -69,7 +70,7 @@ public class RewardProcess {
 	@GET
 	@Path("info-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage infoList(@QueryParam("uuid") String uuid, @QueryParam("ord_no") String ord_no,
+	public PMessage infoList(@CookieParam("uuid") String uuid, @QueryParam("ord_no") String ord_no,
 			@QueryParam("idx") int idx, @QueryParam("count") int count) {
 		return rewardService.info(ord_no, uuid, idx, count);
 	}

@@ -27,12 +27,15 @@ import com.blemobi.sep.probuf.PaymentProtos.PRedEnveList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.google.common.base.Strings;
 
+import lombok.extern.log4j.Log4j;
+
 /**
  * 发红包业务实现类
  * 
  * @author zhaoyong
  *
  */
+@Log4j
 @Service("redSendService")
 public class RedSendServiceImpl implements RedSendService {
 
@@ -193,6 +196,9 @@ public class RedSendServiceImpl implements RedSendService {
 
 	@Override
 	public PMessage list(String uuid, int idx, int count) {
+
+		log.debug("uuid:" + uuid);
+
 		idx = checkIdx(idx);
 		List<RedSend> list = redSendDao.selectByPage(uuid, idx, count);
 		List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
@@ -200,7 +206,7 @@ public class RedSendServiceImpl implements RedSendService {
 			PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
 			redList.add(redInfo);
 		}
-
+		log.debug("list.size()" + list.size());
 		PRedEnveList redEnveList = PRedEnveList.newBuilder().addAllRedEnveBaseInfo(redList).build();
 		return ReslutUtil.createReslutMessage(redEnveList);
 	}

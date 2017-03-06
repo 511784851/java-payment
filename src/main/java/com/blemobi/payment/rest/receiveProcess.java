@@ -1,5 +1,6 @@
 package com.blemobi.payment.rest;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,7 +36,7 @@ public class receiveProcess {
 	@GET
 	@Path("status")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage findRedEnveStatus(@QueryParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+	public PMessage findRedEnveStatus(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
 		return redReceiveService.findRedEnveStatus(ord_no, rece_uuid);
 	}
 
@@ -52,7 +53,7 @@ public class receiveProcess {
 	@POST
 	@Path("receive/redEnve")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(@QueryParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+	public PMessage receive(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
 		return redReceiveService.receive(ord_no, rece_uuid);
 	}
 
@@ -69,7 +70,7 @@ public class receiveProcess {
 	@POST
 	@Path("find/redEnveInfo")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage findRedEnveInfo(@QueryParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+	public PMessage findRedEnveInfo(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
 		return redReceiveService.findRedEnveInfo(ord_no, rece_uuid);
 	}
 
@@ -89,7 +90,7 @@ public class receiveProcess {
 	@GET
 	@Path("find/receRedEnve")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage find(@QueryParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no,
+	public PMessage find(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no,
 			@QueryParam("last_id") int last_id, @QueryParam("count") int count) {
 		return redReceiveService.find(ord_no, rece_uuid, last_id, count);
 	}

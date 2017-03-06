@@ -1,5 +1,6 @@
 package com.blemobi.payment.rest;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -35,7 +36,7 @@ public class BillProcess {
 	@GET
 	@Path("info-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage list(@QueryParam("uuid") String uuid, @QueryParam("type") int type, @QueryParam("idx") int idx,
+	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("type") int type, @QueryParam("idx") int idx,
 			@QueryParam("count") int count) {
 		return billService.list(uuid, type, idx, count);
 	}
