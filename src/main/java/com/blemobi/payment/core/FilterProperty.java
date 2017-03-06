@@ -29,10 +29,21 @@ public class FilterProperty {
 	 */
 	public FilterProperty() {
 		tokenPathArray = new ArrayList<String>();
-		tokenPathArray.add("/*");
+		tokenPathArray.add("/v1/payment/user/thirdToken");
+		tokenPathArray.add("/v1/payment/redEnve/send-ordin");
+		tokenPathArray.add("/v1/payment/redEnve/send-group");
+		tokenPathArray.add("/v1/payment/reward/send");
+		tokenPathArray.add("/v1/payment/redEnve/status");
+		tokenPathArray.add("/v1/payment/redEnve/receive");
+		tokenPathArray.add("/v1/payment/redEnve/info");
+		tokenPathArray.add("/v1/payment/redEnve/receive-list");
+		tokenPathArray.add("/v1/payment/bill/info-list");
+		tokenPathArray.add("/v1/payment/redEnve/send-list");
+		tokenPathArray.add("/v1/payment/reward/list");
+		tokenPathArray.add("/v1/payment/reward/info-list");
 
 		fromPathArray = new ArrayList<String>();
-		//fromPathArray.add("/*");
+		// fromPathArray.add("/*");
 	}
 
 	/**
