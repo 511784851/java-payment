@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.blemobi.library.client.SelectFansGRPCClient;
+import com.blemobi.library.grpc.SelectFansGRPCClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.dao.RedJedisDao;
