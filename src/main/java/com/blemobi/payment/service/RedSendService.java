@@ -1,5 +1,7 @@
 package com.blemobi.payment.service;
 
+import java.io.IOException;
+
 import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
@@ -38,5 +40,5 @@ public interface RedSendService {
 	 * @param count
 	 * @return
 	 */
-	public PMessage list(String uuid, int idx, int count);
+	public PMessage list(String uuid, int idx, int count) throws IOException;
 }

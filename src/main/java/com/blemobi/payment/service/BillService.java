@@ -1,5 +1,7 @@
 package com.blemobi.payment.service;
 
+import java.io.IOException;
+
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -23,5 +25,5 @@ public interface BillService {
 	 *            分页大小
 	 * @return
 	 */
-	public PMessage list(String uuid, int type, int last_id, int count);
+	public PMessage list(String uuid, int type, int last_id, int count) throws IOException;
 }

@@ -1,5 +1,6 @@
 package com.blemobi.payment.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.redis.LockManager;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
@@ -170,9 +172,11 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 
 	/**
 	 * 查看红包详情
+	 * 
+	 * @throws IOException
 	 */
 	@Override
-	public PMessage findRedEnveInfo(String ord_no, String rece_uuid) {
+	public PMessage findRedEnveInfo(String ord_no, String rece_uuid) throws IOException {
 		long now_tm = System.currentTimeMillis();
 		RedSend redSend = redSendDao.selectByKey(ord_no);
 		boolean status = now_tm >= redSend.getOver_tm();// 红包是否已过期
@@ -190,8 +194,10 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 
 	/**
 	 * 批量加载领红包用户
+	 * 
+	 * @throws IOException
 	 */
-	public PMessage find(String ord_no, String rece_uuid, int last_id, int count) {
+	public PMessage find(String ord_no, String rece_uuid, int last_id, int count) throws IOException {
 		RedSend redSend = redSendDao.selectByKey(ord_no);
 		List<PRedEnveRece> list = getReceUser(redSend, ord_no, last_id, count);
 		PRedEnveReceList redEnveReceList = PRedEnveReceList.newBuilder().addAllRedEnveRece(list).build();
@@ -205,10 +211,12 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * @param type
 	 * @param p_receive_list
 	 * @return
+	 * @throws IOException
 	 */
-	private PRedEnveInfo buildRedInfo(RedSend redSend, String ord_no, int user_rece_money, boolean status) {
+	private PRedEnveInfo buildRedInfo(RedSend redSend, String ord_no, int user_rece_money, boolean status)
+			throws IOException {
 		List<PRedEnveRece> list = getReceUser(redSend, ord_no, 0, 10);
-		PUserBase userBase = PUserBase.newBuilder().setUUID(redSend.getSend_uuid() + "").build();
+		PUserBase userBase = UserBaseCache.get(redSend.getSend_uuid());
 		PRedEnveInfo redInfo = PRedEnveInfo.newBuilder().setOrdNo(redSend.getOrd_no()).setUserReceMoney(user_rece_money)
 				.setType(redSend.getType()).setTotaMoney(redSend.getTota_money())
 				.setTotaNumber(redSend.getTota_number()).setReceMoney(redSend.getRece_money())
@@ -235,8 +243,9 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * @param last_id
 	 * @param count
 	 * @return
+	 * @throws IOException
 	 */
-	private List<PRedEnveRece> getReceUser(RedSend redSend, String ord_no, int last_id, int count) {
+	private List<PRedEnveRece> getReceUser(RedSend redSend, String ord_no, int last_id, int count) throws IOException {
 		String luck_uuid = "";
 		if (redSend.getType() == OrderEnum.RED_GROUP_RANDOM.getValue()
 				&& (redSend.getRece_number() == redSend.getTota_money()
@@ -247,7 +256,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 		List<PRedEnveRece> list = new ArrayList<PRedEnveRece>();
 		for (RedReceive redReceive : receiveList) {
 			int luck_level = luck_uuid.equals(redReceive.getRece_uuid()) ? 1 : 0;//// 幸运级别（0-一般，1-手气最佳，2-手气最差）
-			PUserBase userBase = PUserBase.newBuilder().setUUID(redReceive.getRece_uuid() + "").build();
+			PUserBase userBase = UserBaseCache.get(redReceive.getRece_uuid());
 			PRedEnveRece p_receive = PRedEnveRece.newBuilder().setId(redReceive.getId()).setMoney(redReceive.getMoney())
 					.setReceTm(redReceive.getRece_tm()).setLuckLevel(luck_level).setUserBase(userBase).build();
 			list.add(p_receive);

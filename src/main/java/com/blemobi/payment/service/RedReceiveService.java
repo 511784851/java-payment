@@ -1,5 +1,7 @@
 package com.blemobi.payment.service;
 
+import java.io.IOException;
+
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -34,7 +36,7 @@ public interface RedReceiveService {
 	 * @param rece_uuid
 	 * @return
 	 */
-	public PMessage findRedEnveInfo(String ord_no, String rece_uuid);
+	public PMessage findRedEnveInfo(String ord_no, String rece_uuid) throws IOException;
 
 	/**
 	 * 加载更多领红包用户
@@ -45,5 +47,5 @@ public interface RedReceiveService {
 	 * @param count
 	 * @return
 	 */
-	public PMessage find(String ord_no, String rece_uuid, int last_id, int count);
+	public PMessage find(String ord_no, String rece_uuid, int last_id, int count) throws IOException;
 }

@@ -1,5 +1,6 @@
 package com.blemobi.payment.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RewardDao;
@@ -80,7 +82,7 @@ public class RewardServiceImpl implements RewardService {
 	}
 
 	@Override
-	public PMessage info(String ord_no, String uuid, int idx, int count) {
+	public PMessage info(String ord_no, String uuid, int idx, int count) throws IOException {
 		idx = checkIdx(idx);
 
 		PUserBase userBase = null;// 对方信息
@@ -89,11 +91,11 @@ public class RewardServiceImpl implements RewardService {
 
 		Reward reward = rewardDao.selectByKey(ord_no);
 		if (uuid.equals(reward.getSend_uuid())) {// 用户为发送者，需要处理接受者数据
-			userBase = PUserBase.newBuilder().setUUID(reward.getRece_uuid()).build();
+			userBase = UserBaseCache.get(reward.getRece_uuid());
 			money = rewardDao.selectrTotalMoony(uuid, reward.getRece_uuid());
 			list = rewardDao.selectByPage(uuid, reward.getRece_uuid(), idx, count);
 		} else if (uuid.equals(reward.getRece_uuid())) {// 用户为接受者，需要处理发送者数量
-			userBase = PUserBase.newBuilder().setUUID(reward.getSend_uuid()).build();
+			userBase = UserBaseCache.get(reward.getSend_uuid());
 			money = rewardDao.selectrTotalMoony(reward.getSend_uuid(), uuid);
 			list = rewardDao.selectByPage(reward.getSend_uuid(), uuid, idx, count);
 		} else

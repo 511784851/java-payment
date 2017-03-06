@@ -1,5 +1,7 @@
 package com.blemobi.payment.rest;
 
+import java.io.IOException;
+
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -66,11 +68,12 @@ public class receiveProcess {
 	 * @param ord_no
 	 *            业务订单号
 	 * @return
+	 * @throws IOException 
 	 */
 	@POST
 	@Path("find/redEnveInfo")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage findRedEnveInfo(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+	public PMessage findRedEnveInfo(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) throws IOException {
 		return redReceiveService.findRedEnveInfo(ord_no, rece_uuid);
 	}
 
@@ -86,12 +89,13 @@ public class receiveProcess {
 	 * @param count
 	 *            数量大小
 	 * @return
+	 * @throws IOException 
 	 */
 	@GET
 	@Path("find/receRedEnve")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage find(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no,
-			@QueryParam("last_id") int last_id, @QueryParam("count") int count) {
+			@QueryParam("last_id") int last_id, @QueryParam("count") int count) throws IOException {
 		return redReceiveService.find(ord_no, rece_uuid, last_id, count);
 	}
 }

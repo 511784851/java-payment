@@ -1,5 +1,7 @@
 package com.blemobi.payment.rest;
 
+import java.io.IOException;
+
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -66,12 +68,13 @@ public class RewardProcess {
 	 * @param idx
 	 * @param count
 	 * @return
+	 * @throws IOException 
 	 */
 	@GET
 	@Path("info-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage infoList(@CookieParam("uuid") String uuid, @QueryParam("ord_no") String ord_no,
-			@QueryParam("idx") int idx, @QueryParam("count") int count) {
+			@QueryParam("idx") int idx, @QueryParam("count") int count) throws IOException {
 		return rewardService.info(ord_no, uuid, idx, count);
 	}
 }

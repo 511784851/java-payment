@@ -29,10 +29,10 @@ public class FilterProperty {
 	 */
 	public FilterProperty() {
 		tokenPathArray = new ArrayList<String>();
-		// tokenPathArray.add("/chat/user/token");
+		tokenPathArray.add("/*");
 
 		fromPathArray = new ArrayList<String>();
-		// fromPathArray.add("/room/update/tag");
+		//fromPathArray.add("/*");
 	}
 
 	/**

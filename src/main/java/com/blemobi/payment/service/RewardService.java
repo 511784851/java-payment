@@ -1,5 +1,7 @@
 package com.blemobi.payment.service;
 
+import java.io.IOException;
+
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
@@ -50,5 +52,5 @@ public interface RewardService {
 	 *            分页大小
 	 * @return
 	 */
-	public PMessage info(String ord_no, String uuid, int idx, int count);
+	public PMessage info(String ord_no, String uuid, int idx, int count) throws IOException;
 }

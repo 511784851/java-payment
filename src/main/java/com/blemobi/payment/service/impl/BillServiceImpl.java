@@ -1,5 +1,6 @@
 package com.blemobi.payment.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
 import com.blemobi.payment.model.Bill;
@@ -29,7 +31,7 @@ public class BillServiceImpl implements BillService {
 	private BillDao billDao;
 
 	@Override
-	public PMessage list(String uuid, int type, int idx, int count) {
+	public PMessage list(String uuid, int type, int idx, int count) throws IOException {
 		PBill.Builder billBuilder = PBill.newBuilder();
 		if (idx <= 0) {
 			buildIncomeTotal(uuid, billBuilder);// 获得总收入
@@ -97,8 +99,9 @@ public class BillServiceImpl implements BillService {
 	 *            类型（0-收入 1-支出）
 	 * @param billList
 	 * @return
+	 * @throws IOException
 	 */
-	private List<PBillInfo> buildBillInfo(int type, List<Bill> billList) {
+	private List<PBillInfo> buildBillInfo(int type, List<Bill> billList) throws IOException {
 		List<PBillInfo> billInfoList = new ArrayList<PBillInfo>();
 		for (Bill bill : billList) {
 			PBillInfo billInfo = dsaf(type, bill);
@@ -115,12 +118,13 @@ public class BillServiceImpl implements BillService {
 	 * @param bill
 	 *            账单信息
 	 * @return
+	 * @throws IOException
 	 */
-	private PBillInfo dsaf(int type, Bill bill) {
+	private PBillInfo dsaf(int type, Bill bill) throws IOException {
 		PBillInfo.Builder billInfoBuilder = PBillInfo.newBuilder().setId(bill.getId()).setOrdNo(bill.getOrd_no())
 				.setMoney(bill.getMoney()).setTime(bill.getTime()).setType(bill.getType());
 		if (type == 0) {// 收入账单需要发送用户信息
-			PUserBase userBase = PUserBase.newBuilder().setUUID(bill.getUuid()).build();
+			PUserBase userBase = UserBaseCache.get(bill.getUuid());
 			billInfoBuilder.setUserBase(userBase);
 		}
 		return billInfoBuilder.build();

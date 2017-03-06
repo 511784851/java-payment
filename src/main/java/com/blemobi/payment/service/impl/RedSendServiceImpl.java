@@ -1,5 +1,6 @@
 package com.blemobi.payment.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RedSendDao;
@@ -195,7 +197,7 @@ public class RedSendServiceImpl implements RedSendService {
 	}
 
 	@Override
-	public PMessage list(String uuid, int idx, int count) {
+	public PMessage list(String uuid, int idx, int count) throws IOException {
 
 		log.debug("uuid:" + uuid);
 
@@ -217,8 +219,9 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @param redSend
 	 *            红包信息
 	 * @return
+	 * @throws IOException 
 	 */
-	private PRedEnveBaseInfo buildRedEnveBaseInfo(RedSend redSend) {
+	private PRedEnveBaseInfo buildRedEnveBaseInfo(RedSend redSend) throws IOException {
 		List<PUserBase> userList5 = getReceUser5(redSend.getRece_uuid5());
 		return PRedEnveBaseInfo.newBuilder().setId(redSend.getId()).setOrdNo(redSend.getOrd_no())
 				.setType(redSend.getType()).setContent(redSend.getContent()).setSendTm(redSend.getSend_tm())
@@ -231,11 +234,12 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @param redSend
 	 *            红包信息
 	 * @return
+	 * @throws IOException 
 	 */
-	private List<PUserBase> getReceUser5(String uuid5) {
+	private List<PUserBase> getReceUser5(String uuid5) throws IOException {
 		List<PUserBase> userList5 = new ArrayList<PUserBase>();
 		for (String rece_uuid : uuid5.split(",")) {
-			PUserBase userBase = PUserBase.newBuilder().setUUID(rece_uuid).build();
+			PUserBase userBase = UserBaseCache.get(rece_uuid);
 			userList5.add(userBase);
 		}
 		return userList5;

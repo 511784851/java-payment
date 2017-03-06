@@ -1,5 +1,7 @@
 package com.blemobi.payment.rest;
 
+import java.io.IOException;
+
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -32,12 +34,13 @@ public class BillProcess {
 	 * @param idx
 	 * @param count
 	 * @return
+	 * @throws IOException
 	 */
 	@GET
 	@Path("info-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("type") int type, @QueryParam("idx") int idx,
-			@QueryParam("count") int count) {
+			@QueryParam("count") int count) throws IOException {
 		return billService.list(uuid, type, idx, count);
 	}
 

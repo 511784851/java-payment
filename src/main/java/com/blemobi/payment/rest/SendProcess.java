@@ -1,5 +1,7 @@
 package com.blemobi.payment.rest;
 
+import java.io.IOException;
+
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,7 +14,6 @@ import com.blemobi.payment.util.InstanceFactory;
 import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.google.common.base.Strings;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
@@ -66,13 +67,12 @@ public class SendProcess {
 	 * @param idx
 	 * @param count
 	 * @return
+	 * @throws IOException 
 	 */
 	@GET
 	@Path("send-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("idx") int idx, @QueryParam("count") int count) {
-		if (Strings.isNullOrEmpty(uuid))
-			uuid = "1471175703665920835";
+	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("idx") int idx, @QueryParam("count") int count) throws IOException {
 		return redSendService.list(uuid, idx, count);
 	}
 
