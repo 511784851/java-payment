@@ -30,6 +30,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import com.blemobi.library.grpc.SaveFansGRPCClient;
 import com.blemobi.payment.service.CallbackService;
@@ -114,19 +115,26 @@ public class RongYunNotifyProcess {
     @GET
     @Path("test")
     @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
-    public String callback() {
+    public String callback(@QueryParam("uuid") String uuid) {
         try {
-            log.info("grpc test.......");
+            log.info("grpc test......." + uuid);
             SaveFansGRPCClient client = new SaveFansGRPCClient();
+            log.info("1");
             List<String> list = new ArrayList<String>();
+            log.info("2");
             list.add("aa");
+            log.info("3");
             list.add("bb");
-            client.doExec(new Object[]{"hello world", 1, list, "12353463456345734"});
-            log.info("success...........");
+            client.doExec(new Object[]{"hello world", 1, list, uuid});
+            log.info("4");
         } catch (Exception ex) {
             log.error("payment callback failed", ex);
             return Constants.HTMLSTS.FAILED.getValue();
+        } catch (Throwable e){
+            log.error("payment callback failed.....", e);
+            return Constants.HTMLSTS.FAILED.getValue();
         }
+        log.info("6");
         return Constants.HTMLSTS.SUCCESS.getValue();
     }
 }
