@@ -94,8 +94,6 @@ public class LotteryProcess {
     @Path("accept")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF) 
     public PMessage acceptPrize(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PAcceptPrize prize) {
-        //TODO prd to be removed
-        uuid = "1468419313301436965";
         PMessage ret = lotteryService.acceptPrize(uuid, prize.getLotteryId());
         return ret;
     }
@@ -112,8 +110,6 @@ public class LotteryProcess {
     @Path("delete")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF) 
     public PMessage delete(@CookieParam("uuid") String uuid, @CookieParam("token") String token, PLotteryDel lotteryDel) {
-        //TODO prd to be removed
-        uuid = "1468419313301436965";
         PMessage ret = lotteryService.delPrize(uuid, lotteryDel.getLotteryIdList());
         return ret;
     }
@@ -132,8 +128,6 @@ public class LotteryProcess {
     @Path("list")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage lotteryList(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("startIndex") int startIndex, @QueryParam("size") int size, @QueryParam("keywords") String keywords) {
-        //TODO PRD TO BE REMOVED
-        uuid = "123";
         PMessage ret = lotteryService.lotteryList(uuid, keywords, startIndex, size);
         return ret;
     }

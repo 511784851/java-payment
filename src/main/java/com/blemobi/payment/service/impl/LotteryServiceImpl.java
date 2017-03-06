@@ -73,8 +73,6 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public PMessage createLottery(String uuid, PLotteryConfirm lottery) {
-        // TODO PRD TO BE REMOVED
-        uuid = "123";
         List<PUserBaseEx> userExList = lottery.getUserListList();
         if(userExList == null || userExList.isEmpty()){
             throw new BizException(2015008, "没有产生中奖者，抽奖异常");

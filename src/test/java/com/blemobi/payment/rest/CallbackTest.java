@@ -47,19 +47,30 @@ public class CallbackTest {
         //
         // assertEquals("success", message.getType());
 
+//        OkHttpClient client = new OkHttpClient();
+//        RequestBody formBody = new FormBody.Builder().add("respstat", "0000").add("respmsg", "成功")
+//                .add("orderAmount", "100").add("orderNo", "1234").add("orderStatus", "1").add("orderTime", "1234567")
+//                .add("custOrderNo", "520170228286148971922067456").add("receiveUid", "uuid").add("sign", "8675571791398e3cb61e4a35ebc57a97")
+//                .build();
+//        Request request = new Request.Builder().url("http://127.0.0.1:9014/v1/payment/callback/notify").post(formBody).build();
+//        Response resp = client.newCall(request).execute();
+//        if(resp.isSuccessful()){
+//            System.out.println(resp.body().string());
+//        }else{
+//            System.out.println("failed");
+//        }
         OkHttpClient client = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder().add("respstat", "0000").add("respmsg", "成功")
                 .add("orderAmount", "100").add("orderNo", "1234").add("orderStatus", "1").add("orderTime", "1234567")
                 .add("custOrderNo", "520170228286148971922067456").add("receiveUid", "uuid").add("sign", "8675571791398e3cb61e4a35ebc57a97")
                 .build();
-        Request request = new Request.Builder().url("http://127.0.0.1:9014/v1/payment/callback/notify").post(formBody).build();
+        Request request = new Request.Builder().url("http://127.0.0.1:9014/v1/payment/callback/test").get().build();
         Response resp = client.newCall(request).execute();
         if(resp.isSuccessful()){
             System.out.println(resp.body().string());
         }else{
             System.out.println("failed");
         }
-        
     }
 
 }
