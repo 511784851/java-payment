@@ -1,6 +1,7 @@
 package com.blemobi.payment.rest;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 
@@ -9,9 +10,6 @@ import org.junit.Test;
 
 import com.blemobi.payment.core.PaymentManager;
 
-import lombok.extern.java.Log;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -30,7 +28,7 @@ public class CallbackTest {
 
         String[] arg = new String[] {"-env", "local" };
         try {
-//            PaymentManager.main(arg);
+            PaymentManager.main(arg);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -64,13 +62,30 @@ public class CallbackTest {
                 .add("orderAmount", "100").add("orderNo", "1234").add("orderStatus", "1").add("orderTime", "1234567")
                 .add("custOrderNo", "520170228286148971922067456").add("receiveUid", "uuid").add("sign", "8675571791398e3cb61e4a35ebc57a97")
                 .build();
-        Request request = new Request.Builder().url("http://192.168.7.245:9014/v1/payment/callback/test").get().build();
+        List<Cookie> cookies = new ArrayList<>();
+        Cookie cookie = new Cookie("u", "123455");
+        cookies.add(cookie);
+        Request request = new Request.Builder().url("http://192.168.7.245:9014/v1/payment/callback/test?uuid=ssss")
+                .get().header("Cookie", cookieHeader(cookies)).build();
         Response resp = client.newCall(request).execute();
-        if(resp.isSuccessful()){
+        if (resp.isSuccessful()) {
             System.out.println(resp.body().string());
-        }else{
+        } else {
             System.out.println("failed");
         }
     }
+
+    private static String cookieHeader(List<Cookie> cookies) {
+        StringBuilder cookieHeader = new StringBuilder();
+        for (int i = 0, size = cookies.size(); i < size; i++) {
+            if (i > 0) {
+                cookieHeader.append("; ");
+            }
+            Cookie cookie = cookies.get(i);
+            cookieHeader.append(cookie.getName()).append('=').append(cookie.getValue());
+        }
+        return cookieHeader.toString();
+    }
+    
 
 }

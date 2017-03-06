@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -115,8 +116,9 @@ public class RongYunNotifyProcess {
     @GET
     @Path("test")
     @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
-    public String callback(@QueryParam("uuid") String uuid) {
+    public String callback(@CookieParam("u") String u, @QueryParam("uuid") String uuid) {
         try {
+            System.out.println(u + ".....");
             log.info("grpc test......." + uuid);
             SaveFansGRPCClient client = new SaveFansGRPCClient();
             log.info("1");

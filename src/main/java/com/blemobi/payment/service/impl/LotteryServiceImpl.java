@@ -45,12 +45,11 @@ import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
-import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetailRet;
-import com.blemobi.sep.probuf.PaymentProtos.PLotteryListRet;
-import com.blemobi.sep.probuf.PaymentProtos.PLotterySingleRet;
+import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetail;
+import com.blemobi.sep.probuf.PaymentProtos.PLotteryList;
+import com.blemobi.sep.probuf.PaymentProtos.PLotterySingle;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
-import com.blemobi.sep.probuf.PaymentProtos.PShuffleRet;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
@@ -76,17 +75,17 @@ public class LotteryServiceImpl implements LotteryService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public PMessage createLottery(String uuid, PLotteryConfirm lottery) {
         List<PUserBaseEx> userExList = lottery.getUserListList();
-        if(userExList == null || userExList.isEmpty()){
+        if (userExList == null || userExList.isEmpty()) {
             throw new BizException(2015008, "没有产生中奖者，抽奖异常");
         }
         // 验证中奖者是否在参与者列表
         SelectFansGRPCClient fansGRPC = new SelectFansGRPCClient();
-        List<String> uuidList = fansGRPC.doExec(new Object[]{lottery.getGender(), lottery.getRegionList(), uuid});
-        if(uuidList == null || uuidList.isEmpty()){
+        List<String> uuidList = fansGRPC.doExec(new Object[] {lottery.getGender(), lottery.getRegionList(), uuid });
+        if (uuidList == null || uuidList.isEmpty()) {
             throw new BizException(2015012, "抽奖异常");
         }
-        for(int idx = 0; idx < lottery.getUserListCount(); idx++){
-            if(!uuidList.contains(lottery.getUserList(idx).getInfo().getUUID())){
+        for (int idx = 0; idx < lottery.getUserListCount(); idx++) {
+            if (!uuidList.contains(lottery.getUserList(idx).getInfo().getUUID())) {
                 throw new BizException(2015013, "中奖者名单被篡改");
             }
         }
@@ -98,7 +97,8 @@ public class LotteryServiceImpl implements LotteryService {
         IdWorker idWorder = IdWorker.getInstance();
         String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
-                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ', lottery.getRemark()};
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ',
+                lottery.getRemark() };
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new BizException(2015006, "创建抽奖失败，请重试");
@@ -119,21 +119,22 @@ public class LotteryServiceImpl implements LotteryService {
                 throw new BizException(2015007, "添加抽奖位置失败，请重试");
             }
         }
-        
+
         List<Object[]> param = new ArrayList<>();
-        
-        for(PUserBaseEx user : userExList){
-            //uuid, lottery_id, nick_nm, sex, bonus, status, crt_tm, accept_tm
+
+        for (PUserBaseEx user : userExList) {
+            // uuid, lottery_id, nick_nm, sex, bonus, status, crt_tm, accept_tm
             PUserBase info = user.getInfo();
-            Object[] arr = new Object[]{info.getUUID(), orderno, info.getNickname(), user.getGender(), user.getAmt(), 0, currTm, currTm};
+            Object[] arr = new Object[] {info.getUUID(), orderno, info.getNickname(), user.getGender(), user.getAmt(),
+                    0, currTm, currTm };
             param.add(arr);
         }
-        
+
         ret = lotteryDao.createWinners(param);
-        if(ret != userExList.size()){
+        if (ret != userExList.size()) {
             throw new BizException(2015009, "中奖者数量不正确，抽奖异常");
         }
-        //TODO 通知GO 存储参与抽奖者信息
+        // TODO 通知GO 存储参与抽奖者信息
         SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
         POrderPay orderPay = signHelper.getOrderPay();
         return ReslutUtil.createReslutMessage(orderPay);
@@ -142,17 +143,17 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public PMessage lotteryList(String uuid, String keywords, int startIdx, int size) {
         List<Map<String, Object>> lotteriesList = lotteryDao.lotteryList(uuid, keywords, startIdx, size);
-        PLotteryListRet.Builder builder = PLotteryListRet.newBuilder();
+        PLotteryList.Builder builder = PLotteryList.newBuilder();
         if (lotteriesList != null) {
             for (Map<String, Object> entity : lotteriesList) {
-                PLotterySingleRet.Builder sBuilder = PLotterySingleRet.newBuilder();
+                PLotterySingle.Builder sBuilder = PLotterySingle.newBuilder();
                 List<String> uuids = lotteryDao.top5UUID(entity.get("id").toString());
                 sBuilder.setCrtTm(entity.get("crt_tm").toString());
                 sBuilder.setLotteryId(entity.get("id").toString());
                 sBuilder.setTitle(entity.get("title").toString());
                 sBuilder.setWinners(Integer.parseInt(entity.get("winners").toString()));
                 List<PUserBase> uList = new ArrayList<PUserBase>();
-                for(String u : uuids){
+                for (String u : uuids) {
                     try {
                         PUserBase userBase = UserBaseCache.get(u);
                         uList.add(userBase);
@@ -160,7 +161,7 @@ public class LotteryServiceImpl implements LotteryService {
                         log.error("uuid:[" + u + "]在缓存中没有找到");
                         throw new BizException(2015100, "用户没有找到");
                     }
-                    
+
                 }
                 sBuilder.addAllUserList(uList);
                 builder.addLotteries(sBuilder.build());
@@ -171,7 +172,7 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     public PMessage lotteryDetail(String lotteryId, String keywords, int type) {
-        PLotteryDetailRet.Builder builder = PLotteryDetailRet.newBuilder();
+        PLotteryDetail.Builder builder = PLotteryDetail.newBuilder();
         Map<String, Object> detail = lotteryDao.lotteryDetail(lotteryId);
         if (detail != null && !detail.isEmpty()) {
             builder.setCrtTm(detail.get("crt_tm").toString());
@@ -206,7 +207,7 @@ public class LotteryServiceImpl implements LotteryService {
                     log.error("uuid:[" + uuid + "]在缓存中没有找到");
                     throw new BizException(2015100, "用户没有找到");
                 }
-                
+
                 uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));
                 userList.add(uBuilder.build());
             }
@@ -260,16 +261,16 @@ public class LotteryServiceImpl implements LotteryService {
         remainAmt -= bonus;
         lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, updTm, status);
-        //TODO 转账
-        //B2CResp req = new B2CResp();
-        //RongYunWallet.b2cTransfer(req);
+        // TODO 转账
+        // B2CResp req = new B2CResp();
+        // RongYunWallet.b2cTransfer(req);
         return ReslutUtil.createSucceedMessage();
     }
 
     @Override
     public PMessage delPrize(String uuid, List<String> lotteryId) {
         int ret = lotteryDao.delPrize(lotteryId, uuid);
-        if(ret != lotteryId.size()){
+        if (ret != lotteryId.size()) {
             throw new BizException(2015009, "删除失败");
         }
         return ReslutUtil.createSucceedMessage();
@@ -277,22 +278,22 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Override
     public PMessage shuffleLottery(String uuid, PShuffle shuffle) {
-        PShuffleRet.Builder builder = PShuffleRet.newBuilder();
+        PLotteryDetail.Builder builder = PLotteryDetail.newBuilder();
         int amt = redJedisDao.findDailySendMoney(uuid);
         if ((amt + shuffle.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
             throw new BizException(2015005, "单日支出超出上限");
         }
         Integer times = redJedisDao.getUserLotteryRefreshTimes(uuid);
-        if(times > 1){
+        if (times > 1) {
             throw new BizException(2015010, "5分钟内仅能重抽2次，请稍后再试");
         }
         SelectFansGRPCClient fansGRPC = new SelectFansGRPCClient();
-        List<String> uuidList = fansGRPC.doExec(new Object[]{shuffle.getGender(), shuffle.getRegionList(), uuid});
-        if(uuidList == null || uuidList.size() < shuffle.getWinners()){
+        List<String> uuidList = fansGRPC.doExec(new Object[] {shuffle.getGender(), shuffle.getRegionList(), uuid });
+        if (uuidList == null || uuidList.size() < shuffle.getWinners()) {
             throw new BizException(2015011, "粉丝数量不够");
         }
         List<PUserBaseEx> winnerList = new ArrayList<PUserBaseEx>();
-        for(int idx = 0; idx < shuffle.getWinners(); idx++){
+        for (int idx = 0; idx < shuffle.getWinners(); idx++) {
             Random r = new Random();
             int win = r.nextInt(uuidList.size());
             String uid = uuidList.get(win);
@@ -304,12 +305,13 @@ public class LotteryServiceImpl implements LotteryService {
                 throw new BizException(2015100, "用户没有找到");
             }
             uuidList.remove(win);
-            //TODO 设置性别
-            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(0).setInfo(userBase).build();
+            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(userBase.getGender())
+                    .setInfo(userBase).build();
             winnerList.add(w);
         }
-        builder.setCrtTm(System.currentTimeMillis() + "");
-        builder.addAllUserList(winnerList);
+        builder.setCrtTm(System.currentTimeMillis() + "").addAllUserList(winnerList).setLotteryId("")
+                .addAllRegion(shuffle.getRegionList()).setRemark(shuffle.getRemark()).setTitle(shuffle.getTitle())
+                .setTotAmt(shuffle.getTotAmt()).setType(shuffle.getGender()).setWinners(shuffle.getWinners());
         redJedisDao.setUserLotteryRefreshTimes(uuid);
         return ReslutUtil.createReslutMessage(builder.build());
     }
