@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -110,6 +111,7 @@ public class RongYunNotifyProcess {
         return Constants.HTMLSTS.SUCCESS.getValue();
     }
     
+    @GET
     @Path("test")
     @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
     public String callback() {
