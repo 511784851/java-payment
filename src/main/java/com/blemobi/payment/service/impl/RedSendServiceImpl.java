@@ -191,6 +191,60 @@ public class RedSendServiceImpl implements RedSendService {
 		return array;
 	}
 
+	@Override
+	public PMessage list(String uuid, int idx, int count) {
+		idx = checkIdx(idx);
+		List<RedSend> list = redSendDao.selectByPage(uuid, idx, count);
+		List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
+		for (RedSend redSend : list) {
+			PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
+			redList.add(redInfo);
+		}
+
+		PRedEnveList redEnveList = PRedEnveList.newBuilder().addAllRedEnveBaseInfo(redList).build();
+		return ReslutUtil.createReslutMessage(redEnveList);
+	}
+
+	/**
+	 * 构建PRedEnveBaseInfo对象
+	 * 
+	 * @param redSend
+	 *            红包信息
+	 * @return
+	 */
+	private PRedEnveBaseInfo buildRedEnveBaseInfo(RedSend redSend) {
+		List<PUserBase> userList5 = getReceUser5(redSend.getRece_uuid5());
+		return PRedEnveBaseInfo.newBuilder().setId(redSend.getId()).setOrdNo(redSend.getOrd_no())
+				.setType(redSend.getType()).setContent(redSend.getContent()).setSendTm(redSend.getSend_tm())
+				.setNumber(redSend.getRece_tota_num()).addAllUserBase(userList5).build();
+	}
+
+	/**
+	 * 获得红包前五个可领取用户信息
+	 * 
+	 * @param redSend
+	 *            红包信息
+	 * @return
+	 */
+	private List<PUserBase> getReceUser5(String uuid5) {
+		List<PUserBase> userList5 = new ArrayList<PUserBase>();
+		for (String rece_uuid : uuid5.split(",")) {
+			PUserBase userBase = PUserBase.newBuilder().setUUID(rece_uuid).build();
+			userList5.add(userBase);
+		}
+		return userList5;
+	}
+
+	/**
+	 * 处理分页起始值
+	 * 
+	 * @param idx
+	 * @return
+	 */
+	private int checkIdx(int idx) {
+		return idx > 0 ? idx : Integer.MAX_VALUE;
+	}
+
 	/**
 	 * 生成订单号
 	 * 
@@ -203,11 +257,16 @@ public class RedSendServiceImpl implements RedSendService {
 		return idWorder.nextId(type);
 	}
 
+	/**
+	 * 获得领红包前5个用户
+	 * 
+	 * @param rece_uuid
+	 * @return
+	 */
 	private String getReceUser5(String... rece_uuid) {
 		StringBuffer uuid5 = new StringBuffer();
 		int len = rece_uuid.length;
-		if (len > 5)
-			len = 5;
+		len = len > 5 ? 5 : len;
 		for (String uuid : rece_uuid) {
 			if (uuid5.length() > 0)
 				uuid5.append(",");
@@ -216,36 +275,4 @@ public class RedSendServiceImpl implements RedSendService {
 		return uuid5.toString();
 	}
 
-	/**
-	 * 发红包列表
-	 */
-	@Override
-	public PMessage list(String uuid, int idx, int count) {
-		if (idx <= 0)
-			idx = Integer.MAX_VALUE;
-
-		List<RedSend> list = redSendDao.selectByPage(uuid, idx, count);
-
-		List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
-		for (RedSend redSend : list) {
-			List<PUserBase> user_list = new ArrayList<PUserBase>();
-
-			String rece_uuid5 = redSend.getRece_uuid5();
-			if (!Strings.isNullOrEmpty(rece_uuid5)) {
-				for (String rece_uuid : rece_uuid5.split(",")) {
-					PUserBase userBase = PUserBase.newBuilder().setUUID(rece_uuid).build();
-					user_list.add(userBase);
-				}
-			}
-			PRedEnveBaseInfo redInfo = PRedEnveBaseInfo.newBuilder().setId(redSend.getId())
-					.setOrdNo(redSend.getOrd_no()).setType(redSend.getType()).setContent(redSend.getContent())
-					.setSendTm(redSend.getSend_tm()).setNumber(redSend.getRece_tota_num()).addAllUserBase(user_list)
-					.build();
-
-			redList.add(redInfo);
-		}
-
-		PRedEnveList redEnveList = PRedEnveList.newBuilder().addAllRedEnveBaseInfo(redList).build();
-		return ReslutUtil.createReslutMessage(redEnveList);
-	}
 }
