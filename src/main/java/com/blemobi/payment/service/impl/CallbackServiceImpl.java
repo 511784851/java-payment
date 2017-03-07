@@ -26,8 +26,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.payment.dao.BillDao;
+import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.LotteryDao;
-import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.dao.TransactionDao;
@@ -57,7 +57,7 @@ public class CallbackServiceImpl implements CallbackService {
     @Autowired
     private RewardDao rewardDao;
     @Autowired
-    private RedJedisDao redJedisDao;
+    private JedisDao jedisDao;
     @Autowired
     private BillDao billDao;
     @Override
@@ -82,7 +82,7 @@ public class CallbackServiceImpl implements CallbackService {
         if(ret != 1){
             throw new RuntimeException("update red package or lottery record failed");
         }
-        redJedisDao.incrByDailySendMoney(uuid, Integer.parseInt(amount));//累计日支出
+        jedisDao.incrByDailySendMoney(uuid, Integer.parseInt(amount));//累计日支出
         //uuid,ord_no,money,time,type
         billDao.insert(new Object[]{uuid, ordNo, -Long.parseLong(amount), bizType});
         //uuid, biz_ord_no, biz_typ, amt, ptf_sts, ptf_msg, trans_desc, corg_ord_no, corg_sts, corg_msg, crt_tm, upd_tm

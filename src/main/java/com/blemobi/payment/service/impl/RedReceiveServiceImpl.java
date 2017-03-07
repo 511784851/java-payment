@@ -12,9 +12,10 @@ import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.redis.LockManager;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
-import com.blemobi.payment.dao.RedJedisDao;
+import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.RedReceiveDao;
 import com.blemobi.payment.dao.RedSendDao;
+import com.blemobi.payment.dao.TableStoreDao;
 import com.blemobi.payment.model.RedReceive;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.RedReceiveService;
@@ -50,7 +51,10 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	private BillDao billDao;
 
 	@Autowired
-	private RedJedisDao redJedisDao;
+	private JedisDao jedisDao;
+
+	@Autowired
+	private TableStoreDao tableStoreDao;
 
 	/**
 	 * 查询红包针对用户状态
@@ -104,7 +108,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 				if (!rece_uuid.equals(redSend.getRece_uuid5()))
 					throw new RuntimeException(rece_uuid + " > 没有权限领取红包: " + ord_no);
 			} else {
-				boolean bool = redJedisDao.sismemberByOrdNo(ord_no, rece_uuid);
+				boolean bool = tableStoreDao.existsByKey(ord_no, rece_uuid);
 				if (!bool)
 					throw new RuntimeException(rece_uuid + " > 没有权限领取红包: " + ord_no);
 			}
@@ -153,7 +157,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 					} else if (type == OrderEnum.RED_GROUP_EQUAL.getValue()) {// 等额群红包
 						rece_money = redSend.getEach_money();
 					} else if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {// 随机群红包
-						String random_money_str = redJedisDao.findRandomMoneyByOrdNoAndIdx(ord_no,
+						String random_money_str = jedisDao.findRandomMoneyByOrdNoAndIdx(ord_no,
 								redSend.getRece_number());
 						rece_money = Integer.parseInt(random_money_str);
 					}

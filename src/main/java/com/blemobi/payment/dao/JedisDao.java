@@ -6,7 +6,7 @@ package com.blemobi.payment.dao;
  * @author zhaoyong
  *
  */
-public interface RedJedisDao {
+public interface JedisDao {
 
     public void setUserLotteryRefreshTimes(String uuid);
     /**
@@ -16,24 +16,6 @@ public interface RedJedisDao {
      * @return
      */
     public Integer getUserLotteryRefreshTimes(String uuid);
-
-	/**
-	 * 存储有权限领红包的用户
-	 * 
-	 * @param ord_no
-	 *            订单号
-	 * @param uuids
-	 *            用户uuid
-	 */
-	public int putReceiveUsers(String ord_no, String... uuids);
-
-	/**
-	 * 检查用户是否有权限领红包（根据订单号）
-	 * 
-	 * @param ord_no
-	 *            订单号
-	 */
-	public boolean sismemberByOrdNo(String ord_no, String uuid);
 
 	/**
 	 * 存储随机红包金额

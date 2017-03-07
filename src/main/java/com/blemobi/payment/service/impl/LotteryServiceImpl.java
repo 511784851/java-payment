@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
+import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.LotteryDao;
-import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.service.helper.SignHelper;
@@ -69,7 +69,7 @@ public class LotteryServiceImpl implements LotteryService {
     @Autowired
     private LotteryDao lotteryDao;
     @Autowired
-    private RedJedisDao redJedisDao;
+    private JedisDao jedisDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -89,7 +89,7 @@ public class LotteryServiceImpl implements LotteryService {
                 throw new BizException(2015013, "中奖者名单被篡改");
             }
         }
-        int amt = redJedisDao.findDailySendMoney(uuid);
+        int amt = jedisDao.findDailySendMoney(uuid);
         if ((amt + lottery.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
             throw new BizException(2015005, "单日支出超出上限");
         }
@@ -279,11 +279,11 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public PMessage shuffleLottery(String uuid, PShuffle shuffle) {
         PLotteryDetail.Builder builder = PLotteryDetail.newBuilder();
-        int amt = redJedisDao.findDailySendMoney(uuid);
+        int amt = jedisDao.findDailySendMoney(uuid);
         if ((amt + shuffle.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
             throw new BizException(2015005, "单日支出超出上限");
         }
-        Integer times = redJedisDao.getUserLotteryRefreshTimes(uuid);
+        Integer times = jedisDao.getUserLotteryRefreshTimes(uuid);
         if (times > 1) {
             throw new BizException(2015010, "5分钟内仅能重抽2次，请稍后再试");
         }
@@ -313,7 +313,7 @@ public class LotteryServiceImpl implements LotteryService {
         builder.setCrtTm(System.currentTimeMillis() + "").addAllUserList(winnerList).setLotteryId("")
                 .addAllRegion(shuffle.getRegionList()).setRemark(shuffle.getRemark()).setTitle(shuffle.getTitle())
                 .setTotAmt(shuffle.getTotAmt()).setType(shuffle.getGender()).setWinners(shuffle.getWinners());
-        redJedisDao.setUserLotteryRefreshTimes(uuid);
+        jedisDao.setUserLotteryRefreshTimes(uuid);
         return ReslutUtil.createReslutMessage(builder.build());
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
-import com.blemobi.payment.dao.RedJedisDao;
+import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.model.Reward;
 import com.blemobi.payment.service.RewardService;
@@ -42,7 +42,7 @@ public class RewardServiceImpl implements RewardService {
 	private RewardDao rewardDao;
 
 	@Autowired
-	private RedJedisDao redJedisDao;
+	private JedisDao jedisDao;
 
 	@Override
 	@Transactional
@@ -174,7 +174,7 @@ public class RewardServiceImpl implements RewardService {
 		if (money > Constants.max_each_money)
 			return ReslutUtil.createErrorMessage(2101005, "打赏金额不能超过200元");
 
-		int has_send_money = redJedisDao.findDailySendMoney(send_uuid);
+		int has_send_money = jedisDao.findDailySendMoney(send_uuid);
 		if (has_send_money + money > Constants.max_daily_money)
 			return ReslutUtil.createErrorMessage(2101007, "每天发送总金额（红包、抽奖、打赏）不能超过30000元 ");
 		return null;

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
-import com.blemobi.payment.dao.RedJedisDao;
+import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.RedSendService;
@@ -47,7 +47,7 @@ public class RedSendServiceImpl implements RedSendService {
 	private RedSendDao redSendDao;
 
 	@Autowired
-	private RedJedisDao redJedisDao;
+	private JedisDao jedisDao;
 
 	/**
 	 * 发普通红包
@@ -130,8 +130,9 @@ public class RedSendServiceImpl implements RedSendService {
 			randomRed(tota_number, tota_money, ord_no);
 
 		// 保存群红包可领取人信息
-		if (type != OrderEnum.RED_ORDINARY.getValue())
-			redJedisDao.putReceiveUsers(ord_no, rece_uuid);
+		if (type != OrderEnum.RED_ORDINARY.getValue()) {
+
+		}
 
 		// 生成支付信息给APP端
 		SignHelper signHelper = new SignHelper(send_uuid, tota_money, ord_no, "红包");
@@ -152,7 +153,7 @@ public class RedSendServiceImpl implements RedSendService {
 	private void randomRed(int tota_number, int tota_money, String ord_no) {
 		RandomRedHelper rdrHelper = new RandomRedHelper(tota_money, tota_number);
 		int[] random_money = rdrHelper.distribution();
-		redJedisDao.putRedRandDomMoney(ord_no, random_money);
+		jedisDao.putRedRandDomMoney(ord_no, random_money);
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class RedSendServiceImpl implements RedSendService {
 			return ReslutUtil.createErrorMessage(2101005, "单个红包金额不能超过200元");
 		if (tota_money > Constants.max_tota_money)
 			return ReslutUtil.createErrorMessage(2101006, "单次支付总额不可超过10000元");
-		int has_send_money = redJedisDao.findDailySendMoney(send_uuid);
+		int has_send_money = jedisDao.findDailySendMoney(send_uuid);
 		if (has_send_money + tota_money > Constants.max_daily_money)
 			return ReslutUtil.createErrorMessage(2101007, "每天发送总金额（红包、抽奖、打赏）不能超过30000元 ");
 		return null;
