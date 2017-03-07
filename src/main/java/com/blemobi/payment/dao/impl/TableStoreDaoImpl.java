@@ -3,7 +3,6 @@ package com.blemobi.payment.dao.impl;
 //github.com/blemobi/java-payment.git
 import org.springframework.stereotype.Repository;
 
-import com.alicloud.openservices.tablestore.SyncClient;
 import com.blemobi.payment.dao.TableStoreDao;
 
 /**
@@ -28,7 +27,7 @@ public class TableStoreDaoImpl implements TableStoreDao {
 	final String accessKeySecret = "GbtpMcQHxTBElHLVwC4UDl1lSsmFK4";
 	final String instanceName = "rongliang-test";
 
-	private SyncClient client = new SyncClient(endPoint, accessKeyId, accessKeySecret, instanceName);
+	//private SyncClient client = new SyncClient(endPoint, accessKeyId, accessKeySecret, instanceName);
 
 	@Override
 	public boolean existsByKey(String key, String member) {
