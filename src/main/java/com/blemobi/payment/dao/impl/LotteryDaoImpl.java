@@ -68,26 +68,19 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createWinners(List<Object[]> param) {
-        String sql = "INSERT INTO t_winners(uuid, lottery_id, nick_nm, sex, bonus, status, crt_tm, accept_tm) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_winners(uuid, lottery_id, nick_nm, sex, bonus, status, crt_tm, accept_tm, loc_cd) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.batchUpdate(sql, param).length;
     }
 
     @Override
-    public List<Map<String, Object>> lotteryList(String uuid, String keywords, int startIdx, int size) {
+    public List<Map<String, Object>> lotteryList(String uuid, int startIdx) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
         sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ?");
         param.add(uuid);
-        //param.add(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
-        if (!StringUtils.isEmpty(keywords)) {
-            sql.append(" AND title LIKE ?");
-            param.add("%" + keywords + "%");
-        }
         sql.append("AND status <> 0");
-        sql.append(" ORDER BY crt_tm DESC LIMIT ?, ?");
+        sql.append(" ORDER BY crt_tm DESC LIMIT ?, 10");
         param.add(startIdx);
-        param.add(size);
-        log.debug(sql.toString() + "----" + StringUtils.join(param, ","));
         List<Map<String, Object>> result = this.queryForList(sql.toString(), param.toArray(new Object[] {}));
         return result;
     }
@@ -108,7 +101,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public List<Map<String, Object>> lotteryUsers(String lotteryId, String keywords, int type) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT nick_nm, sex, bonus, uuid FROM t_winners WHERE lottery_id = ? ");
+        sql.append("SELECT nick_nm, sex, bonus, uuid, loc_cd FROM t_winners WHERE lottery_id = ? ");
         param.add(lotteryId);
         if (type == 1 || type == 2) {
             param.add(type);
@@ -158,7 +151,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     }
     @Override
     public Map<String, Object> getPrizeInf(String lotteryId, String uuid) {
-        String sql = "SELECT status, bonus FROM t_winners WHERE lottery_id = ? AND uuid = ?";
+        String sql = "SELECT id, status, bonus FROM t_winners WHERE lottery_id = ? AND uuid = ?";
         return this.queryForMap(sql, new Object[]{lotteryId, uuid});
     }
 }

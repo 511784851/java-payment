@@ -75,12 +75,10 @@ public interface LotteryService {
      * @Description 抽奖包历史列表 
      * @author HUNTER.POON
      * @param uuid 红包所属者
-     * @param keywords 抽奖标题关键字
      * @param startIdx 开始下标
-     * @param size 结果集大小
      * @return
      */
-    public PMessage lotteryList(String uuid, String keywords, int startIdx, int size);
+    public PMessage lotteryList(String uuid, int startIdx);
     
     /**
      * @Description 抽奖包详情 
