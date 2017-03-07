@@ -73,7 +73,7 @@ public class LotteryProcessTest {
 	    StringBuffer path = new StringBuffer("/v1/payment/lottery/accept");
 	    PAcceptPrize prize = PAcceptPrize.newBuilder().setLotteryId("520170228286148971922067456").build();
         byte[] body = prize.toByteArray();
-        BaseHttpClient httpClient = new LocalHttpClient("127.0.0.1", 9014, path, null, body, "application/x-protobuf");
+        BaseHttpClient httpClient = new LocalHttpClient("192.168.7.245", 9014, path, null, body, "application/x-protobuf");
         PMessage message = httpClient.postBodyMethod();
         assertEquals("PResult", message.getType());
         /**http://127.0.0.1:8081/customers/1
