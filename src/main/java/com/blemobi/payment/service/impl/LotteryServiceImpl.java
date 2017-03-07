@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.DataPublishGrpcClient;
+import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.LotteryDao;
@@ -55,6 +56,7 @@ import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 
 import lombok.extern.log4j.Log4j;
 
@@ -81,7 +83,7 @@ public class LotteryServiceImpl implements LotteryService {
         if (userExList == null || userExList.isEmpty()) {
             throw new BizException(2015008, "没有产生中奖者，抽奖异常");
         }
-        // 验证中奖者是否在参与者列表
+        //TODO 验证中奖者是否在参与者列表
         DataPublishGrpcClient client = new DataPublishGrpcClient();
         //TODO 还要获取地理编码
         List<String> uuidList = client.getFansByFilters(lottery.getGender(), lottery.getRegionList(), uuid);
@@ -98,12 +100,12 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2015005, "单日支出超出上限");
         }
         long currTm = System.currentTimeMillis();
-        //TODO 获取订单号
-        IdWorker idWorder = IdWorker.getInstance();
-        String orderno = idWorder.nextId(OrderEnum.LUCK_DRAW.getValue());
+        //TODO 获取订单号 设置机器号
+        RobotGrpcClient robotClient = new RobotGrpcClient();
+        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus()).setMachineNo(0).setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
+        String orderno = robotClient.generateOrder(oparam).getVal();
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
-                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ',
-                lottery.getRemark() };
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ', lottery.getRemark() };
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new BizException(2015006, "创建抽奖失败，请重试");
