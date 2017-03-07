@@ -127,8 +127,8 @@ public class LotteryProcess {
     @GET
     @Path("list")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-    public PMessage lotteryList(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("startIndex") int startIndex, @QueryParam("size") int size, @QueryParam("keywords") String keywords) {
-        PMessage ret = lotteryService.lotteryList(uuid, keywords, startIndex, size);
+    public PMessage lotteryList(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("startIndex") int startIndex) {
+        PMessage ret = lotteryService.lotteryList(uuid, startIndex);
         return ret;
     }
     
