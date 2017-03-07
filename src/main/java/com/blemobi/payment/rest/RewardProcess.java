@@ -11,9 +11,9 @@ import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.util.InstanceFactory;
+import com.blemobi.payment.util.MediaTypeExt;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
  * 打赏接口

@@ -29,12 +29,12 @@ import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.util.InstanceFactory;
+import com.blemobi.payment.util.MediaTypeExt;
 import com.blemobi.sep.probuf.PaymentProtos.PAcceptPrize;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryDel;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
  * @ClassName LotteryProcess

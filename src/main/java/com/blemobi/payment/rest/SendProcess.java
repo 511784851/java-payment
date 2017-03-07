@@ -11,10 +11,10 @@ import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.RedSendService;
 import com.blemobi.payment.util.InstanceFactory;
+import com.blemobi.payment.util.MediaTypeExt;
 import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
  * 红包接口
