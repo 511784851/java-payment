@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.cache.UserBaseCache;
-import com.blemobi.library.grpc.SelectFansGRPCClient;
+import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.dao.RedJedisDao;
@@ -79,8 +79,8 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2015008, "没有产生中奖者，抽奖异常");
         }
         // 验证中奖者是否在参与者列表
-        SelectFansGRPCClient fansGRPC = new SelectFansGRPCClient();
-        List<String> uuidList = fansGRPC.doExec(new Object[] {lottery.getGender(), lottery.getRegionList(), uuid });
+        DataPublishGrpcClient client = new DataPublishGrpcClient();
+        List<String> uuidList = client.getFansByFilters(lottery.getGender(), lottery.getRegionList(), uuid);
         if (uuidList == null || uuidList.isEmpty()) {
             throw new BizException(2015012, "抽奖异常");
         }
@@ -287,8 +287,9 @@ public class LotteryServiceImpl implements LotteryService {
         if (times > 1) {
             throw new BizException(2015010, "5分钟内仅能重抽2次，请稍后再试");
         }
-        SelectFansGRPCClient fansGRPC = new SelectFansGRPCClient();
-        List<String> uuidList = fansGRPC.doExec(new Object[] {shuffle.getGender(), shuffle.getRegionList(), uuid });
+        DataPublishGrpcClient client = new DataPublishGrpcClient();
+        
+        List<String> uuidList = client.getFansByFilters(shuffle.getGender(), shuffle.getRegionList(), uuid);
         if (uuidList == null || uuidList.size() < shuffle.getWinners()) {
             throw new BizException(2015011, "粉丝数量不够");
         }
