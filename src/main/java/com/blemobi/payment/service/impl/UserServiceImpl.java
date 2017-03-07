@@ -91,6 +91,7 @@ public class UserServiceImpl implements UserService {
 	private List<PCelebrityInfo> getUserInfoList(PGroupString groupString) throws IOException {
 		ProtocolStringList stringList = groupString.getListList();
 		PStringList stringVOList = getUserVOInfoList(stringList);
+		log.debug("网红数量：" + stringList.size() + " ; 网红VO数量：" + stringVOList.getListCount());
 		List<PCelebrityInfo> userList = new ArrayList<PCelebrityInfo>();
 		for (int i = 0; i < stringList.size(); i++) {
 			String uuid = stringList.get(i);
