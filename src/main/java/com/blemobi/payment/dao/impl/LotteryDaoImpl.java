@@ -78,7 +78,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
         List<Object> param = new ArrayList<Object>();
         sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ?");
         param.add(uuid);
-        sql.append("AND status <> 0");
+        sql.append(" AND status <> 0");
         sql.append(" ORDER BY crt_tm DESC LIMIT ?, 10");
         param.add(startIdx);
         List<Map<String, Object>> result = this.queryForList(sql.toString(), param.toArray(new Object[] {}));
