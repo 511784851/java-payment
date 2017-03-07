@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.cache.UserBaseCache;
+import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.model.Reward;
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.service.helper.SignHelper;
-import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
@@ -25,6 +25,8 @@ import com.blemobi.sep.probuf.PaymentProtos.PRewardInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardInfoList;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
+import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 import com.google.common.base.Strings;
 
 /**
@@ -54,7 +56,7 @@ public class RewardServiceImpl implements RewardService {
 			return message;
 
 		long send_tm = System.currentTimeMillis();
-		String ord_no = createOrdNo(OrderEnum.REWARD.getValue());
+		String ord_no = createOrdNo(OrderEnum.REWARD.getValue(), money);
 		int rs = rewardDao.insert(ord_no, send_uuid, rece_uuid, money, content, send_tm);
 		if (rs != 1)
 			throw new RuntimeException("保存打赏数据失败");
@@ -182,11 +184,22 @@ public class RewardServiceImpl implements RewardService {
 	 * 生成订单号
 	 * 
 	 * @param type
+	 *            订单类型
+	 * @param money
+	 *            订单金额
 	 * @return
 	 */
-	private String createOrdNo(final int type) {
-		IdWorker idWorder = IdWorker.getInstance();
-		return idWorder.nextId(type);
+	private String createOrdNo(int type, int money) {
+		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setMachineNo(1).setAmount(money).setServiceNo(type)
+				.build();
+
+		RobotGrpcClient client = new RobotGrpcClient();
+		PStringSingle ordNoString = client.generateOrder(payOrderParma);
+		String ord_no = ordNoString != null ? ordNoString.getVal() : "";
+		if (Strings.isNullOrEmpty(ord_no))
+			throw new RuntimeException("生成订单号出错");
+
+		return ord_no;
 	}
 
 }

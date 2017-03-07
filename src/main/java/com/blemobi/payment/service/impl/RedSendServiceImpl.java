@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.cache.UserBaseCache;
+import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.RedJedisDao;
 import com.blemobi.payment.dao.RedSendDao;
@@ -16,7 +17,6 @@ import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.RedSendService;
 import com.blemobi.payment.service.helper.RandomRedHelper;
 import com.blemobi.payment.service.helper.SignHelper;
-import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
@@ -27,6 +27,8 @@ import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveBaseInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
+import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 import com.google.common.base.Strings;
 
 import lombok.extern.log4j.Log4j;
@@ -115,7 +117,7 @@ public class RedSendServiceImpl implements RedSendService {
 
 		long send_tm = System.currentTimeMillis();// 发送时间
 		long over_tm = send_tm + Constants.max_interval_Time;// 失效时间
-		String ord_no = createOrdNo(type);// 订单号
+		String ord_no = createOrdNo(type, tota_money);// 订单号
 
 		// 保存订单数据
 		int rs = redSendDao.insert(ord_no, send_uuid, type, tota_money, each_money, tota_number, content, send_tm,
@@ -219,7 +221,7 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @param redSend
 	 *            红包信息
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private PRedEnveBaseInfo buildRedEnveBaseInfo(RedSend redSend) throws IOException {
 		List<PUserBase> userList5 = getReceUser5(redSend.getRece_uuid5());
@@ -234,7 +236,7 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @param redSend
 	 *            红包信息
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private List<PUserBase> getReceUser5(String uuid5) throws IOException {
 		List<PUserBase> userList5 = new ArrayList<PUserBase>();
@@ -260,11 +262,21 @@ public class RedSendServiceImpl implements RedSendService {
 	 * 
 	 * @param type
 	 *            订单类型
+	 * @param money
+	 *            订单金额
 	 * @return
 	 */
-	private String createOrdNo(int type) {
-		IdWorker idWorder = IdWorker.getInstance();
-		return idWorder.nextId(type);
+	private String createOrdNo(int type, int money) {
+		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setMachineNo(1).setAmount(money).setServiceNo(type)
+				.build();
+
+		RobotGrpcClient client = new RobotGrpcClient();
+		PStringSingle ordNoString = client.generateOrder(payOrderParma);
+		String ord_no = ordNoString != null ? ordNoString.getVal() : "";
+		if (Strings.isNullOrEmpty(ord_no))
+			throw new RuntimeException("生成订单号出错");
+
+		return ord_no;
 	}
 
 	/**
