@@ -291,6 +291,7 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public PMessage shuffleLottery(String uuid, PShuffle shuffle) {
         PLotteryDetail.Builder builder = PLotteryDetail.newBuilder();
+        log.info("jedisDao:" + jedisDao);
         int amt = jedisDao.findDailySendMoney(uuid);
         if ((amt + shuffle.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
             throw new BizException(2015005, "单日支出超出上限");
