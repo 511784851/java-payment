@@ -53,7 +53,7 @@ public class receiveProcess {
 	 * @return
 	 */
 	@POST
-	@Path("receive/redEnve")
+	@Path("receive")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage receive(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
 		return redReceiveService.receive(ord_no, rece_uuid);
@@ -68,12 +68,13 @@ public class receiveProcess {
 	 * @param ord_no
 	 *            业务订单号
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@POST
-	@Path("find/redEnveInfo")
+	@Path("info")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage findRedEnveInfo(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) throws IOException {
+	public PMessage findRedEnveInfo(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no)
+			throws IOException {
 		return redReceiveService.findRedEnveInfo(ord_no, rece_uuid);
 	}
 
@@ -89,10 +90,10 @@ public class receiveProcess {
 	 * @param count
 	 *            数量大小
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@GET
-	@Path("find/receRedEnve")
+	@Path("receive-list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage find(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no,
 			@QueryParam("last_id") int last_id, @QueryParam("count") int count) throws IOException {
