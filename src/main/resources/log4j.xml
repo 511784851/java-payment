@@ -17,7 +17,18 @@
         </layout>     
     </appender> 
     
-	
+	<category name="io.netty" additivity="false">
+		<priority value="ERROR"/>
+		<appender-ref ref="LogFile"/>
+	</category>
+	<category name="org.apache.http" additivity="false">
+		<priority value="ERROR"/>
+		<appender-ref ref="LogFile"/>
+	</category>
+	<category name="org.springframework.beans" additivity="false">
+		<priority value="ERROR"/>
+		<appender-ref ref="LogFile"/>
+	</category>
 	<root>
 		<priority value="info" />
 		<appender-ref ref="console" />
