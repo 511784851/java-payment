@@ -8,8 +8,6 @@ import javax.servlet.http.Cookie;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.blemobi.payment.core.PaymentManager;
-
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,7 +26,7 @@ public class CallbackTest {
 
         String[] arg = new String[] {"-env", "local" };
         try {
-            PaymentManager.main(arg);
+      //      PaymentManager.main(arg);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

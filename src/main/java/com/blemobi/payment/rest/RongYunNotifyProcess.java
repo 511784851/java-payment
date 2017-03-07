@@ -33,7 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import com.blemobi.library.grpc.SaveFansGRPCClient;
+import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.DateTimeUtils;
@@ -120,14 +120,14 @@ public class RongYunNotifyProcess {
         try {
             System.out.println(u + ".....");
             log.info("grpc test......." + uuid);
-            SaveFansGRPCClient client = new SaveFansGRPCClient();
+            DataPublishGrpcClient client = new DataPublishGrpcClient();
             log.info("1");
             List<String> list = new ArrayList<String>();
             log.info("2");
             list.add("aa");
             log.info("3");
             list.add("bb");
-            client.doExec(new Object[]{"hello world", 1, list, uuid});
+            client.saveFans("11111", 1, list, uuid);
             log.info("4");
         } catch (Exception ex) {
             log.error("payment callback failed", ex);
