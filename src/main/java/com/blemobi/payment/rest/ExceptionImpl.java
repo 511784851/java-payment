@@ -7,8 +7,8 @@ import javax.ws.rs.ext.Provider;
 import com.blemobi.library.exception.GrpcException;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.excepiton.BizException;
-import com.blemobi.payment.util.MediaTypeExt;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 import lombok.extern.log4j.Log4j;
 

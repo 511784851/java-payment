@@ -155,11 +155,11 @@
 			<version>2.22.1</version>
 		</dependency>
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>com.pakulov.jersey.media</groupId>
 			<artifactId>jersey-media-protobuf</artifactId>
 			<version>0.1.0</version>
-		</dependency> -->
+		</dependency>
 
 		<dependency>
 			<groupId>commons-logging</groupId>

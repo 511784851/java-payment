@@ -7,9 +7,9 @@ import javax.ws.rs.Produces;
 
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.service.helper.SignHelper;
-import com.blemobi.payment.util.MediaTypeExt;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
+import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
  * 用户授权接口

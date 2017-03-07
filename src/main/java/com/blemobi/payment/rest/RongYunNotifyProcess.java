@@ -38,8 +38,8 @@ import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.payment.util.InstanceFactory;
-import com.blemobi.payment.util.MediaTypeExt;
 import com.blemobi.payment.util.SignUtil;
+import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 import lombok.extern.log4j.Log4j;
 
