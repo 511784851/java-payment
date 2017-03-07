@@ -4,6 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import com.blemobi.library.exception.GrpcException;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
@@ -30,7 +31,10 @@ public class ExceptionImpl implements ExceptionMapper<Exception> {
 		if(e instanceof BizException){
 		    BizException ex = (BizException) e;
 		    msg = ReslutUtil.createErrorMessage(ex.getErrCd(), ex.getMsg(), ex.getExtMsg());
-		}else{
+		}else if(e instanceof GrpcException){
+		    GrpcException ex = (GrpcException) e;
+            msg = ReslutUtil.createErrorMessage(ex.getErrCd(), ex.getMsg(), ex.getExtMsg());
+        }else{
 		    msg = ReslutUtil.createErrorMessage(1001012, "系统繁忙");
 		}
 		return Response.ok(msg, MediaTypeExt.APPLICATION_PROTOBUF).status(200).build();
