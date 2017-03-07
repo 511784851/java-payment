@@ -70,11 +70,12 @@ public class receiveProcess {
 	 * @return
 	 * @throws IOException
 	 */
-	@POST
+	@GET
 	@Path("info")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage findRedEnveInfo(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no)
+	public PMessage info(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no)
 			throws IOException {
+		rece_uuid="1470564370290423368";
 		return redReceiveService.findRedEnveInfo(ord_no, rece_uuid);
 	}
 
