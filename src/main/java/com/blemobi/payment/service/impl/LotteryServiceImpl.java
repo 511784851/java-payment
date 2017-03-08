@@ -105,7 +105,7 @@ public class LotteryServiceImpl implements LotteryService {
         PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus()).setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
         String orderno = robotClient.generateOrder(oparam).getVal();
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
-                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ', lottery.getRemark() };
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, lottery.getRemark() };
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new BizException(2015006, "创建抽奖失败，请重试");
@@ -158,7 +158,7 @@ public class LotteryServiceImpl implements LotteryService {
             for (Map<String, Object> entity : lotteriesList) {
                 PLotterySingle.Builder sBuilder = PLotterySingle.newBuilder();
                 List<String> uuids = lotteryDao.top5UUID(entity.get("id").toString());
-                sBuilder.setCrtTm(entity.get("crt_tm").toString());
+                sBuilder.setCrtTm(Long.parseLong(entity.get("crt_tm").toString()));
                 sBuilder.setLotteryId(entity.get("id").toString());
                 sBuilder.setTitle(entity.get("title").toString());
                 sBuilder.setWinners(Integer.parseInt(entity.get("winners").toString()));
@@ -185,7 +185,7 @@ public class LotteryServiceImpl implements LotteryService {
         PLotteryDetail.Builder builder = PLotteryDetail.newBuilder();
         Map<String, Object> detail = lotteryDao.lotteryDetail(lotteryId);
         if (detail != null && !detail.isEmpty()) {
-            builder.setCrtTm(detail.get("crt_tm").toString());
+            builder.setCrtTm(Long.parseLong(detail.get("crt_tm").toString()));
             builder.setLotteryId(lotteryId);
             builder.setTitle(detail.get("title").toString());
             builder.setTotAmt(Integer.parseInt(detail.get("tot_amt").toString()));
@@ -334,7 +334,7 @@ public class LotteryServiceImpl implements LotteryService {
                     .setInfo(userBase).build();
             winnerList.add(w);
         }
-        builder.setCrtTm(System.currentTimeMillis() + "").addAllUserList(winnerList).setLotteryId("")
+        builder.setCrtTm(System.currentTimeMillis()).addAllUserList(winnerList).setLotteryId("")
                 .addAllRegion(shuffle.getRegionList()).setRemark(shuffle.getRemark()).setTitle(shuffle.getTitle())
                 .setTotAmt(shuffle.getTotAmt()).setType(shuffle.getGender()).setWinners(shuffle.getWinners());
         jedisDao.setUserLotteryRefreshTimes(uuid);

@@ -51,7 +51,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createLottery(Object[] param) {
-        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, obj_key, remark) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, remark) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, param);
     }
     @Override

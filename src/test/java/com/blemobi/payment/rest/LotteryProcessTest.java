@@ -17,8 +17,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class LotteryProcessTest {
 
-    //private static final String BASE_URL = "http://192.168.7.245";
-    private static final String BASE_URL = "http://127.0.0.1";
+    private static final String BASE_URL = "http://192.168.7.245";
+    //private static final String BASE_URL = "http://127.0.0.1";
     private static int port = 9014;
     private static final String URI = "/v1/payment/lottery/";
     //private static Map<String, String> cookies = new HashMap<String, String>();
