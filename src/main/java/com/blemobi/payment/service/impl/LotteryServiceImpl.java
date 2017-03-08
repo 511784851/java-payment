@@ -312,7 +312,12 @@ public class LotteryServiceImpl implements LotteryService {
             log.info("uidAndLoc:" + uidAndLoc);
             String[] ulArr = uidAndLoc.split("_");
             String uid = ulArr[0];
-            String locCd = ulArr[1];
+            String locCd = null;
+            if(ulArr.length < 2){
+                locCd = "na;";
+            }else {
+                locCd = ulArr[1];
+            }
             PUserBase userBase = null;
             try {
                 userBase = UserBaseCache.get(uid);
