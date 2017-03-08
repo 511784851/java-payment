@@ -3,6 +3,7 @@ package com.blemobi.payment.rest;
 import java.io.IOException;
 
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,7 +12,6 @@ import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.util.InstanceFactory;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
@@ -39,8 +39,9 @@ public class RewardProcess {
 	@POST
 	@Path("send")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage reward(POrdinRedEnve ordinRedEnve, @CookieParam("uuid") String send_uuid) {
-		return rewardService.reward(ordinRedEnve, send_uuid);
+	public PMessage reward(@CookieParam("uuid") String send_uuid, @FormParam("money") int money,
+			@FormParam("content") String content, @FormParam("rece_uuid") String rece_uuid) {
+		return rewardService.reward(send_uuid, money, content, rece_uuid);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class RewardProcess {
 	 * @param idx
 	 * @param count
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@GET
 	@Path("info-list")
