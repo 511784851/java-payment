@@ -112,31 +112,4 @@ public class RongYunNotifyProcess {
         }
         return Constants.HTMLSTS.SUCCESS.getValue();
     }
-    
-    @GET
-    @Path("test")
-    @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
-    public String callback(@CookieParam("u") String u, @QueryParam("uuid") String uuid) {
-        try {
-            System.out.println(u + ".....");
-            log.info("grpc test......." + uuid);
-            DataPublishGrpcClient client = new DataPublishGrpcClient();
-            log.info("1");
-            List<String> list = new ArrayList<String>();
-            log.info("2");
-            list.add("aa");
-            log.info("3");
-            list.add("bb");
-            client.saveFans("11111", 1, list, uuid);
-            log.info("4");
-        } catch (Exception ex) {
-            log.error("payment callback failed", ex);
-            return Constants.HTMLSTS.FAILED.getValue();
-        } catch (Throwable e){
-            log.error("payment callback failed.....", e);
-            return Constants.HTMLSTS.FAILED.getValue();
-        }
-        log.info("6");
-        return Constants.HTMLSTS.SUCCESS.getValue();
-    }
 }

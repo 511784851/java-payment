@@ -29,6 +29,18 @@ package com.blemobi.payment.util;
  */
 public final class Constants {
 
+    public enum TABLE_NAMES{
+        LOTTERY_TB("T_LOTTERY_FANS"), RED_PKG_TB("T_RED_BAG_FANS"),REWARD_TB("T_REWARD_FANS");
+        private String value;
+
+        private TABLE_NAMES(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 	/** 单个红包最小金额（单位：分） */
 	public static final int min_each_money = 1;
 

@@ -142,7 +142,7 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2015009, "中奖者数量不正确，抽奖异常");
         }
         client = new DataPublishGrpcClient();
-        client.saveFans(orderno, lottery.getGender(), lottery.getRegionList(), uuid); //通知GO 存储抽奖参与者
+        client.saveFans(orderno, lottery.getGender(), lottery.getRegionList(), uuid, Constants.TABLE_NAMES.LOTTERY_TB.getValue()); //通知GO 存储抽奖参与者
         SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
         POrderPay orderPay = signHelper.getOrderPay();
         return ReslutUtil.createReslutMessage(orderPay);
