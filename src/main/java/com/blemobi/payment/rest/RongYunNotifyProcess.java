@@ -99,10 +99,12 @@ public class RongYunNotifyProcess {
             log.info(signLocal);
             //融云支付失败，不予处理
             if(!Constants.RESPSTS.SUCCESS.getValue().equals(respstat) || !Constants.RONGYUN_ORD_STS.SUCCESS.getValue().equals(orderStatus)){
+                log.info("respstat:" + respstat);
                 return Constants.HTMLSTS.SUCCESS.getValue();
             }
             // 验签失败
             if (signLocal == null || !signLocal.equals(sign)) {
+                log.warn("signLocal：" + signLocal + ",sign:" + sign);
                 return Constants.HTMLSTS.FAILED.getValue();
             }
             callbackService.paySucc(orderAmount, DateTimeUtils.currTime(), custOrderNo, receiveUid, orderNo, orderStatus, respmsg);
