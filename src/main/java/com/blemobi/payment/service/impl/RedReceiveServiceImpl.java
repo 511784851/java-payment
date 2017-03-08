@@ -22,6 +22,7 @@ import com.blemobi.payment.service.RedReceiveService;
 import com.blemobi.payment.service.helper.TransferHelper;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
+import com.blemobi.payment.util.Constants.TABLE_NAMES;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveRece;
@@ -108,7 +109,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 				if (!rece_uuid.equals(redSend.getRece_uuid5()))
 					throw new RuntimeException(rece_uuid + " > 没有权限领取红包: " + ord_no);
 			} else {
-				boolean bool = tableStoreDao.existsByKey(ord_no, rece_uuid);
+				boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
 				if (!bool)
 					throw new RuntimeException(rece_uuid + " > 没有权限领取红包: " + ord_no);
 			}
