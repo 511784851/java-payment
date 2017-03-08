@@ -13,8 +13,10 @@ import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
  *
  */
 public class SignHelper {
+	/** 渠道key */
+	public static final String partnerId = "miwukeji";
 	/** 私钥 */
-	public static final String seckey = "2uZCpuScM6Fko";
+	public static final String seckey = "a8178b44-68de-4cc6-b117-8947422e175f";
 
 	/** 接受者账户类型（0-个人，1-企业） */
 	private int recAccountType;
@@ -113,13 +115,15 @@ public class SignHelper {
 	 */
 	private Map<String, String> signParams() {
 		Map<String, String> params = new HashMap<>();
-		params.put("recAccountType", recAccountType + "");
-		params.put("cusId", cusId);
-		params.put("receivedId", receivedId);
-		params.put("fenMoney", fenMoney + "");
-		params.put("orderNum", ord_no);
-		params.put("goodsName", goodsName);
+		params.put("amount", fenMoney + "");
+		params.put("custOrderNo", ord_no);
+		params.put("custUid", cusId);
+		params.put("orderName", goodsName);
+		params.put("partnerId", partnerId);
+		params.put("receiveUid", receivedId);
 		params.put("seckey", seckey);
+		params.put("recAccountType", recAccountType + "");
+
 		return params;
 	}
 

@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import com.blemobi.library.util.MD5;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.service.UserService;
 import com.blemobi.payment.service.helper.SignHelper;
@@ -17,15 +16,12 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
-import lombok.extern.log4j.Log4j;
-
 /**
  * 用户授权接口
  * 
  * @author zhaoyong
  *
  */
-@Log4j
 @Path("v1/payment/user")
 public class UserProcess {
 
@@ -42,13 +38,13 @@ public class UserProcess {
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage thirdToken(@CookieParam("uuid") String uuid) {
 		SignHelper signHelper = new SignHelper(uuid);
-		String sign = MD5.GetMD5Code(uuid + "a8178b44-68de-4cc6-b117-8947422e175f");
+		String sign = signHelper.getThirdToken();
 		PStringSingle stringSingle = PStringSingle.newBuilder().setVal(sign).build();
 		return ReslutUtil.createReslutMessage(stringSingle);
 	}
 
 	/**
-	 * 获取用户thirdToken
+	 * 查询网红
 	 * 
 	 * @param uuid
 	 * @return
