@@ -310,7 +310,10 @@ public class LotteryServiceImpl implements LotteryService {
         for (int idx = 0; idx < shuffle.getWinners(); idx++) {
             Random r = new Random();
             int win = r.nextInt(uuidList.size());
-            String uid = uuidList.get(win);
+            String uidAndLoc = uuidList.get(win);
+            String[] ulArr = uidAndLoc.split("_");
+            String uid = ulArr[0];
+            String locCd = ulArr[1];
             PUserBase userBase = null;
             try {
                 userBase = UserBaseCache.get(uid);
@@ -319,8 +322,7 @@ public class LotteryServiceImpl implements LotteryService {
                 throw new BizException(2015100, "用户没有找到");
             }
             uuidList.remove(win);
-            //TODO 设置地理位置
-            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(userBase.getGender()).setRegion("")
+            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(userBase.getGender()).setRegion(locCd)
                     .setInfo(userBase).build();
             winnerList.add(w);
         }

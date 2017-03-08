@@ -67,6 +67,30 @@ public class HttpUtils {
     }
 
     
+    public String post(String url, Map<String, String> param, List<Cookie> cookies) throws IOException {
+        okhttp3.FormBody.Builder builder = new okhttp3.FormBody.Builder();
+        if(param != null && param.size() > 0){
+            for(Entry<String, String> p : param.entrySet()){
+                builder.add(p.getKey(), p.getValue());
+            }
+        }
+        okhttp3.RequestBody rbody = builder.build();
+        okhttp3.Request request = new okhttp3.Request.Builder().url(url).post(rbody).header("Cookie", cookieHeader(cookies))
+                .build();
+        okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
+        okhttp3.Response resp = client.newCall(request).execute();
+        System.out.println(resp);
+        String body = null;
+        if (resp.isSuccessful()) {
+            body = resp.body().string();
+        } else {
+            System.out.println("failed");
+        }
+        System.out.println(body + "...........");
+        return body;
+    }
+    
+    
     public String post(String url, MediaType mediaType, byte[] data, Map<String, String> cookies) throws IOException {
         Request.Builder builder = new Request.Builder().url(url);
         if(cookies != null && cookies.size() > 0){
@@ -88,6 +112,7 @@ public class HttpUtils {
         return response.body().string();
     }
     
+    
     private static String cookieHeader(List<Cookie> cookies) {
         StringBuilder cookieHeader = new StringBuilder();
         for (int i = 0, size = cookies.size(); i < size; i++) {
@@ -108,9 +133,16 @@ public class HttpUtils {
      * @return
      * @throws IOException
      */
-    public String get(String url) throws IOException {
-        Request request = new Request.Builder().url(url).build();
+    public String get(String url, List<Cookie> cookies) throws IOException {
+        Request request = new Request.Builder().url(url).header("Cookie", cookieHeader(cookies)).build();
         Response response = client.newCall(request).execute();
-        return response.body().string();
+        String body = null;
+        if(response.isSuccessful()){
+            body = response.body().string(); 
+        }else{
+            System.err.println("error");
+        }
+        System.out.println(body);
+        return body;
     }
 }

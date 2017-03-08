@@ -106,7 +106,7 @@ public class LotteryProcess {
      */
     @POST
     @Path("confirm")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage confirmLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
             @FormParam("title") String title, @FormParam("winners") Integer winners, @FormParam("region") String region,
             @FormParam("remark") String remark, @FormParam("gender") Integer gender, @FormParam("bonus") Integer bonus,
@@ -160,7 +160,7 @@ public class LotteryProcess {
      */
     @POST
     @Path("accept")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage acceptPrize(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @FormParam("lotteryId") String lotteryId) {
         PMessage ret = lotteryService.acceptPrize(uuid, lotteryId);
         return ret;
@@ -188,7 +188,7 @@ public class LotteryProcess {
     
     @POST
     @Path("delete")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage delete(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
             @FormParam("lotteryId") String lotteryId) {
         PMessage ret = lotteryService.delPrize(uuid, Arrays.asList(lotteryId.split(",")));
@@ -220,7 +220,7 @@ public class LotteryProcess {
      */
     @GET
     @Path("list")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage lotteryList(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
             @QueryParam("startIndex") int startIndex, @QueryParam("keywords") String keywords) {
         PMessage ret = lotteryService.lotteryList(uuid, startIndex, keywords);
@@ -244,7 +244,7 @@ public class LotteryProcess {
      */
     @GET
     @Path("detail")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage lotteryDetail(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
             @QueryParam("lotteryId") String lotteryId) {
         PMessage ret = lotteryService.lotteryDetail(lotteryId);
