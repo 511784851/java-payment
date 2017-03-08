@@ -83,15 +83,14 @@ public class LotteryServiceImpl implements LotteryService {
         if (userExList == null || userExList.isEmpty()) {
             throw new BizException(2015008, "没有产生中奖者，抽奖异常");
         }
-        //TODO 验证中奖者是否在参与者列表
         DataPublishGrpcClient client = new DataPublishGrpcClient();
-        //TODO 还要获取地理编码
         List<String> uuidList = client.getFansByFilters(lottery.getGender(), lottery.getRegionList(), uuid);
         if (uuidList == null || uuidList.isEmpty()) {
             throw new BizException(2015012, "抽奖异常");
         }
+        
         for (int idx = 0; idx < lottery.getUserListCount(); idx++) {
-            if (!uuidList.contains(lottery.getUserList(idx).getInfo().getUUID())) {
+            if (!uuidList.contains(lottery.getUserList(idx).getInfo().getUUID() + "_" + lottery.getUserList(idx).getRegion())) {
                 throw new BizException(2015013, "中奖者名单被篡改");
             }
         }
@@ -100,7 +99,6 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2015005, "单日支出超出上限");
         }
         long currTm = System.currentTimeMillis();
-        //TODO 获取订单号 设置机器号
         RobotGrpcClient robotClient = new RobotGrpcClient();
         PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus()).setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
         String orderno = robotClient.generateOrder(oparam).getVal();

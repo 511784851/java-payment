@@ -64,9 +64,8 @@ public class CallbackServiceImpl implements CallbackService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Boolean paySucc(String amount, long time, String ordNo, String recUid, String corgOrdId,
             String corgSts, String corgMsg) {
-        int bizType = 5;
+        int bizType = Integer.parseInt(ordNo.substring(0, 1));
         String uuid = "";
-        //TODO 判断订单来源
         int ret = 0;
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
