@@ -1,7 +1,9 @@
 package com.blemobi.payment.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
@@ -11,13 +13,12 @@ import org.junit.Test;
 import com.blemobi.payment.core.PaymentManager;
 
 import lombok.extern.log4j.Log4j;
-import java.util.*;
 
 @Log4j
 public class LotteryProcessTest {
 
-    private static final String BASE_URL = "http://192.168.7.245";
-    //private static final String BASE_URL = "http://127.0.0.1";
+    //private static final String BASE_URL = "http://192.168.7.245";
+    private static final String BASE_URL = "http://127.0.0.1";
     private static int port = 9014;
     private static final String URI = "/v1/payment/lottery/";
     //private static Map<String, String> cookies = new HashMap<String, String>();
@@ -25,16 +26,15 @@ public class LotteryProcessTest {
 
     @Before
     public void setup() {
-        //Cookie cookie0 = new Cookie("uuid", "1470563129739262662");
-        Cookie cookie0 = new Cookie("uuid", "123");
-        Cookie cookie1 = new Cookie("token", "98e7eee14df39598c458fbbfa04843cb");
+        Cookie cookie0 = new Cookie("uuid", "1470823631370937498");
+        //Cookie cookie0 = new Cookie("uuid", "123");
+        Cookie cookie1 = new Cookie("token", "GOmF/8UFINqy7NmU7cWhaSoBbTIgMTYyM2M0MTJkNzMyNzM0YmU0YTI3YWM4ZmI2NTBiYmQ=");
         cookies.add(cookie0);
         cookies.add(cookie1);
         String[] arg = new String[] {"-env", "local" };
         try {
             PaymentManager.main(arg);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -51,7 +51,7 @@ public class LotteryProcessTest {
         /*
         param.put("title", "测试");
         param.put("winners", "2");
-        param.put("region", "CN;0001,CN;0002");
+        //param.put("region", "CN;0001,CN;0002");
         param.put("remark", "1234");
         param.put("gender", "-1");
         param.put("bonus", "1");
@@ -61,18 +61,18 @@ public class LotteryProcessTest {
         // 确认抽奖
         action = "confirm";
         param.clear();
-        /*
-        param.put("title", "测试");
-        param.put("winners", "2");
-        param.put("region", "CN;0001,CN;0002");
+        /**/
+        param.put("title", "三月");
+        param.put("winners", "3");
+        param.put("regions", "na;,na;,na;");
         param.put("remark", "1234");
         param.put("gender", "-1");
         param.put("bonus", "1");
-        param.put("totAmt", "2");
-        param.put("uuid", "1,2");
-        param.put("genders", "0,1");
+        param.put("totAmt", "3");
+        param.put("uuid", "1471423525354851354,1471423642445973326,1471423651931083727");
+        param.put("genders", "0,0,0");
         HttpUtils.getInstance().post(getPath(action), param, cookies);
-        */
+        
         //领奖
         action = "accept";
         param.clear();
@@ -86,16 +86,15 @@ public class LotteryProcessTest {
         //HttpUtils.getInstance().post(getPath(action), param, cookies);
         
         //列表
-        action = "list";
-        String url = getPath(action);
-        url += "?startIndex=0&keywords=";
-        HttpUtils.getInstance().get(url, cookies);
+//        action = "list";
+//        String url = getPath(action);
+//        url += "?startIndex=0&keywords=";
+//        HttpUtils.getInstance().get(url, cookies);
         //详情
-        /* action = "detail";
-        url = getPath(action);
-        url += "?lotteryId=520170228286148971922067456";
-        HttpUtils.getInstance().get(url, cookies);
-        */
+//         action = "detail";
+//         String url = getPath(action);
+//         url += "?lotteryId=520170228286148971922067456";
+//        HttpUtils.getInstance().get(url, cookies);
         
     }
 }

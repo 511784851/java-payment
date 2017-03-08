@@ -90,7 +90,9 @@ public class LotteryServiceImpl implements LotteryService {
         }
         
         for (int idx = 0; idx < lottery.getUserListCount(); idx++) {
-            if (!uuidList.contains(lottery.getUserList(idx).getInfo().getUUID() + "_" + lottery.getUserList(idx).getRegion())) {
+            String ual = lottery.getUserList(idx).getInfo().getUUID() + "_" + lottery.getUserList(idx).getRegion();
+            String u = lottery.getUserList(idx).getInfo().getUUID() + "_";
+            if (!uuidList.contains(ual) && !uuidList.contains(u)) {
                 throw new BizException(2015013, "中奖者名单被篡改");
             }
         }
@@ -119,7 +121,9 @@ public class LotteryServiceImpl implements LotteryService {
                 arr[3] = 0;
                 param.add(arr);
             }
+            log.info(param);
             ret = lotteryDao.createLotteryLoc(param);
+            log.info(ret);
             if (ret != regions.size()) {
                 throw new BizException(2015007, "添加抽奖位置失败，请重试");
             }
@@ -312,7 +316,7 @@ public class LotteryServiceImpl implements LotteryService {
             log.info("uidAndLoc:" + uidAndLoc);
             String[] ulArr = uidAndLoc.split("_");
             String uid = ulArr[0];
-            String locCd = null;
+            String locCd = "";
             if(ulArr.length < 2){
                 locCd = "na;";
             }else {

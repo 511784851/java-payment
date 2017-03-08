@@ -110,16 +110,17 @@ public class LotteryProcess {
     public PMessage confirmLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
             @FormParam("title") String title, @FormParam("winners") Integer winners, @FormParam("region") String region,
             @FormParam("remark") String remark, @FormParam("gender") Integer gender, @FormParam("bonus") Integer bonus,
-            @FormParam("totAmt") Integer totAmt, @FormParam("uuid") String uuids, @FormParam("genders") String genders) {
+            @FormParam("totAmt") Integer totAmt, @FormParam("uuid") String uuids, @FormParam("genders") String genders, @FormParam("regions") String regions) {
         PLotteryConfirm.Builder builder = PLotteryConfirm.newBuilder();
         builder.setTitle(title).setWinners(winners).setRemark(remark).setGender(gender).setBonus(bonus).setTotAmt(totAmt);
         if(!StringUtils.isEmpty(region)){
             builder.addAllRegion(Arrays.asList(region.split(",")));
         }
-        if(!StringUtils.isEmpty(uuid) && !StringUtils.isEmpty(genders)){
-            String[] uArr = uuid.split(",");
+        if(!StringUtils.isEmpty(uuids) && !StringUtils.isEmpty(genders) && !StringUtils.isEmpty(regions)){
+            String[] uArr = uuids.split(",");
             String[] gArr = genders.split(",");
-            if(uArr.length != gArr.length){
+            String[] lArr = regions.split(",");
+            if(uArr.length != gArr.length || uArr.length != lArr.length){
                 throw new BizException(2017000, "中奖者名单有误");
             }
             List<PUserBaseEx> ue = new ArrayList<PUserBaseEx>();
@@ -127,12 +128,16 @@ public class LotteryProcess {
             for(String uid : uArr){
                 PUserBaseEx.Builder ub = PUserBaseEx.newBuilder();
                 PUserBase u = PUserBase.newBuilder().setUUID(uid).build();
-                ub.setGender(Integer.parseInt(gArr[idx++]));
+                ub.setGender(Integer.parseInt(gArr[idx]));
                 ub.setAmt(bonus);
                 ub.setInfo(u);
+                ub.setRegion(lArr[idx]);
                 ue.add(ub.build());
+                idx++;
             }
             builder.addAllUserList(ue);
+        }else {
+            throw new BizException(2017000, "中奖者名单有误");
         }
         PMessage ret = lotteryService.createLottery(uuid, builder.build());
         return ret;
