@@ -78,16 +78,14 @@ public interface LotteryService {
      * @param startIdx 开始下标
      * @return
      */
-    public PMessage lotteryList(String uuid, int startIdx);
+    public PMessage lotteryList(String uuid, int startIdx, String keywords);
     
     /**
      * @Description 抽奖包详情 
      * @author HUNTER.POON
      * @param lotteryId 抽奖包ID
-     * @param keywords 中奖者名称关键字
-     * @param type 类型(0:全部，1:男，2:女)
      * @return
      */
-    public PMessage lotteryDetail(String lotteryId, String keywords, int type);
+    public PMessage lotteryDetail(String lotteryId);
     
 }

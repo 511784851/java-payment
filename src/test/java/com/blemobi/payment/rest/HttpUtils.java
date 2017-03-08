@@ -42,6 +42,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
+import okhttp3.FormBody;
  
 /**
  * Created by yinfx on 15-9-16.
@@ -63,29 +65,7 @@ public class HttpUtils {
     public synchronized static HttpUtils getInstance() {
         return instance == null ? instance = new HttpUtils() : instance;
     }
- 
-    /**
-     * 提交POST请求
-     *
-     * @param url       地址
-     * @param mediaType 请求体文本类型
-     * @param content   请求体
-     * @param headers   请求头
-     * @return
-     * @throws IOException
-     */
-    public String post(String url, MediaType mediaType, String content, String... headers) throws IOException {
-        RequestBody body = RequestBody.create(mediaType, content);
-        Request.Builder builder = new Request.Builder().url(url);
-        if (headers != null && headers.length > 0 && headers.length % 2 == 0) {
-            for (int i = 0; i < headers.length - 1; i++)
-                if (i % 2 == 0) builder.addHeader(headers[i], headers[i + 1]);
-        }
-        Request request = builder.post(body).build();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
- 
+
     
     public String post(String url, MediaType mediaType, byte[] data, Map<String, String> cookies) throws IOException {
         Request.Builder builder = new Request.Builder().url(url);
@@ -120,17 +100,6 @@ public class HttpUtils {
         return cookieHeader.toString();
     }
     
-    /**
-     * 提交POST请求
-     *
-     * @param url     地址
-     * @param content 请求体
-     * @return
-     * @throws IOException
-     */
-    public String post(String url, String content) throws IOException {
-        return post(url, HttpUtils.JSON, content, null);
-    }
  
     /**
      * 提交GET请求

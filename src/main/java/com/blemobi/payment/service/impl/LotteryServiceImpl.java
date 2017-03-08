@@ -149,8 +149,8 @@ public class LotteryServiceImpl implements LotteryService {
     }
 
     @Override
-    public PMessage lotteryList(String uuid, int startIdx) {
-        List<Map<String, Object>> lotteriesList = lotteryDao.lotteryList(uuid, startIdx);
+    public PMessage lotteryList(String uuid, int startIdx, String keywords) {
+        List<Map<String, Object>> lotteriesList = lotteryDao.lotteryList(uuid, startIdx, keywords);
         PLotteryList.Builder builder = PLotteryList.newBuilder();
         if (lotteriesList != null) {
             for (Map<String, Object> entity : lotteriesList) {
@@ -179,7 +179,7 @@ public class LotteryServiceImpl implements LotteryService {
     }
 
     @Override
-    public PMessage lotteryDetail(String lotteryId, String keywords, int type) {
+    public PMessage lotteryDetail(String lotteryId) {
         PLotteryDetail.Builder builder = PLotteryDetail.newBuilder();
         Map<String, Object> detail = lotteryDao.lotteryDetail(lotteryId);
         if (detail != null && !detail.isEmpty()) {
@@ -199,7 +199,7 @@ public class LotteryServiceImpl implements LotteryService {
             }
             builder.addAllRegion(regions);
         }
-        List<Map<String, Object>> users = lotteryDao.lotteryUsers(lotteryId, keywords, type);
+        List<Map<String, Object>> users = lotteryDao.lotteryUsers(lotteryId);
         if (users != null && !users.isEmpty()) {
             List<PUserBaseEx> userList = new ArrayList<PUserBaseEx>();
             for (Map<String, Object> usr : users) {

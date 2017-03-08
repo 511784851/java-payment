@@ -41,8 +41,8 @@ import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
-import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
  * @ClassName LotteryProcess
@@ -222,8 +222,8 @@ public class LotteryProcess {
     @Path("list")
     @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
     public PMessage lotteryList(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
-            @QueryParam("startIndex") int startIndex) {
-        PMessage ret = lotteryService.lotteryList(uuid, startIndex);
+            @QueryParam("startIndex") int startIndex, @QueryParam("keywords") String keywords) {
+        PMessage ret = lotteryService.lotteryList(uuid, startIndex, keywords);
         return ret;
     }
 
@@ -246,9 +246,8 @@ public class LotteryProcess {
     @Path("detail")
     @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
     public PMessage lotteryDetail(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
-            @QueryParam("lotteryId") String lotteryId, @QueryParam("keywords") String keywords,
-            @QueryParam("type") int type) {
-        PMessage ret = lotteryService.lotteryDetail(lotteryId, keywords, type);
+            @QueryParam("lotteryId") String lotteryId) {
+        PMessage ret = lotteryService.lotteryDetail(lotteryId);
         return ret;
     }
 
