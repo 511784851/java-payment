@@ -80,7 +80,7 @@ public class LotteryProcess {
 
     @POST
     @Path("shuffle")
-    @Produces(MediaTypeExt.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
     public PMessage shuffleLottery(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
             @FormParam("title") String title, @FormParam("winners") Integer winners, @FormParam("region") String region,
             @FormParam("remark") String remark, @FormParam("gender") Integer gender, @FormParam("bonus") Integer bonus,
