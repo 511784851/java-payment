@@ -309,6 +309,7 @@ public class LotteryServiceImpl implements LotteryService {
             Random r = new Random();
             int win = r.nextInt(uuidList.size());
             String uidAndLoc = uuidList.get(win);
+            log.info("uidAndLoc:" + uidAndLoc);
             String[] ulArr = uidAndLoc.split("_");
             String uid = ulArr[0];
             String locCd = ulArr[1];
