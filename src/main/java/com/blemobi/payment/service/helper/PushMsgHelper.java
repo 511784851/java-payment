@@ -17,7 +17,6 @@ import com.blemobi.sep.probuf.RobotProtos.ERobotPushType;
 public class PushMsgHelper {
 	private String send_uuid;
 	private String ord_no;
-	private String targetKey;
 
 	/**
 	 * 构造方法
@@ -29,10 +28,9 @@ public class PushMsgHelper {
 	 * @param targetKey
 	 *            OTS存储的KEY
 	 */
-	public PushMsgHelper(String send_uuid, String ord_no, String targetKey) {
+	public PushMsgHelper(String send_uuid, String ord_no) {
 		this.send_uuid = send_uuid;
 		this.ord_no = ord_no;
-		this.targetKey = targetKey;
 	}
 
 	/**
@@ -40,7 +38,7 @@ public class PushMsgHelper {
 	 */
 	public void redPacketMsg() {
 		// 红包信息
-		PBRedPacketNotifyMsg redPacketNotifyMsg = PBRedPacketNotifyMsg.newBuilder().setTargetKey(targetKey).build();
+		PBRedPacketNotifyMsg redPacketNotifyMsg = PBRedPacketNotifyMsg.newBuilder().setOrdNo(ord_no).build();
 		// 消息内容
 		PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setRedpacket(redPacketNotifyMsg).build();
 		push(robotRawNotifyMsg, ERobotPushType.RedPacket);
@@ -52,7 +50,7 @@ public class PushMsgHelper {
 	 */
 	public void lotteryMsg() {
 		// 红包信息
-		PBLotteryNotifyMsg lotteryNotifyMsg = PBLotteryNotifyMsg.newBuilder().setTargetKey(targetKey).build();
+		PBLotteryNotifyMsg lotteryNotifyMsg = PBLotteryNotifyMsg.newBuilder().setOrdNo(ord_no).build();
 		// 消息内容
 		PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setLottery(lotteryNotifyMsg).build();
 		push(robotRawNotifyMsg, ERobotPushType.Lottery);

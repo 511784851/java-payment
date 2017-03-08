@@ -264,7 +264,7 @@ public class RedSendServiceImpl implements RedSendService {
 	 * @return
 	 */
 	private String createOrdNo(int type, int money) {
-		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setMachineNo(1).setAmount(money).setServiceNo(type)
+		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setAmount(money).setServiceNo(type)
 				.build();
 
 		RobotGrpcClient client = new RobotGrpcClient();

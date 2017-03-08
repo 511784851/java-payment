@@ -102,7 +102,7 @@ public class LotteryServiceImpl implements LotteryService {
         long currTm = System.currentTimeMillis();
         //TODO 获取订单号 设置机器号
         RobotGrpcClient robotClient = new RobotGrpcClient();
-        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus()).setMachineNo(0).setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
+        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus()).setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
         String orderno = robotClient.generateOrder(oparam).getVal();
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
                 lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, ' ', lottery.getRemark() };
