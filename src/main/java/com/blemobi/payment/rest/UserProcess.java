@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import com.blemobi.library.util.MD5;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.service.UserService;
 import com.blemobi.payment.service.helper.SignHelper;
@@ -41,7 +42,7 @@ public class UserProcess {
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage thirdToken(@CookieParam("uuid") String uuid) {
 		SignHelper signHelper = new SignHelper(uuid);
-		String sign = signHelper.getThirdToken();
+		String sign = MD5.GetMD5Code(uuid + "a8178b44-68de-4cc6-b117-8947422e175f");
 		PStringSingle stringSingle = PStringSingle.newBuilder().setVal(sign).build();
 		return ReslutUtil.createReslutMessage(stringSingle);
 	}

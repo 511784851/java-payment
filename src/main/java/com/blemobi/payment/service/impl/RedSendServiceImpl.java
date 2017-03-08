@@ -21,9 +21,7 @@ import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.DataPublishingProtos.PFansFilterParam;
-import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveBaseInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
@@ -53,35 +51,33 @@ public class RedSendServiceImpl implements RedSendService {
 	 * 发普通红包
 	 */
 	@Transactional
-	public PMessage sendOrdinary(POrdinRedEnve ordinRedEnve, String send_uuid) {
+	public PMessage sendOrdinary(String send_uuid, int money, String content, String rece_uuid) {
 		int type = OrderEnum.RED_ORDINARY.getValue();// 红包类型为普通红包
 		int tota_number = 1;// 红包数量固定为1
 		int each_money = 0;// 单个红包金额固定为0
-		int tota_money = ordinRedEnve.getMoney();// 红包金额
-		String content = ordinRedEnve.getContent();// 描述
-		String rece_uuid = ordinRedEnve.getReceUuid();// 领取用户
-		return initOrderInfo(tota_money, each_money, tota_number, type, send_uuid, content, rece_uuid);
+		return initOrderInfo(money, each_money, tota_number, type, send_uuid, content, rece_uuid);
 	}
 
 	/**
 	 * 发群红包
 	 */
 	@Transactional
-	public PMessage sendGroup(PGroupRedEnve groupRedEnve, String send_uuid) {
-		int tota_number = groupRedEnve.getNumber();// 红包数量
+	public PMessage sendGroup(String send_uuid, int number, int money, boolean isRandom, String content,
+			String tick_uuid, PFansFilterParam fansFilterParam) {
+		int tota_number = number;// 红包数量
 		int type = 0;// 红包类型
 		int tota_money = 0;// 红包总金额
 		int each_money = 0;// 单个红包金额
-		if (groupRedEnve.getIsRandom()) { // 红包类型为随机群红包
+		if (isRandom) { // 红包类型为随机群红包
 			type = OrderEnum.RED_GROUP_RANDOM.getValue();
-			tota_money = groupRedEnve.getMoney();
+			tota_money = money;
 		} else { // 红包类型为等额群红包
 			type = OrderEnum.RED_GROUP_EQUAL.getValue();
-			each_money = groupRedEnve.getMoney();
+			each_money = money;
 			tota_money = each_money * tota_number;
 		}
-		String content = groupRedEnve.getContent();
-		String[] rece_uuid = getReceUUIDS(groupRedEnve.getFilter());
+
+		String[] rece_uuid = getReceUUIDS(fansFilterParam);
 
 		return initOrderInfo(tota_money, each_money, tota_number, type, send_uuid, content, rece_uuid);
 	}

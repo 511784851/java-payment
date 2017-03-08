@@ -2,7 +2,6 @@ package com.blemobi.payment.service;
 
 import java.io.IOException;
 
-import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -22,7 +21,7 @@ public interface RewardService {
 	 *            发送者uuid
 	 * @return
 	 */
-	public PMessage reward(POrdinRedEnve ordinRedEnve, String send_uuid);
+	public PMessage reward(String send_uuid, int money, String content, String rece_uuid);
 
 	/**
 	 * 查询打赏列表

@@ -14,7 +14,7 @@ import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
  */
 public class SignHelper {
 	/** 私钥 */
-	public static final String seckey = "test";
+	public static final String seckey = "2uZCpuScM6Fko";
 
 	/** 接受者账户类型（0-个人，1-企业） */
 	private int recAccountType;

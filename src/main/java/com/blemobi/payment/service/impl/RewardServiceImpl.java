@@ -20,7 +20,6 @@ import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardInfoList;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardList;
@@ -46,11 +45,7 @@ public class RewardServiceImpl implements RewardService {
 
 	@Override
 	@Transactional
-	public PMessage reward(POrdinRedEnve ordinRedEnve, String send_uuid) {
-		String content = ordinRedEnve.getContent();
-		int money = ordinRedEnve.getMoney();
-		String rece_uuid = ordinRedEnve.getReceUuid();
-
+	public PMessage reward(String send_uuid, int money, String content, String rece_uuid) {
 		PMessage message = verification(send_uuid, money, content, rece_uuid);
 		if (message != null)
 			return message;

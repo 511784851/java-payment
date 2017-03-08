@@ -2,8 +2,7 @@ package com.blemobi.payment.service;
 
 import java.io.IOException;
 
-import com.blemobi.sep.probuf.PaymentProtos.PGroupRedEnve;
-import com.blemobi.sep.probuf.PaymentProtos.POrdinRedEnve;
+import com.blemobi.sep.probuf.DataPublishingProtos.PFansFilterParam;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
@@ -21,7 +20,7 @@ public interface RedSendService {
 	 * @param send_uuid
 	 * @return
 	 */
-	public PMessage sendOrdinary(POrdinRedEnve ordinRedEnve, String send_uuid);
+	public PMessage sendOrdinary(String send_uuid, int money, String content, String rece_uuid);
 
 	/**
 	 * 发群红包
@@ -30,7 +29,8 @@ public interface RedSendService {
 	 * @param send_uuid
 	 * @return
 	 */
-	public PMessage sendGroup(PGroupRedEnve groupRedEnve, String send_uuid);
+	public PMessage sendGroup(String send_uuid, int number, int money, boolean isRandom, String content,
+			String tick_uuid, PFansFilterParam fansFilterParam);
 
 	/**
 	 * 查询红包发送数据
