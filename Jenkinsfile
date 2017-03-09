@@ -10,9 +10,9 @@ stage ('build deploy') {
        withCredentials([[$class: 'StringBinding', credentialsId: 'ssh-shenzhen-saltmaster-jenkins-p2', variable: 'sshszp2']]){
        sh """
        cd ${WORKSPACE}/src/github.com/blemobi/java-payment
+
        ${mvnHome}/bin/mvn -B -f pom.xml clean install -Dmaven.test.skip
-       ls target
-       mv target/blemobi-payment-app.jar blemobi-chat-service.jar
+       mv target/blemobi-payment-app.jar blemobi-payment-service.jar
        zip -j blemobi-${JOB_NAME}.zip blemobi-payment-service.jar
 
        if [[ ${rsync_salt} == "true" ]]
@@ -22,7 +22,7 @@ stage ('build deploy') {
 	${sshszp2}:~/test/run/service/
     
 	ssh -tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${sshszp1}\
-	${sshszp2} "sudo salt '*chat*' state.highstate"
+	${sshszp2} "sudo salt '*payment*' state.highstate"
 	fi
 
        """
