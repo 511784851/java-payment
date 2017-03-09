@@ -39,7 +39,7 @@ public class BillDaoImpl implements BillDao {
 		sql.append("select ");
 		sql.append("id, uuid, ord_no, money, time, type ");
 		sql.append("from t_bill ");
-		sql.append("where uuid=? and status=? id<? and order by id desc limit ?");
+		sql.append("where uuid=? and status=? and id<? order by id desc limit ?");
 
 		RowMapper<Bill> rowMapper = new BeanPropertyRowMapper<Bill>(Bill.class);
 		return jdbcTemplate.query(sql.toString(), rowMapper, uuid, status, idx, count);
