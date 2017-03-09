@@ -20,6 +20,10 @@
  *****************************************************************/
 package com.blemobi.payment.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -32,6 +36,7 @@ import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.dao.TransactionDao;
 import com.blemobi.payment.service.CallbackService;
+import com.blemobi.payment.service.helper.PushMsgHelper;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 
@@ -97,6 +102,25 @@ public class CallbackServiceImpl implements CallbackService {
         if(ret != 1){
             throw new RuntimeException("insert into table failed");
         }
+        if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
+            //红包
+            //推送消息
+            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo);
+            pushMgr.redPacketMsg();
+        }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
+            log.info("lottery");
+            //推送消息
+            List<String> toList = new ArrayList<String>();
+            List<Map<String, Object>> list = lotteryDao.lotteryUsers(ordNo);
+            for(Map<String, Object> info : list){
+                toList.add(info.get("uuid").toString());
+            }
+            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, toList);
+            pushMgr.lotteryMsg();
+        }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
+            log.info("reward");
+        }
+        
         return true;
     }
 
