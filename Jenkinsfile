@@ -13,7 +13,7 @@ stage ('build deploy') {
        ${mvnHome}/bin/mvn -B -f pom.xml clean install -Dmaven.test.skip
        ls target
        mv target/blemobi-payment-app.jar blemobi-chat-service.jar
-       zip -j blemobi-java-chat-service.zip blemobi-chat-service.jar
+       zip -j blemobi-${JOB_NAME}.zip blemobi-payment-service.jar
 
        if [[ ${rsync_salt} == "true" ]]
        then
