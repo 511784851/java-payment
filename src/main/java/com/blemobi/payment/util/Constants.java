@@ -55,8 +55,8 @@ public final class Constants {
 
 	/** 红包最大有效领取时间（单位：毫秒） */
 	public static final long max_interval_Time = 24 * 60 * 60 * 1000;
-	
-	public static final String RONG_YUN_BASE_URL = "http://api-test.jrmf360.com";
+	public static final String RONG_YUN_BASE_URL = "http://yun-test.jrmf360.com";
+	//public static final String RONG_YUN_BASE_URL = "http://api-test.jrmf360.com";
 	public static final String B2C_TRANSFER_URI = "/api/v1/standardWallet/transferToUser.shtml";
 	public enum HTMLSTS {
 		SUCCESS("success"), FAILED("failed");

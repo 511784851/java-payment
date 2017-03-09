@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.blemobi.payment.excepiton.BizException;
+import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.rongyun.B2CReq;
 import com.blemobi.payment.util.rongyun.B2CResp;
 
@@ -69,6 +70,8 @@ public final class RongYunWallet {
      * @return
      */
     private static <T> T reqRongYun(final String url, final Map<String, String> param, Class<T> clazz) {
+        System.out.println(param);
+        System.out.println(url);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();
         if (param != null && !param.isEmpty()) {
@@ -95,15 +98,14 @@ public final class RongYunWallet {
     
     public static void main(String[] args) {
         B2CReq req = new B2CReq();
-        req.setArtnerId("123");
+        req.setPartnerId(SignHelper.partnerId);
         req.setCustImg("ddd");
-        req.setCustMobile("18890333333");
-        req.setCustNickname("nick name");
-        req.setCustOrderno("1234555");
-        req.setCustUid("232232346345");
-        req.setTimeStamp(DateTimeUtils.getDateTime14());
-        req.setTransferAmount(new BigDecimal("10.33"));
-        req.setTransferDesc("ssss");
+        req.setCustMobile("18890376529");
+        req.setCustNickname("nickname");
+        req.setCustOrderno("12345551");
+        req.setCustUid("1470823631370937498");
+        req.setTransferAmount(new BigDecimal("0.01"));
+        req.setTransferDesc("...");
         System.out.println(b2cTransfer(req));
     }
 }
