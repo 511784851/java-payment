@@ -46,6 +46,7 @@ import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.payment.util.RongYunWallet;
 import com.blemobi.payment.util.rongyun.B2CReq;
+import com.blemobi.payment.util.rongyun.B2CResp;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryDetail;
@@ -270,13 +271,16 @@ public class LotteryServiceImpl implements LotteryService {
         remainAmt -= bonus;
         lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
-        // TODO 转账
         B2CReq req = new B2CReq();
         req.setCustOrderno(winnerInf.get("id").toString());
         req.setTransferAmount(new BigDecimal(bonus / 100));
         req.setCustUid(uuid);
         req.setTransferDesc("领奖");
-        RongYunWallet.b2cTransfer(req);
+        B2CResp resp = RongYunWallet.b2cTransfer(req);
+        if(!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())){
+            log.error(resp.toString());
+            throw new BizException(2015020, "派发奖金失败");
+        }
         return viewPrize(uuid, lotteryId);
     }
 
