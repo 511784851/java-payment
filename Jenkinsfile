@@ -12,7 +12,7 @@ stage ('build deploy') {
        cd ${WORKSPACE}/src/github.com/blemobi/java-payment
        ${mvnHome}/bin/mvn -B -f pom.xml clean install -Dmaven.test.skip
        ls target
-       mv target/blemobi-wukong-app.jar blemobi-chat-service.jar
+       mv target/blemobi-payment-app.jar blemobi-chat-service.jar
        zip -j blemobi-java-chat-service.zip blemobi-chat-service.jar
 
        if [[ ${rsync_salt} == "true" ]]
