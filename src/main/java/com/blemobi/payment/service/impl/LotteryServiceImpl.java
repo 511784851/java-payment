@@ -272,7 +272,6 @@ public class LotteryServiceImpl implements LotteryService {
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
         // TODO 转账
         B2CReq req = new B2CReq();
-        req.setArtnerId("");
         req.setCustOrderno(winnerInf.get("id").toString());
         req.setTransferAmount(new BigDecimal(bonus / 100));
         req.setCustUid(uuid);

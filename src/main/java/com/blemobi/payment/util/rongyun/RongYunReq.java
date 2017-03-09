@@ -20,6 +20,7 @@
  *****************************************************************/
 package com.blemobi.payment.util.rongyun;
 
+import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.DateTimeUtils;
 
 /**
@@ -30,22 +31,33 @@ import com.blemobi.payment.util.DateTimeUtils;
  * @version 1.0.0
  */
 public abstract class RongYunReq {
-    protected String artnerId;
+    protected String partnerId = SignHelper.partnerId;
     protected String timeStamp = DateTimeUtils.getDateTime14();
+    protected final String seckey = SignHelper.seckey;
+    
+    /**
+     * @return the seckey
+     */
+    public String getSeckey() {
+        return seckey;
+    }
+
     protected String sign;
     
+
     /**
-     * @return the artnerId
+     * @return the partnerId
      */
-    public String getArtnerId() {
-        return artnerId;
+    public String getPartnerId() {
+        return partnerId;
     }
+
     
     /**
-     * @param artnerId the artnerId to set
+     * @param partnerId the partnerId to set
      */
-    public void setArtnerId(String artnerId) {
-        this.artnerId = artnerId;
+    public void setPartnerId(String partnerId) {
+        this.partnerId = partnerId;
     }
     
     /**
