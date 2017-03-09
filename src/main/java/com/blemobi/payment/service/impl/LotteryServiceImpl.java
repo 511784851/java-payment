@@ -41,7 +41,6 @@ import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.service.helper.SignHelper;
-import com.blemobi.payment.service.order.IdWorker;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
@@ -55,6 +54,7 @@ import com.blemobi.sep.probuf.PaymentProtos.PLotterySingle;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseEx;
+import com.blemobi.sep.probuf.PaymentProtos.PWinLottery;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 
@@ -278,7 +278,7 @@ public class LotteryServiceImpl implements LotteryService {
         req.setCustUid(uuid);
         req.setTransferDesc("领奖");
         RongYunWallet.b2cTransfer(req);
-        return ReslutUtil.createSucceedMessage();
+        return viewPrize(uuid, lotteryId);
     }
 
     @Override
@@ -338,6 +338,31 @@ public class LotteryServiceImpl implements LotteryService {
                 .addAllRegion(shuffle.getRegionList()).setRemark(shuffle.getRemark()).setTitle(shuffle.getTitle())
                 .setTotAmt(shuffle.getTotAmt()).setType(shuffle.getGender()).setWinners(shuffle.getWinners());
         jedisDao.setUserLotteryRefreshTimes(uuid);
+        return ReslutUtil.createReslutMessage(builder.build());
+    }
+
+    
+    @Override
+    public PMessage viewPrize(String uuid, String lotteryId) {
+        PWinLottery.Builder builder = PWinLottery.newBuilder();
+        Map<String, Object> info = lotteryDao.viewLottery(lotteryId, uuid);
+        builder.setAccTm(Long.parseLong(info.get("accept_tm").toString()));
+        builder.setBonus(Integer.parseInt(info.get("bonus").toString()));
+        builder.setCrtTm(Long.parseLong(info.get("crt_tm").toString()));
+        builder.setLotteryId(lotteryId);
+        builder.setRemark(info.get("remark").toString());
+        String suuid = info.get("suuid").toString();
+        String nkNm = "";
+        try {
+            PUserBase userBase = UserBaseCache.get(suuid);
+            nkNm = userBase.getNickname();
+        } catch (IOException e) {
+            log.warn("uuid:[" + uuid + "]在缓存中没有找到");
+        }
+        builder.setSendNickNm(nkNm);
+        builder.setSendUuid(suuid);
+        builder.setStatus(Integer.parseInt(info.get("status").toString()));
+        builder.setTitle(info.get("title").toString());
         return ReslutUtil.createReslutMessage(builder.build());
     }
 }

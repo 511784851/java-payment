@@ -150,4 +150,9 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
         String sql = "SELECT id, status, bonus FROM t_winners WHERE lottery_id = ? AND uuid = ?";
         return this.queryForMap(sql, new Object[]{lotteryId, uuid});
     }
+    @Override
+    public Map<String, Object> viewLottery(String lotteryId, String uuid) {
+        String sql = "SELECT a.id, a.title, a.uuid as suuid, a.remark, a.crt_tm, b.bonus, b.status, b.accept_tm FROM t_lotteries a, t_winners b where a.id = b.lottery_id AND a.id = ? AND b.uuid = ?";
+        return this.queryForMap(sql, new Object[]{lotteryId, uuid});
+    }
 }
