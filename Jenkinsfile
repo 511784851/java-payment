@@ -19,7 +19,7 @@ stage ('build deploy') {
        then
 	rsync -ravz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${sshszp1}" \
 	--progress blemobi-${JOB_NAME}.zip \
-	${sshszp2}:~/test/run/chat-service/
+	${sshszp2}:~/test/run/service/
     
 	ssh -tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${sshszp1}\
 	${sshszp2} "sudo salt '*chat*' state.highstate"
