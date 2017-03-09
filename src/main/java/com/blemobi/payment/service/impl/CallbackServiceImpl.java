@@ -35,6 +35,7 @@ import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.dao.TransactionDao;
+import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.service.helper.PushMsgHelper;
 import com.blemobi.payment.util.Constants.OrderEnum;
@@ -73,14 +74,19 @@ public class CallbackServiceImpl implements CallbackService {
         String uuid = "";
         int ret = 0;
         log.info("bizType:" + bizType);
+        String desc = "";
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
             log.info("red");
-            uuid = redSendDao.selectByKey(ordNo).getSend_uuid();
+            RedSend rs = redSendDao.selectByKey(ordNo);
+            uuid = rs.getSend_uuid();
+            desc = rs.getContent();
             ret = redSendDao.paySucc(ordNo, Integer.parseInt(amount));
         }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
             log.info("lottery");
-            uuid = lotteryDao.lotteryDetail(ordNo).get("uuid").toString();
+            Map<String, Object> rt = lotteryDao.lotteryDetail(ordNo);
+            uuid = rt.get("uuid").toString();
+            desc = rt.get("title").toString();
             ret = lotteryDao.paySucc(ordNo, Integer.parseInt(amount));
         }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
             log.info("reward");
@@ -105,7 +111,7 @@ public class CallbackServiceImpl implements CallbackService {
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
             //推送消息
-            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo);
+            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, desc);
             pushMgr.redPacketMsg();
         }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
             log.info("lottery");
@@ -115,7 +121,7 @@ public class CallbackServiceImpl implements CallbackService {
             for(Map<String, Object> info : list){
                 toList.add(info.get("uuid").toString());
             }
-            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, toList);
+            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, toList, desc);
             pushMgr.lotteryMsg();
         }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
             log.info("reward");

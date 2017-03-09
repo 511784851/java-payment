@@ -20,18 +20,19 @@ public class PushMsgHelper {
     private String send_uuid;
     private String ord_no;
     private List<String> toList;
-
+    private String desc;
     /**
      * @Description TODO
      * @param send_uuid
      * @param ord_no
      * @param toList
      */
-    public PushMsgHelper(String send_uuid, String ord_no, List<String> toList) {
+    public PushMsgHelper(String send_uuid, String ord_no, List<String> toList, String desc) {
         super();
         this.send_uuid = send_uuid;
         this.ord_no = ord_no;
         this.toList = toList;
+        this.desc = desc;
     }
 
     /**
@@ -44,9 +45,10 @@ public class PushMsgHelper {
      * @param targetKey
      *            OTS存储的KEY
      */
-    public PushMsgHelper(String send_uuid, String ord_no) {
+    public PushMsgHelper(String send_uuid, String ord_no, String desc) {
         this.send_uuid = send_uuid;
         this.ord_no = ord_no;
+        this.desc = desc;
     }
 
     /**
@@ -54,7 +56,7 @@ public class PushMsgHelper {
      */
     public void redPacketMsg() {
         // 红包信息
-        PBRedPacketNotifyMsg redPacketNotifyMsg = PBRedPacketNotifyMsg.newBuilder().setOrdNo(ord_no).build();
+        PBRedPacketNotifyMsg redPacketNotifyMsg = PBRedPacketNotifyMsg.newBuilder().setOrdNo(ord_no).setText(desc).build();
         // 消息内容
         PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setRedpacket(redPacketNotifyMsg).build();
         push(robotRawNotifyMsg, ERobotPushType.RedPacket);
@@ -66,7 +68,7 @@ public class PushMsgHelper {
      */
     public void lotteryMsg() {
         // 红包信息
-        PBLotteryNotifyMsg lotteryNotifyMsg = PBLotteryNotifyMsg.newBuilder().setOrdNo(ord_no).build();
+        PBLotteryNotifyMsg lotteryNotifyMsg = PBLotteryNotifyMsg.newBuilder().setOrdNo(ord_no).setText(desc).build();
         // 消息内容
         PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setLottery(lotteryNotifyMsg).build();
         push(robotRawNotifyMsg, ERobotPushType.Lottery);
