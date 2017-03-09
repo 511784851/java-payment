@@ -256,4 +256,11 @@ public class LotteryProcess {
         return ret;
     }
 
+    @GET
+    @Path("view")
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+    public PMessage viewPrize(@CookieParam("uuid") String uuid, @CookieParam("token") String token, @QueryParam("lotteryId") String lotteryId) {
+        PMessage ret = lotteryService.viewPrize(uuid, lotteryId);
+        return ret;
+    }
 }

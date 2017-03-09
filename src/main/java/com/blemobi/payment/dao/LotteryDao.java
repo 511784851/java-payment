@@ -45,4 +45,6 @@ public interface LotteryDao {
     public int acceptPrize(String lotteryId, String uuid);
     public int updateLottery(String lotteryId, int remainCnt, int remainAmt, long updTm, int status);
     public int delPrize(List<String> lotteryId, String uuid);
+    
+    public Map<String, Object> viewLottery(String lotteryId, String uuid);
 }

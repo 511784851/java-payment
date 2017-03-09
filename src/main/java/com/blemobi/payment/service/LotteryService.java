@@ -61,6 +61,14 @@ public interface LotteryService {
      * @return 
      */
     public PMessage acceptPrize(String uuid, String lotteryId);
+    /**
+     * @Description 中奖者查看领奖
+     * @author HUNTER.POON
+     * @param uuid 中奖者uuid
+     * @param lotteryId 抽奖包ID
+     * @return 
+     */
+    public PMessage viewPrize(String uuid, String lotteryId);
     
     /**
      * @Description B端删除发奖记录 
