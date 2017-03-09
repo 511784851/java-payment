@@ -32,6 +32,7 @@ import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.dao.TransactionDao;
 import com.blemobi.payment.service.CallbackService;
+import com.blemobi.payment.service.helper.PushMsgHelper;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 
@@ -97,6 +98,18 @@ public class CallbackServiceImpl implements CallbackService {
         if(ret != 1){
             throw new RuntimeException("insert into table failed");
         }
+        //推送消息
+        PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo);
+        if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
+            //红包
+            pushMgr.redPacketMsg();
+        }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
+            log.info("lottery");
+            pushMgr.lotteryMsg();
+        }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
+            log.info("reward");
+        }
+        
         return true;
     }
 
