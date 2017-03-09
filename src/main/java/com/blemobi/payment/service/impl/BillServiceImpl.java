@@ -55,7 +55,7 @@ public class BillServiceImpl implements BillService {
 	 * @param billBuilder
 	 */
 	private void buildIncomeTotal(String uuid, PBill.Builder billBuilder) {
-		Map<String, Object> map = billDao.selectTotalIncome(uuid);
+		Map<String, Object> map = billDao.selectTotalMoney(uuid, 1);
 		int income_money = Integer.parseInt(map.get("total").toString());
 		int income_number = Integer.parseInt(map.get("count").toString());
 		billBuilder.setIncomeMoney(income_money).setIncomeNumber(income_number);
@@ -69,7 +69,7 @@ public class BillServiceImpl implements BillService {
 	 * @param billBuilder
 	 */
 	private void buildExpendTotal(String uuid, PBill.Builder billBuilder) {
-		Map<String, Object> map = billDao.selectTotalExpend(uuid);
+		Map<String, Object> map = billDao.selectTotalMoney(uuid, 0);
 		int expend_money = Integer.parseInt(map.get("total").toString());
 		int expend_number = Integer.parseInt(map.get("count").toString());
 		billBuilder.setExpendMoney(expend_money).setExpendNumber(expend_number);
@@ -86,9 +86,9 @@ public class BillServiceImpl implements BillService {
 	 */
 	private List<Bill> selectBill(String uuid, int type, int last_id, int count) {
 		if (type == 0) // 收入
-			return billDao.selectIncomeByPage(uuid, last_id, count);
+			return billDao.selectByPage(uuid, 1, last_id, count);
 		else if (type == 1) // 支出
-			return billDao.selectExpendByPage(uuid, last_id, count);
+			return billDao.selectByPage(uuid, 0, last_id, count);
 		return null;
 	}
 

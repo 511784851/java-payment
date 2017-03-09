@@ -276,7 +276,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 		// 更新红包已领取金额和数量
 		redSendDao.update(ord_no, rece_money);
 		// 保存流水
-		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type);
+		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1);
 		// 转账给用户
 		TransferHelper th = new TransferHelper(rece_uuid, rece_money);
 		boolean th_bool = th.execute();

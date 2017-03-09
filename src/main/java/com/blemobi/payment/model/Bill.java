@@ -14,6 +14,8 @@ public class Bill {
 
 	private int type;
 
+	private int status;
+
 	public int getId() {
 		return id;
 	}
@@ -60,6 +62,14 @@ public class Bill {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }
