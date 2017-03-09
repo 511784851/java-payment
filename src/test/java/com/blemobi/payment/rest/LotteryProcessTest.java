@@ -26,14 +26,14 @@ public class LotteryProcessTest {
 
     @Before
     public void setup() {
-        Cookie cookie0 = new Cookie("uuid", "1470823631370937498");
-        //Cookie cookie0 = new Cookie("uuid", "123");
+        //        Cookie cookie0 = new Cookie("uuid", "1470823631370937498");
+Cookie cookie0 = new Cookie("uuid", "1470564357760884743");
         Cookie cookie1 = new Cookie("token", "GOmF/8UFINqy7NmU7cWhaSoBbTIgMTYyM2M0MTJkNzMyNzM0YmU0YTI3YWM4ZmI2NTBiYmQ=");
         cookies.add(cookie0);
         cookies.add(cookie1);
         String[] arg = new String[] {"-env", "local" };
         try {
-            PaymentManager.main(arg);
+           // PaymentManager.main(arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class LotteryProcessTest {
         // 确认抽奖
         action = "confirm";
         param.clear();
-        /**/
+        /*
         param.put("title", "三月");
         param.put("winners", "3");
         param.put("regions", "na;,na;,na;");
@@ -72,7 +72,7 @@ public class LotteryProcessTest {
         param.put("uuid", "1471423525354851354,1471423642445973326,1471423651931083727");
         param.put("genders", "0,0,0");
         HttpUtils.getInstance().post(getPath(action), param, cookies);
-        
+        */
         //领奖
         action = "accept";
         param.clear();
@@ -96,5 +96,15 @@ public class LotteryProcessTest {
 //         url += "?lotteryId=520170228286148971922067456";
 //        HttpUtils.getInstance().get(url, cookies);
         
+        /*action = "view";
+      String url = getPath(action);
+      url += "?lotteryId=5201703083259046610411409409";
+      System.out.println(url);
+      HttpUtils.getInstance().get(url, cookies);
+        */
+        action = "accept";
+        param.clear();
+        param.put("lotteryId", "520170228286148971922067456");
+        HttpUtils.getInstance().post(getPath(action), param, cookies);
     }
 }

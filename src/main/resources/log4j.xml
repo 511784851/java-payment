@@ -21,6 +21,10 @@
 		<priority value="ERROR"/>
 		<appender-ref ref="LogFile"/>
 	</category>
+	<category name="io.grpc" additivity="false">
+		<priority value="ERROR"/>
+		<appender-ref ref="LogFile"/>
+	</category>
 	<category name="org.apache.http" additivity="false">
 		<priority value="ERROR"/>
 		<appender-ref ref="LogFile"/>

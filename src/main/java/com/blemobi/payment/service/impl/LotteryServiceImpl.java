@@ -36,8 +36,10 @@ import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
+import com.blemobi.payment.dao.BillDao;
 import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.LotteryDao;
+import com.blemobi.payment.dao.TransactionDao;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.service.helper.SignHelper;
@@ -76,6 +78,10 @@ public class LotteryServiceImpl implements LotteryService {
     private LotteryDao lotteryDao;
     @Autowired
     private JedisDao jedisDao;
+    @Autowired
+    private TransactionDao transactionDao;
+    @Autowired
+    private BillDao billDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -279,7 +285,13 @@ public class LotteryServiceImpl implements LotteryService {
         B2CResp resp = RongYunWallet.b2cTransfer(req);
         if(!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())){
             log.error(resp.toString());
-            throw new BizException(2015020, "派发奖金失败");
+            throw new BizException(2015020, resp.getRespmsg());
+        }else{
+            log.info(resp.toString());
+            long currTm = DateTimeUtils.currTime();
+            transactionDao.insert(new Object[]{uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus, 1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm});
+            log.info("完成交易流水插入");
+            
         }
         return viewPrize(uuid, lotteryId);
     }
