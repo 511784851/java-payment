@@ -76,7 +76,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public List<Map<String, Object>> lotteryList(String uuid, int startIdx, String keywords) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, typ, winners, crt_tm, obj_key FROM t_lotteries WHERE uuid = ? ");
+        sql.append("SELECT id, title, typ, winners, crt_tm FROM t_lotteries WHERE uuid = ? ");
         param.add(uuid);
         if (!StringUtils.isEmpty(keywords)) {
             param.add( "%" + keywords + "%");
