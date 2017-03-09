@@ -12,13 +12,14 @@ import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.redis.LockManager;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
-import com.blemobi.payment.dao.JedisDao;
+import com.blemobi.payment.dao.RandomDao;
 import com.blemobi.payment.dao.RedReceiveDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.TableStoreDao;
+import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.RedReceive;
 import com.blemobi.payment.model.RedSend;
-import com.blemobi.payment.service.RedReceiveService;
+import com.blemobi.payment.service.ReceiveService;
 import com.blemobi.payment.service.helper.TransferHelper;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
@@ -30,14 +31,17 @@ import com.blemobi.sep.probuf.PaymentProtos.PRedEnveReceList;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveStatus;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
+import lombok.extern.log4j.Log4j;
+
 /**
  * 领红包实现类
  * 
  * @author zhaoyong
  *
  */
-@Service("redReceiveService")
-public class RedReceiveServiceImpl implements RedReceiveService {
+@Log4j
+@Service("receiveService")
+public class ReceiveServiceImpl implements ReceiveService {
 
 	/** 领红包安全锁的KEY */
 	private static final String LOCK_KEY = "payment:lock:receive:";
@@ -49,20 +53,17 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	private RedReceiveDao redReceiveDao;
 
 	@Autowired
-	private BillDao billDao;
+	private RandomDao randomDao;
 
 	@Autowired
-	private JedisDao jedisDao;
+	private BillDao billDao;
 
 	@Autowired
 	private TableStoreDao tableStoreDao;
 
-	/**
-	 * 查询红包针对用户状态
-	 */
 	@Override
-	public PMessage findRedEnveStatus(String ord_no, String rece_uuid) {
-		PRedEnveStatus redEnveStatus = checkStatus(ord_no, rece_uuid);
+	public PMessage checkStatus(String ord_no, String rece_uuid) {
+		PRedEnveStatus redEnveStatus = check(ord_no, rece_uuid);
 		return ReslutUtil.createReslutMessage(redEnveStatus);
 	}
 
@@ -74,7 +75,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	 * @param rece_uuid
 	 * @return
 	 */
-	private PRedEnveStatus checkStatus(String ord_no, String rece_uuid) {
+	private PRedEnveStatus check(String ord_no, String rece_uuid) {
 		RedSend redSend = redSendDao.selectByKey(ord_no);
 		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
 		if (redEnveStatus.getStatus() == -1) {
@@ -85,7 +86,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 	}
 
 	/**
-	 * 验证用户是否已领红包
+	 * 验证用户是否已领红包以及有权限领红包
 	 * 
 	 * @param redSend
 	 * @param ord_no
@@ -105,16 +106,17 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 			status = 1;// 已领取
 			rece_money = receive.getMoney();
 		} else {
-			if (redSend.getType() != OrderEnum.RED_ORDINARY.getValue()) {
+			if (redSend.getType() == OrderEnum.RED_ORDINARY.getValue()) {
 				if (!rece_uuid.equals(redSend.getRece_uuid5()))
-					throw new RuntimeException(rece_uuid + " > 没有权限领取红包: " + ord_no);
+					throw new BizException(2102000, "没有权限");
 			} else {
 				boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
 				if (!bool)
-					throw new RuntimeException(rece_uuid + " > 没有权限领取红包: " + ord_no);
+					throw new BizException(2102000, "没有权限");
 			}
 		}
-		return PRedEnveStatus.newBuilder().setStatus(status).setReceMoney(rece_money).build();
+		return PRedEnveStatus.newBuilder().setStatus(status).setReceMoney(rece_money).setContent(redSend.getContent())
+				.build();
 	}
 
 	/**
@@ -134,9 +136,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 		return status;
 	}
 
-	/**
-	 * 领红包
-	 */
+	@Override
 	@Transactional
 	public PMessage receive(String ord_no, String rece_uuid) {
 		RedSend redSend = redSendDao.selectByKey(ord_no);
@@ -158,9 +158,7 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 					} else if (type == OrderEnum.RED_GROUP_EQUAL.getValue()) {// 等额群红包
 						rece_money = redSend.getEach_money();
 					} else if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {// 随机群红包
-						String random_money_str = jedisDao.findRandomMoneyByOrdNoAndIdx(ord_no,
-								redSend.getRece_number());
-						rece_money = Integer.parseInt(random_money_str);
+						rece_money = randomDao.selectByKey(ord_no, redSend.getRece_number());
 					}
 					if (rece_money < Constants.min_each_money)
 						throw new RuntimeException("领取红包时获取金额出错");
@@ -175,13 +173,8 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 		return ReslutUtil.createReslutMessage(redEnveStatus);
 	}
 
-	/**
-	 * 查看红包详情
-	 * 
-	 * @throws IOException
-	 */
 	@Override
-	public PMessage findRedEnveInfo(String ord_no, String rece_uuid) throws IOException {
+	public PMessage findInfo(String ord_no, String rece_uuid) throws IOException {
 		long now_tm = System.currentTimeMillis();
 		RedSend redSend = redSendDao.selectByKey(ord_no);
 		boolean status = now_tm >= redSend.getOver_tm();// 红包是否已过期
@@ -197,12 +190,8 @@ public class RedReceiveServiceImpl implements RedReceiveService {
 		return ReslutUtil.createReslutMessage(redInfo);
 	}
 
-	/**
-	 * 批量加载领红包用户
-	 * 
-	 * @throws IOException
-	 */
-	public PMessage find(String ord_no, String rece_uuid, int last_id, int count) throws IOException {
+	@Override
+	public PMessage findList(String ord_no, String rece_uuid, int last_id, int count) throws IOException {
 		RedSend redSend = redSendDao.selectByKey(ord_no);
 		List<PRedEnveRece> list = getReceUser(redSend, ord_no, last_id, count);
 		PRedEnveReceList redEnveReceList = PRedEnveReceList.newBuilder().addAllRedEnveRece(list).build();

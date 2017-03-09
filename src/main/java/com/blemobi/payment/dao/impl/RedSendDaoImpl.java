@@ -23,9 +23,7 @@ public class RedSendDaoImpl implements RedSendDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	/**
-	 * 初始化发红包数据
-	 */
+	@Override
 	public int insert(Object... args) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_red_send (");
@@ -35,9 +33,7 @@ public class RedSendDaoImpl implements RedSendDao {
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 
-	/**
-	 * 根据红包订单号查询红包详情
-	 */
+	@Override
 	public RedSend selectByKey(String ord_no) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
@@ -49,20 +45,16 @@ public class RedSendDaoImpl implements RedSendDao {
 		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, ord_no);
 	}
 
-	/**
-	 * 领红包时更新数据
-	 */
+	@Override
 	public int update(String ord_no, int rece_money) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("update t_red_send set ");
 		sql.append("rece_money=rece_money+?, rece_number=rece_number+1 ");
-		sql.append("where ord_no=? and rece_money+?<=tota_money and rece_number+1<=tota_number");
+		sql.append("where pay_status=1 and ord_no=? and rece_money+?<=tota_money and rece_number+1<=tota_number");
 		return jdbcTemplate.update(sql.toString(), rece_money, ord_no, rece_money);
 	}
 
-	/**
-	 * 批量查询红包发送记录
-	 */
+	@Override
 	public List<RedSend> selectByPage(String uuid, int idx, int count) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");

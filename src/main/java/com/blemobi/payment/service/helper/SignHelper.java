@@ -59,7 +59,7 @@ public class SignHelper {
 		this.ord_no = ord_no;
 		this.goodsName = goodsName;
 		this.recAccountType = 1;// 企业
-		this.receivedId = "";// 企业账户
+		this.receivedId = "miwukeji";// 企业账户
 
 	}
 

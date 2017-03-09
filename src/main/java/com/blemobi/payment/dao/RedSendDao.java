@@ -12,22 +12,44 @@ import com.blemobi.payment.model.RedSend;
  */
 public interface RedSendDao {
 	/**
-	 * 初始化发红包数据
+	 * 保存发红包数据
+	 * 
+	 * @param args
+	 *            SQL参数
+	 * @return
 	 */
 	public int insert(Object... args);
 
 	/**
-	 * 根据红包订单号查询红包详情
+	 * 查询红包发送详情
+	 * 
+	 * @param ord_no
+	 *            订单号
+	 * @return
 	 */
 	public RedSend selectByKey(String ord_no);
 
 	/**
 	 * 领红包时更新数据
+	 * 
+	 * @param ord_no
+	 *            订单号
+	 * @param rece_money
+	 *            领取金额
+	 * @return
 	 */
 	public int update(String ord_no, int rece_money);
 
 	/**
-	 * 批量查询红包发送记录
+	 * 查询红包发送记录
+	 * 
+	 * @param uuid
+	 *            用户uuid
+	 * @param idx
+	 *            分页起始值
+	 * @param count
+	 *            分页大小
+	 * @return
 	 */
 	public List<RedSend> selectByPage(String uuid, int idx, int count);
 

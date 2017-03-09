@@ -8,34 +8,15 @@ package com.blemobi.payment.dao;
  */
 public interface JedisDao {
 
-    public void setUserLotteryRefreshTimes(String uuid);
-    /**
-     * @Description 获取用户5分钟内刷新次数 
-     * @author HUNTER.POON
-     * @param uuid
-     * @return
-     */
-    public Integer getUserLotteryRefreshTimes(String uuid);
+	public void setUserLotteryRefreshTimes(String uuid);
 
 	/**
-	 * 存储随机红包金额
-	 * 
-	 * @param ord_no
-	 *            订单号
-	 * @param moneys
-	 *            随机金额
+	 * @Description 获取用户5分钟内刷新次数
+	 * @author HUNTER.POON
+	 * @param uuid
+	 * @return
 	 */
-	public int putRedRandDomMoney(String ord_no, int... moneys);
-
-	/**
-	 * 查询随机红包金额（根据订单号和随机金额索引值）
-	 * 
-	 * @param ord_no
-	 *            订单号
-	 * @param idx
-	 *            随机红包索引值
-	 */
-	public String findRandomMoneyByOrdNoAndIdx(String ord_no, long idx);
+	public Integer getUserLotteryRefreshTimes(String uuid);
 
 	/**
 	 * 累计用户单日发送的金额
