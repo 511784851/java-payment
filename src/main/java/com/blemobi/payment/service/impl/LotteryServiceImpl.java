@@ -123,7 +123,7 @@ public class LotteryServiceImpl implements LotteryService {
         if (regions != null && regions.size() > 0) {
             List<Object[]> param = new ArrayList<Object[]>();
             for (String loc : regions) {
-                Object[] arr = new Object[3];
+                Object[] arr = new Object[4];
                 arr[0] = orderno;
                 arr[1] = loc;
                 arr[2] = ' ';
