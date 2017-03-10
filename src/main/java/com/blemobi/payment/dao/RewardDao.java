@@ -86,5 +86,5 @@ public interface RewardDao {
 	 * @param amt
 	 * @return
 	 */
-	public int paySucc(String ordNo, int amt);
+	public int paySucc(String ordNo);
 }

@@ -97,7 +97,7 @@ public class CallbackServiceImpl implements CallbackService {
             log.info("reward");
             reward = rewardDao.selectByKey(ordNo, 0);
             uuid = reward.getSend_uuid();
-            ret = rewardDao.paySucc(ordNo, money);
+            ret = rewardDao.paySucc(ordNo);
         }
         if(ret != 1){
             throw new RuntimeException("update red bag or lottery record failed");
@@ -120,15 +120,15 @@ public class CallbackServiceImpl implements CallbackService {
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
             //推送消息
-        	if(bizType == OrderEnum.RED_ORDINARY.getValue()){
-        		List<String> list = new ArrayList<>();
-        		list.add(rs.getRece_uuid5());
-        		PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, list, desc);
-                pushMgr.redPacketMsg();
-        	} else{
-	            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, desc);
-	            pushMgr.redPacketMsg();
-        	}
+//        	if(bizType == OrderEnum.RED_ORDINARY.getValue()){
+//        		List<String> list = new ArrayList<>();
+//        		list.add(rs.getRece_uuid5());
+//        		PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, list, desc);
+//                pushMgr.redPacketMsg();
+//        	} else{
+//	            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, desc);
+//	            pushMgr.redPacketMsg();
+//        	}
         }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
             log.info("lottery");
             //推送消息
@@ -137,8 +137,8 @@ public class CallbackServiceImpl implements CallbackService {
             for(Map<String, Object> info : list){
                 toList.add(info.get("uuid").toString());
             }
-            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, toList, desc);
-            pushMgr.lotteryMsg();
+//            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, toList, desc);
+//            pushMgr.lotteryMsg();
         }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
             log.info("reward");
             uuid = reward.getRece_uuid();
