@@ -25,9 +25,11 @@ public interface RedSendDao {
 	 * 
 	 * @param ord_no
 	 *            订单号
+	 * @param pay_status
+	 *            支付状态(0-未支付，1-已支付，2-支付异常)
 	 * @return
 	 */
-	public RedSend selectByKey(String ord_no);
+	public RedSend selectByKey(String ord_no, int pay_status);
 
 	/**
 	 * 领红包时更新数据
@@ -58,8 +60,7 @@ public interface RedSendDao {
 	 * @author HUNTER.POON
 	 * @param ordNo
 	 *            订单号
-	 * @param amt
 	 * @return
 	 */
-	public int paySucc(String ordNo, int amt);
+	public int paySucc(String ordNo);
 }

@@ -80,10 +80,10 @@ public class CallbackServiceImpl implements CallbackService {
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
             log.info("red");
-            RedSend rs = redSendDao.selectByKey(ordNo);
+            RedSend rs = redSendDao.selectByKey(ordNo, 0);
             uuid = rs.getSend_uuid();
             desc = rs.getContent();
-            ret = redSendDao.paySucc(ordNo, Integer.parseInt(amount));
+            ret = redSendDao.paySucc(ordNo);
         }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
             log.info("lottery");
             Map<String, Object> rt = lotteryDao.lotteryDetail(ordNo);
@@ -92,7 +92,7 @@ public class CallbackServiceImpl implements CallbackService {
             ret = lotteryDao.paySucc(ordNo, Integer.parseInt(amount));
         }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
             log.info("reward");
-            reward = rewardDao.selectByKey(ordNo);
+            reward = rewardDao.selectByKey(ordNo, 0);
             uuid = reward.getSend_uuid();
             ret = rewardDao.paySucc(ordNo, Integer.parseInt(amount));
         }
@@ -133,11 +133,6 @@ public class CallbackServiceImpl implements CallbackService {
             log.info("reward");
             uuid = reward.getRece_uuid();
             ret = billDao.insert(new Object[]{uuid, ordNo, Long.parseLong(amount), bizType, 1});
-            if(ret != 1){
-                throw new RuntimeException("insert into table failed");
-            }
-            ret = transactionDao.insert(new Object[]{uuid, ordNo, bizType+"", Integer.parseInt(amount), 1, " ", desc, corgOrdId, corgSts, corgMsg, currTm, currTm});
-            log.info("完成交易流水插入");
             if(ret != 1){
                 throw new RuntimeException("insert into table failed");
             }

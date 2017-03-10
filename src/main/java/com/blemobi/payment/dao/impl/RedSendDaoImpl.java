@@ -34,15 +34,15 @@ public class RedSendDaoImpl implements RedSendDao {
 	}
 
 	@Override
-	public RedSend selectByKey(String ord_no) {
+	public RedSend selectByKey(String ord_no, int pay_status) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append(
 				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, rece_uuid5, pay_status, ref_status ");
 		sql.append("from t_red_send ");
-		sql.append("where pay_status=1 and ord_no=?");
+		sql.append("where pay_status=? and ord_no=?");
 		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);
-		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, ord_no);
+		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, pay_status, ord_no);
 	}
 
 	@Override
@@ -66,10 +66,9 @@ public class RedSendDaoImpl implements RedSendDao {
 	}
 
 	@Override
-	public int paySucc(String ordNo, int amt) {
-		String sql = "UPDATE t_red_send SET pay_status = 1 WHERE ord_no = ? AND tot_amount = ? AND pay_status = 0";
-		Object[] param = new Object[] { ordNo, amt };
-		return jdbcTemplate.update(sql, param);
+	public int paySucc(String ordNo) {
+		String sql = "UPDATE t_red_send SET pay_status = 1 WHERE ord_no = ? AND pay_status = 0";
+		return jdbcTemplate.update(sql, ordNo);
 	}
 
 }

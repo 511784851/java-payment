@@ -86,7 +86,7 @@ public class RewardServiceImpl implements RewardService {
 		int money = 0;// 打赏总金额
 		List<Reward> list = null;// 打赏记录
 
-		Reward reward = rewardDao.selectByKey(ord_no);
+		Reward reward = rewardDao.selectByKey(ord_no, 1);
 		if (uuid.equals(reward.getSend_uuid())) {// 用户为发送者，需要处理接受者数据
 			userBase = UserBaseCache.get(reward.getRece_uuid());
 			money = rewardDao.selectrTotalMoony(uuid, reward.getRece_uuid());

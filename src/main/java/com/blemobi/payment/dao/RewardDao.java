@@ -26,9 +26,11 @@ public interface RewardDao {
 	 * 
 	 * @param ord_no
 	 *            订单号
+	 * @param pay_status
+	 *            支付状态(0-未支付，1-已支付，2-支付异常)
 	 * @return
 	 */
-	public Reward selectByKey(String ord_no);
+	public Reward selectByKey(String ord_no, int pay_status);
 
 	/**
 	 * 查询打赏总金额（根据发送者和接受者）

@@ -34,14 +34,14 @@ public class RewardDaoImpl implements RewardDao {
 	}
 
 	@Override
-	public Reward selectByKey(String ord_no) {
+	public Reward selectByKey(String ord_no, int pay_status) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append("id, ord_no, send_uuid, rece_uuid, money, content, send_tm ");
 		sql.append("from t_reward ");
-		sql.append("where pay_status=1 and ord_no=?");
+		sql.append("where pay_status=? and ord_no=?");
 		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
-		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, ord_no);
+		return jdbcTemplate.queryForObject(sql.toString(), rowMapper, pay_status, ord_no);
 	}
 
 	@Override

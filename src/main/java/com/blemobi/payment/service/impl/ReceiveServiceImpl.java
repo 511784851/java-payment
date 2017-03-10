@@ -76,7 +76,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 	 * @return
 	 */
 	private PRedEnveStatus check(String ord_no, String rece_uuid) {
-		RedSend redSend = redSendDao.selectByKey(ord_no);
+		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
 		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
 		if (redEnveStatus.getStatus() == -1) {
 			int status = checkStatus(redSend);
@@ -139,7 +139,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 	@Override
 	@Transactional
 	public PMessage receive(String ord_no, String rece_uuid) {
-		RedSend redSend = redSendDao.selectByKey(ord_no);
+		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
 		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
 		int status = redEnveStatus.getStatus();
 		if (status == -1) {
@@ -176,7 +176,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 	@Override
 	public PMessage findInfo(String ord_no, String rece_uuid) throws IOException {
 		long now_tm = System.currentTimeMillis();
-		RedSend redSend = redSendDao.selectByKey(ord_no);
+		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
 		boolean status = now_tm >= redSend.getOver_tm();// 红包是否已过期
 		int user_rece_money = 0;// 当前用户领取的金额（单位：分），如果是0表示网红自己查看详情
 		if (!redSend.getSend_uuid().equals(rece_uuid)) {
@@ -192,7 +192,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 
 	@Override
 	public PMessage findList(String ord_no, String rece_uuid, int last_id, int count) throws IOException {
-		RedSend redSend = redSendDao.selectByKey(ord_no);
+		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
 		List<PRedEnveRece> list = getReceUser(redSend, ord_no, last_id, count);
 		PRedEnveReceList redEnveReceList = PRedEnveReceList.newBuilder().addAllRedEnveRece(list).build();
 		return ReslutUtil.createReslutMessage(redEnveReceList);
