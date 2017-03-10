@@ -88,9 +88,9 @@ public class RewardDaoImpl implements RewardDao {
 	}
 
 	@Override
-	public int paySucc(String ordNo, int amt) {
-		String sql = "UPDATE t_reward SET pay_status = 1 WHERE ord_no = ? AND amount = ? AND pay_status = 0";
-		Object[] param = new Object[] { ordNo, amt };
+	public int paySucc(String ordNo) {
+		String sql = "UPDATE t_reward SET pay_status = 1 WHERE ord_no = ? AND pay_status = 0";
+		Object[] param = new Object[] { ordNo };
 		return jdbcTemplate.update(sql, param);
 	}
 
