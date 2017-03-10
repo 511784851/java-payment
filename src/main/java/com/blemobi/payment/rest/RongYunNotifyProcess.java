@@ -20,20 +20,16 @@
  *****************************************************************/
 package com.blemobi.payment.rest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
-import com.blemobi.library.grpc.DataPublishGrpcClient;
+import com.alibaba.fastjson.JSONObject;
 import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.DateTimeUtils;
@@ -53,65 +49,78 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @Path("v1/payment/callback")
 public class RongYunNotifyProcess {
-    private static final CallbackService callbackService = InstanceFactory.getInstance(CallbackService.class);
-    /**
-     * @Description 支付成功通知
-     * @author HUNTER.POON
-     * @param respstat
-     *            响应码
-     * @param respmsg
-     *            响应消息
-     * @param orderAmount
-     *            订单金额
-     * @param orderNo
-     *            订单号
-     * @param orderStatus
-     *            订单状态
-     * @param orderTime
-     *            订单时间
-     * @param custOrderNo
-     *            渠道订单号
-     * @param receiveUid
-     *            接收人唯一标示
-     * @param sign
-     *            摘要
-     * @return
-     */
-    @POST
-    @Path("notify")
-    @Produces(MediaTypeExt.MULTIPART_FORM_DATA)
-    public String callback(@FormParam("respstat") String respstat, @FormParam("respmsg") String respmsg,
-            @FormParam("orderAmount") String orderAmount, @FormParam("orderNo") String orderNo,
-            @FormParam("orderStatus") String orderStatus, @FormParam("orderTime") String orderTime,
-            @FormParam("custOrderNo") String custOrderNo, @FormParam("receiveUid") String receiveUid,
-            @FormParam("sign") String sign) {
-        try {
-            Map<String, String> param = new HashMap<String, String>();
-            param.put("respstat", respstat);
-            param.put("respmsg", respmsg);
-            param.put("orderAmount", orderAmount);
-            param.put("orderNo", orderNo);
-            param.put("orderStatus", orderStatus);
-            param.put("orderTime", orderTime);
-            param.put("custOrderNo", custOrderNo);
-            param.put("receiveUid", receiveUid);
-            String signLocal = SignUtil.sign(param);
-            log.info(signLocal);
-            //融云支付失败，不予处理
-            if(!Constants.RESPSTS.SUCCESS.getValue().equals(respstat) || !Constants.RONGYUN_ORD_STS.SUCCESS.getValue().equals(orderStatus)){
-                log.info("respstat:" + respstat);
-                return Constants.HTMLSTS.SUCCESS.getValue();
-            }
-            // 验签失败
-            if (signLocal == null || !signLocal.equals(sign)) {
-                log.warn("signLocal：" + signLocal + ",sign:" + sign);
-                return Constants.HTMLSTS.FAILED.getValue();
-            }
-            callbackService.paySucc(orderAmount, DateTimeUtils.currTime(), custOrderNo, receiveUid, orderNo, orderStatus, respmsg);
-        } catch (Exception ex) {
-            log.error("payment callback failed", ex);
-            return Constants.HTMLSTS.FAILED.getValue();
-        }
-        return Constants.HTMLSTS.SUCCESS.getValue();
-    }
+	private static final CallbackService callbackService = InstanceFactory.getInstance(CallbackService.class);
+
+	/**
+	 * @Description 支付成功通知
+	 * @author HUNTER.POON
+	 * @param respstat
+	 *            响应码
+	 * @param respmsg
+	 *            响应消息
+	 * @param orderAmount
+	 *            订单金额
+	 * @param orderNo
+	 *            订单号
+	 * @param orderStatus
+	 *            订单状态
+	 * @param orderTime
+	 *            订单时间
+	 * @param custOrderNo
+	 *            渠道订单号
+	 * @param receiveUid
+	 *            接收人唯一标示
+	 * @param sign
+	 *            摘要
+	 * @return
+	 */
+	@POST
+	@Path("notify")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaTypeExt.MULTIPART_FORM_DATA)
+	public String callback(String jsonString) {
+		log.debug("json str:" + jsonString);
+		JSONObject json = JSONObject.parseObject(jsonString);
+		log.debug("json obj:" + json);
+		String respstat = json.getString("respstat");
+		String respmsg = json.getString("respmsg");
+		String orderAmount = json.getString("orderAmount");
+		String orderNo = json.getString("orderNo");
+		String orderStatus = json.getString("orderStatus");
+		String orderTime = json.getString("orderTime");
+		String custOrderNo = json.getString("custOrderNo");
+		String receiveUid = json.getString("receiveUid");
+		String sign = json.getString("sign");
+
+		try {
+			Map<String, String> param = new HashMap<String, String>();
+			param.put("respstat", respstat);
+			param.put("respmsg", respmsg);
+			param.put("orderAmount", orderAmount);
+			param.put("orderNo", orderNo);
+			param.put("orderStatus", orderStatus);
+			param.put("orderTime", orderTime);
+			param.put("custOrderNo", custOrderNo);
+			param.put("receiveUid", receiveUid);
+			String signLocal = SignUtil.sign(param);
+			log.info(signLocal);
+			// 融云支付失败，不予处理
+			if (!Constants.RESPSTS.SUCCESS.getValue().equals(respstat)
+					|| !Constants.RONGYUN_ORD_STS.SUCCESS.getValue().equals(orderStatus)) {
+				log.info("respstat:" + respstat);
+				return Constants.HTMLSTS.SUCCESS.getValue();
+			}
+			// 验签失败
+			if (signLocal == null || !signLocal.equals(sign)) {
+				log.warn("signLocal：" + signLocal + ",sign:" + sign);
+				return Constants.HTMLSTS.FAILED.getValue();
+			}
+			callbackService.paySucc(orderAmount, DateTimeUtils.currTime(), custOrderNo, receiveUid, orderNo,
+					orderStatus, respmsg);
+		} catch (Exception ex) {
+			log.error("payment callback failed", ex);
+			return Constants.HTMLSTS.FAILED.getValue();
+		}
+		return Constants.HTMLSTS.SUCCESS.getValue();
+	}
 }
