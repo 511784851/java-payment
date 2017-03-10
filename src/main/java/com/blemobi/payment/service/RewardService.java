@@ -36,7 +36,7 @@ public interface RewardService {
 	 *            分页大小
 	 * @return
 	 */
-	public PMessage list(String uuid, int type, int idx, int count);
+	public PMessage list(String uuid, String other_uuid, int type, int idx, int count);
 
 	/**
 	 * 查看打赏详情以及打赏记录

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.model.Reward;
+import com.google.common.base.Strings;
 
 /**
  * 打赏数据库操作实现类
@@ -62,20 +63,26 @@ public class RewardDaoImpl implements RewardDao {
 	}
 
 	@Override
-	public List<Reward> selectReceByPage(String rece_uuid, int idx, int count) {
+	public List<Reward> selectReceByPage(String rece_uuid, String other_uuid, int idx, int count) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append("id, ord_no, send_uuid uuid, money, send_tm, content ");
 		sql.append("from t_reward ");
-		sql.append("where pay_status=1 and rece_uuid=? and id<? order by id desc limit ?");
+		sql.append("where pay_status=1 and rece_uuid=? ");
+		if (!Strings.isNullOrEmpty(other_uuid))
+			sql.append("and send_uuid='" + other_uuid + "' ");
+		sql.append("and id<? order by id desc limit ?");
 		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
 		return jdbcTemplate.query(sql.toString(), rowMapper, rece_uuid, idx, count);
 	}
 
 	@Override
-	public List<Reward> selectSendByPage(String send_uuid, int idx, int count) {
+	public List<Reward> selectSendByPage(String send_uuid, String other_uuid, int idx, int count) {
 		StringBuffer sql = selectSQL();
-		sql.append("where pay_status=1 and send_uuid=? and id<? order by id desc limit ?");
+		sql.append("where pay_status=1 and send_uuid=? ");
+		if (!Strings.isNullOrEmpty(other_uuid))
+			sql.append("and rece_uuid='" + other_uuid + "' ");
+		sql.append("and id<? order by id desc limit ?");
 		RowMapper<Reward> rowMapper = new BeanPropertyRowMapper<Reward>(Reward.class);
 		return jdbcTemplate.query(sql.toString(), rowMapper, send_uuid, idx, count);
 	}

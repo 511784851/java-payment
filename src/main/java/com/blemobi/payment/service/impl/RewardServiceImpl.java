@@ -63,14 +63,14 @@ public class RewardServiceImpl implements RewardService {
 	}
 
 	@Override
-	public PMessage list(String uuid, int type, int idx, int count) {
+	public PMessage list(String uuid, String other_uuid, int type, int idx, int count) {
 		idx = checkIdx(idx);
 
 		List<Reward> list = null;
 		if (type == 0)
-			list = rewardDao.selectReceByPage(uuid, idx, count);
+			list = rewardDao.selectReceByPage(uuid, other_uuid, idx, count);
 		else if (type == 1)
-			list = rewardDao.selectSendByPage(uuid, idx, count);
+			list = rewardDao.selectSendByPage(uuid, other_uuid, idx, count);
 
 		List<PRewardInfo> rewardInfoList = buildRewardList(list);
 
@@ -185,8 +185,7 @@ public class RewardServiceImpl implements RewardService {
 	 * @return
 	 */
 	private String createOrdNo(int type, int money) {
-		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setAmount(money).setServiceNo(type)
-				.build();
+		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setAmount(money).setServiceNo(type).build();
 
 		RobotGrpcClient client = new RobotGrpcClient();
 		PStringSingle ordNoString = client.generateOrder(payOrderParma);

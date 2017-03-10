@@ -3,6 +3,7 @@ package com.blemobi.payment.rest;
 import java.io.IOException;
 
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,7 +56,7 @@ public class receiveProcess {
 	@POST
 	@Path("receive")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+	public PMessage receive(@CookieParam("uuid") String rece_uuid, @FormParam("ord_no") String ord_no) {
 		return receiveService.receive(ord_no, rece_uuid);
 	}
 
@@ -75,7 +76,6 @@ public class receiveProcess {
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage info(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no)
 			throws IOException {
-		rece_uuid = "1470564370290423368";
 		return receiveService.findInfo(ord_no, rece_uuid);
 	}
 

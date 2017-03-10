@@ -21,6 +21,7 @@ import com.blemobi.payment.dao.TableStoreDao;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.SendService;
+import com.blemobi.payment.service.helper.PushMsgHelper;
 import com.blemobi.payment.service.helper.RandomRedHelper;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.Constants;
@@ -36,6 +37,7 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
 import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 import com.google.common.base.Strings;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
  * 发红包业务实现类
@@ -72,6 +74,10 @@ public class SendServiceImpl implements SendService {
 			return message;
 
 		String ord_no = createOrdNo(type, money);// 订单号
+		List<String> list = new ArrayList<>();
+		list.add(rece_uuid);
+		PushMsgHelper msg = new PushMsgHelper(send_uuid, ord_no, list, "给你发送一个红包");
+		msg.redPacketMsg();
 		return savaOrder(ord_no, send_uuid, type, money, each_money, number, content, rece_tota_num, rece_uuid);
 	}
 

@@ -38,7 +38,7 @@ public class RedSendDaoImpl implements RedSendDao {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append(
-				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, pay_status, ref_status ");
+				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, rece_uuid5, pay_status, ref_status ");
 		sql.append("from t_red_send ");
 		sql.append("where pay_status=1 and ord_no=?");
 		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);

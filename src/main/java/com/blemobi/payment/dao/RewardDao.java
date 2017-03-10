@@ -63,7 +63,7 @@ public interface RewardDao {
 	 * @param count
 	 * @return
 	 */
-	public List<Reward> selectReceByPage(String rece_uuid, int idx, int count);
+	public List<Reward> selectReceByPage(String rece_uuid, String other_uuid, int idx, int count);
 
 	/**
 	 * 查询发送的打赏数据（根据发送者）
@@ -74,7 +74,7 @@ public interface RewardDao {
 	 * @param count
 	 * @return
 	 */
-	public List<Reward> selectSendByPage(String send_uuid, int idx, int count);
+	public List<Reward> selectSendByPage(String send_uuid, String other_uuid, int idx, int count);
 
 	/**
 	 * @Description 红包支付成功

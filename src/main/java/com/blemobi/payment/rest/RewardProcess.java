@@ -56,9 +56,9 @@ public class RewardProcess {
 	@GET
 	@Path("list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("type") int type, @QueryParam("idx") int idx,
-			@QueryParam("count") int count) {
-		return rewardService.list(uuid, type, idx, count);
+	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("other_uuid") String other_uuid,
+			@QueryParam("type") int type, @QueryParam("idx") int idx, @QueryParam("count") int count) {
+		return rewardService.list(uuid, other_uuid, type, idx, count);
 	}
 
 	/**
