@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.alibaba.fastjson.JSONObject;
 import com.blemobi.payment.service.CallbackService;
+import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.payment.util.InstanceFactory;
@@ -81,24 +82,38 @@ public class RongYunNotifyProcess {
 	public String callback(String jsonString) {
 		log.debug("json str:" + jsonString);
 		JSONObject json = JSONObject.parseObject(jsonString);
-		String respstat = json.getString("respstat");
-		String respmsg = json.getString("respmsg");
-		String orderAmount = json.getString("orderAmount");
-		String orderNo = json.getString("orderNo");
-		String orderStatus = json.getString("orderStatus");
-		String orderTime = json.getString("orderTime");
-		String custOrderNo = json.getString("custOrderNo");
-		String receiveUid = json.getString("receiveUid");
-		String sign = json.getString("sign");
+//		String respstat = json.getString("respstat");
+//		String respmsg = json.getString("respmsg");
+//		String orderAmount = json.getString("orderAmount");
+//		String orderNo = json.getString("orderNo");
+//		String orderStatus = json.getString("orderStatus");
+//		String orderTime = json.getString("orderTime");
+//		String custOrderNo = json.getString("custOrderNo");
+//		String receiveUid = json.getString("receiveUid");
+//		String sign = json.getString("sign");
 
+		String sign = json.getString("sign");
+		String custOrderNo = json.getString("custOrderNo");
+		String orderNo = json.getString("orderNo");
+		String orderAmount = json.getString("orderAmount");
+		String orderTime = json.getString("orderTime");
+		String orderStatus = json.getString("orderStatus");
+		String returnType = json.getString("returnType");
+		String custUid = json.getString("custUid");
+		String receiveUid = json.getString("receiveUid");
+		
 		try {
 			Map<String, String> param = new HashMap<String, String>();
-			param.put("orderAmount", orderAmount);
-			param.put("orderNo", orderNo);
-			param.put("orderStatus", orderStatus);
-			param.put("orderTime", orderTime);
 			param.put("custOrderNo", custOrderNo);
+			param.put("orderNo", orderNo);
+			param.put("orderAmount", orderAmount);
+			param.put("orderTime", orderTime);
+			param.put("orderStatus", orderStatus);
+			param.put("returnType", returnType);
+			param.put("custUid", custUid);
 			param.put("receiveUid", receiveUid);
+			param.put("seckey", SignHelper.seckey);
+
 			String signLocal = SignUtil.sign(param);
 			log.info(signLocal);
 			// 融云支付失败，不予处理
@@ -113,7 +128,7 @@ public class RongYunNotifyProcess {
 //				return Constants.HTMLSTS.FAILED.getValue();
 //			}
 			callbackService.paySucc(orderAmount, DateTimeUtils.currTime(), custOrderNo, receiveUid, orderNo,
-					orderStatus, respmsg);
+					orderStatus, " ");
 		} catch (Exception ex) {
 			log.error("payment callback failed", ex);
 			return Constants.HTMLSTS.FAILED.getValue();
