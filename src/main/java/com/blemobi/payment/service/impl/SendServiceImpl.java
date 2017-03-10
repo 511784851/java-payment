@@ -74,10 +74,10 @@ public class SendServiceImpl implements SendService {
 			return message;
 
 		String ord_no = createOrdNo(type, money);// 订单号
-		List<String> list = new ArrayList<>();
-		list.add(rece_uuid);
-		PushMsgHelper msg = new PushMsgHelper(send_uuid, ord_no, list, "给你发送一个红包");
-		msg.redPacketMsg();
+//		List<String> list = new ArrayList<>();
+//		list.add(rece_uuid);
+//		PushMsgHelper msg = new PushMsgHelper(send_uuid, ord_no, list, "给你发送一个红包");
+//		msg.redPacketMsg();
 		return savaOrder(ord_no, send_uuid, type, money, each_money, number, content, rece_tota_num, rece_uuid);
 	}
 

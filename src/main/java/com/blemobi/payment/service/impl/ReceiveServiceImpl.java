@@ -1,6 +1,7 @@
 package com.blemobi.payment.service.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +17,19 @@ import com.blemobi.payment.dao.RandomDao;
 import com.blemobi.payment.dao.RedReceiveDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.TableStoreDao;
+import com.blemobi.payment.dao.TransactionDao;
 import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.RedReceive;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.ReceiveService;
 import com.blemobi.payment.service.helper.TransferHelper;
 import com.blemobi.payment.util.Constants;
+import com.blemobi.payment.util.DateTimeUtils;
+import com.blemobi.payment.util.RongYunWallet;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.Constants.TABLE_NAMES;
+import com.blemobi.payment.util.rongyun.B2CReq;
+import com.blemobi.payment.util.rongyun.B2CResp;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveRece;
@@ -60,6 +66,9 @@ public class ReceiveServiceImpl implements ReceiveService {
 
 	@Autowired
 	private TableStoreDao tableStoreDao;
+
+	@Autowired
+	private TransactionDao transactionDao;
 
 	@Override
 	public PMessage checkStatus(String ord_no, String rece_uuid) {
@@ -110,9 +119,11 @@ public class ReceiveServiceImpl implements ReceiveService {
 				if (!rece_uuid.equals(redSend.getRece_uuid5()))
 					throw new BizException(2102000, "没有权限");
 			} else {
-				//boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
-				//if (!bool)
-					//throw new BizException(2102000, "没有权限");
+				// boolean bool =
+				// tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(),
+				// ord_no, rece_uuid);
+				// if (!bool)
+				// throw new BizException(2102000, "没有权限");
 			}
 		}
 		return PRedEnveStatus.newBuilder().setStatus(status).setReceMoney(rece_money).setContent(redSend.getContent())
@@ -278,10 +289,26 @@ public class ReceiveServiceImpl implements ReceiveService {
 		// 保存流水
 		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1);
 		// 转账给用户
-		TransferHelper th = new TransferHelper(rece_uuid, rece_money);
-		boolean th_bool = th.execute();
-		if (!th_bool)
-			throw new RuntimeException("领取红包时转账出错");
+		try {
+			B2CReq req = new B2CReq();
+			req.setCustOrderno(ord_no);
+			req.setTransferAmount(new BigDecimal(rece_money / 100));
+			req.setCustUid(rece_uuid);
+			req.setTransferDesc("领红包");
+			B2CResp resp = RongYunWallet.b2cTransfer(req);
+			if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
+				log.error(resp.toString());
+				throw new BizException(2015020, resp.getRespmsg());
+			} else {
+				log.info(resp.toString());
+				long currTm = DateTimeUtils.currTime();
+				transactionDao.insert(new Object[] { rece_uuid, ord_no, type + "", rece_money, 1, " ", " ",
+						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm });
+				log.info("完成交易流水插入");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

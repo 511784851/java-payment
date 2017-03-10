@@ -79,10 +79,11 @@ public class CallbackServiceImpl implements CallbackService {
         log.info("bizType:" + bizType);
         String desc = "";
         Reward reward = null;
+        RedSend rs =null;
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
             log.info("red");
-            RedSend rs = redSendDao.selectByKey(ordNo, 0);
+             rs = redSendDao.selectByKey(ordNo, 0);
             uuid = rs.getSend_uuid();
             desc = rs.getContent();
             ret = redSendDao.paySucc(ordNo);
@@ -119,8 +120,15 @@ public class CallbackServiceImpl implements CallbackService {
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
             //红包
             //推送消息
-            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, desc);
-            pushMgr.redPacketMsg();
+        	if(bizType == OrderEnum.RED_ORDINARY.getValue()){
+        		List<String> list = new ArrayList<>();
+        		list.add(rs.getRece_uuid5());
+        		PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, list, desc);
+                pushMgr.redPacketMsg();
+        	} else{
+	            PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, desc);
+	            pushMgr.redPacketMsg();
+        	}
         }else if(bizType == OrderEnum.LUCK_DRAW.getValue()){//抽奖
             log.info("lottery");
             //推送消息

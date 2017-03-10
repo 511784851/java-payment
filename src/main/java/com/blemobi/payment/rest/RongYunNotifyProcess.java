@@ -109,14 +109,14 @@ public class RongYunNotifyProcess {
             String signLocal = SignUtil.sign(param);
             log.info(signLocal);
             // 融云支付失败，不予处理
-            if (!Constants.RONGYUN_ORD_STS.SUCCESS.getValue().equals(orderStatus)) {
-                return Constants.HTMLSTS.SUCCESS.getValue();
-            }
-            // 验签失败
-            if (signLocal == null || !signLocal.equals(sign)) {
-                log.warn("signLocal：" + signLocal + ",sign:" + sign);
-                return Constants.HTMLSTS.FAILED.getValue();
-            }
+//            if (!Constants.RONGYUN_ORD_STS.SUCCESS.getValue().equals(orderStatus)) {
+//                return Constants.HTMLSTS.SUCCESS.getValue();
+//            }
+//            // 验签失败
+//            if (signLocal == null || !signLocal.equals(sign)) {
+//                log.warn("signLocal：" + signLocal + ",sign:" + sign);
+//                return Constants.HTMLSTS.FAILED.getValue();
+//            }
             callbackService.paySucc(orderAmount, DateTimeUtils.currTime(), custOrderNo, receiveUid, orderNo,
                     orderStatus, " ");
         } catch (Exception ex) {
