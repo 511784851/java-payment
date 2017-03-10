@@ -282,11 +282,12 @@ public class LotteryServiceImpl implements LotteryService {
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
         B2CReq req = new B2CReq();
         req.setCustOrderno(winnerInf.get("id").toString());
-        BigDecimal amt = new BigDecimal(bonus);
-        amt.setScale(2);
         req.setFenAmt(bonus);
         req.setCustUid(uuid);
         req.setTransferDesc("领奖");
+        //req.setCustImg("ddd");
+        //req.setCustMobile("18890376529");
+        //req.setCustNickname("nickname");
         B2CResp resp = RongYunWallet.b2cTransfer(req);
         if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
             log.error(resp.toString());

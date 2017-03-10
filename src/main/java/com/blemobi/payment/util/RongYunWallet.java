@@ -74,8 +74,7 @@ public final class RongYunWallet {
      * @return
      */
     private static <T> T reqRongYun(final String url, final Map<String, String> param, Class<T> clazz) {
-        System.out.println(param);
-        System.out.println(url);
+        log.info("URL:" + url + ",PARAM:" + param);
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();
         if (param != null && !param.isEmpty()) {
@@ -102,13 +101,13 @@ public final class RongYunWallet {
     
     public static void main(String[] args) {
         B2CReq req = new B2CReq();
-        req.setPartnerId(SignHelper.partnerId);
         req.setCustImg("ddd");
         req.setCustMobile("18890376529");
         req.setCustNickname("nickname");
-        req.setCustOrderno("12345551");
+        req.setCustOrderno("1234555d112x");
+        req.setFenAmt(1);
         req.setCustUid("1470823631370937498");
-        req.setTransferDesc("...");
+        req.setTransferDesc("领奖");
         System.out.println(b2cTransfer(req));
     }
 }
