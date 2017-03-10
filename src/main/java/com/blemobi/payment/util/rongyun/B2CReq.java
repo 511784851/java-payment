@@ -31,13 +31,50 @@ import java.math.BigDecimal;
  */
 public final class B2CReq extends RongYunReq {
     private String custUid;
+    private Integer fenAmt;
+    
+
     private BigDecimal transferAmount;
+
     private String custOrderno;
     //以下字段非必填
     private String transferDesc;
     private String custMobile;
     private String custNickname;
     private String custImg;
+    
+    
+
+    /**
+     * @return the fenAmt
+     */
+    public Integer getFenAmt() {
+        return fenAmt;
+    }
+
+    
+    /**
+     * @param fenAmt the fenAmt to set
+     */
+    public void setFenAmt(Integer fenAmt) {
+        this.fenAmt = fenAmt;
+    }
+
+    /**
+     * @return the transferAmount
+     */
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
+    }
+
+
+    
+    /**
+     * @param transferAmount the transferAmount to set
+     */
+    public void setTransferAmount(BigDecimal transferAmount) {
+        this.transferAmount = transferAmount;
+    }
     
     /**
      * @return the custUid
@@ -53,19 +90,6 @@ public final class B2CReq extends RongYunReq {
         this.custUid = custUid;
     }
     
-    /**
-     * @return the transferAmount
-     */
-    public BigDecimal getTransferAmount() {
-        return transferAmount;
-    }
-    
-    /**
-     * @param transferAmount the transferAmount to set
-     */
-    public void setTransferAmount(BigDecimal transferAmount) {
-        this.transferAmount = transferAmount;
-    }
     
     /**
      * @return the custOrderno

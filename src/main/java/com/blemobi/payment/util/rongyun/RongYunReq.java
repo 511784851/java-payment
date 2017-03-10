@@ -20,6 +20,7 @@
  *****************************************************************/
 package com.blemobi.payment.util.rongyun;
 
+import com.alibaba.fastjson.JSON;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.DateTimeUtils;
 
@@ -86,5 +87,9 @@ public abstract class RongYunReq {
      */
     public void setSign(String sign) {
         this.sign = sign;
+    }
+    
+    public String toString(){
+        return JSON.toJSONString(this);
     }
 }

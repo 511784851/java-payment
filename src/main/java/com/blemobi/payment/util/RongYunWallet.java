@@ -54,7 +54,11 @@ public final class RongYunWallet {
      * @return
      */
     public static final B2CResp b2cTransfer(B2CReq req) {
+        BigDecimal amt = new BigDecimal(req.getFenAmt());
+        amt.setScale(2);
+        req.setTransferAmount(amt.divide(new BigDecimal(100)));;
         Map<String, String> param = BeanMapUtils.bean2Map(req);
+        param.remove("fenAmt");
         String sign = SignUtil.sign(param);
         param.put("sign", sign);
         String reqUri = Constants.RONG_YUN_BASE_URL + Constants.B2C_TRANSFER_URI;
@@ -104,7 +108,6 @@ public final class RongYunWallet {
         req.setCustNickname("nickname");
         req.setCustOrderno("12345551");
         req.setCustUid("1470823631370937498");
-        req.setTransferAmount(new BigDecimal("0.01"));
         req.setTransferDesc("...");
         System.out.println(b2cTransfer(req));
     }

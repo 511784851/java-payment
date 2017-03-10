@@ -292,7 +292,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 		try {
 			B2CReq req = new B2CReq();
 			req.setCustOrderno(ord_no);
-			req.setTransferAmount(new BigDecimal(rece_money / 100));
+			req.setFenAmt(rece_money);
 			req.setCustUid(rece_uuid);
 			req.setTransferDesc("领红包");
 			B2CResp resp = RongYunWallet.b2cTransfer(req);
