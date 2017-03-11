@@ -279,7 +279,10 @@ public class LotteryServiceImpl implements LotteryService {
         }
         remainCnt--;
         remainAmt -= bonus;
-        lotteryDao.acceptPrize(lotteryId, uuid);
+        int ret = lotteryDao.acceptPrize(lotteryId, uuid);
+        if(ret != 1){
+            throw new BizException(2018000, "更新领奖失败");
+        }
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
         RobotGrpcClient robotClient = new RobotGrpcClient();
         PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus)
@@ -297,9 +300,17 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
-            transactionDao.insert(new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus,
+            ret = billDao.insert(new Object[]{uuid, lotteryId, bonus, DateTimeUtils.currTime(), Constants.OrderEnum.LUCK_DRAW.getValue(), 1});
+            if(ret != 1){
+                throw new BizException(2018001, "更新账单失败");
+            }
+            ret = transactionDao.insert(new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus,
                     1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
             log.info("完成交易流水插入");
+            if(ret != 1){
+                throw new BizException(2018002, "更新流水失败");
+            }
+            
 
         }
         return viewPrize(uuid, lotteryId);
@@ -402,6 +413,10 @@ public class LotteryServiceImpl implements LotteryService {
             //id, tot_amt, remain_amt, status, remain_cnt, winners, uuid
             String lotteryId = map.get("id").toString();
             String status = map.get("status").toString();
+            long crt = Long.parseLong(map.get("crt_tm").toString());
+            if(DateTimeUtils.in24Hours(crt)){
+               continue; 
+            }
             Integer remainAmt = Integer.parseInt(map.get("remain_amt").toString());
             Integer remainCnt = Integer.parseInt(map.get("remain_cnt").toString());
             if(remainAmt == null || remainAmt.intValue() <= 0 || remainCnt == null || remainCnt.intValue() <= 0){
