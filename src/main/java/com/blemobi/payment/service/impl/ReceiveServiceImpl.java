@@ -259,6 +259,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 						|| redSend.getOver_tm() < System.currentTimeMillis())) {
 			luck_uuid = redReceiveDao.selectMaxMoney(ord_no);
 		}
+		
 		List<RedReceive> receiveList = redReceiveDao.selectByKey(ord_no, last_id, count);
 		List<PRedEnveRece> list = new ArrayList<PRedEnveRece>();
 		for (RedReceive redReceive : receiveList) {
