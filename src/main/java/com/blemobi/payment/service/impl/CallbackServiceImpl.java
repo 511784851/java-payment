@@ -116,7 +116,7 @@ public class CallbackServiceImpl implements CallbackService {
         if(ret != 1){
             throw new RuntimeException("insert into table failed");
         }
-        if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
+        if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_RANDOM.getValue()){
             //红包
             //推送消息
         	if(bizType == OrderEnum.RED_ORDINARY.getValue()){
