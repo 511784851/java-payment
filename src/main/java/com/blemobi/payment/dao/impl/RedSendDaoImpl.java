@@ -77,11 +77,12 @@ public class RedSendDaoImpl implements RedSendDao {
 	}
 
 	public int updateRef(String ord_no) {
+		long time = System.currentTimeMillis();
 		StringBuffer sql = new StringBuffer();
 		sql.append("update t_red_send set ");
 		sql.append("ref_status=1 ");
 		sql.append("where ord_no=? and pay_status=1 and ref_status=0 AND over_tm<? AND rece_money<tota_money");
-		return jdbcTemplate.update(sql.toString(), ord_no);
+		return jdbcTemplate.update(sql.toString(), ord_no, time);
 	}
 
 	@Override

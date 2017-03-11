@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
 /**
- * 发红包接口类
+ * 搜素接口类
  * 
  * @author zhaoyong
  *
@@ -13,17 +13,14 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
 public interface SreachService {
 
 	/**
-	 * 发普通红包
+	 * 搜素发红包和领到的打赏
 	 * 
-	 * @param send_uuid
-	 *            发送者uuid
-	 * @param money
-	 *            金额（分）
-	 * @param content
-	 *            描述
-	 * @param rece_uuid
-	 *            接受者uuid
+	 * @param uuid
+	 *            用户uuid
+	 * @param keyword
+	 *            昵称关键字
 	 * @return
+	 * @throws IOException
 	 */
 	public PMessage list(String uuid, String keyword) throws IOException;
 

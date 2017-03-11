@@ -3,7 +3,6 @@ package com.blemobi.payment.rest;
 import java.io.IOException;
 
 import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,7 +14,7 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
- * 发红包接口
+ * 搜索接口
  * 
  * @author zhaoyong
  *
@@ -26,16 +25,12 @@ public class SreachProcess {
 	private SreachService sreachService = InstanceFactory.getInstance(SreachService.class);
 
 	/**
-	 * 发普通红包
+	 * 搜素发红包和领到的打赏
 	 * 
-	 * @param send_uuid
-	 *            发送者uuid
-	 * @param money
-	 *            金额（分）
-	 * @param content
-	 *            描述
-	 * @param rece_uuid
-	 *            接受者uuid
+	 * @param uuid
+	 *            用户uuid
+	 * @param keyword
+	 *            昵称关键字
 	 * @return
 	 * @throws IOException
 	 */

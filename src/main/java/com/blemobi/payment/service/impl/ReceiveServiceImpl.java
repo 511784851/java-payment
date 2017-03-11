@@ -253,9 +253,10 @@ public class ReceiveServiceImpl implements ReceiveService {
 	private List<PRedEnveRece> getReceUser(RedSend redSend, String ord_no, int last_id, int count) throws IOException {
 		String luck_uuid = "";
 		if (redSend.getType() == OrderEnum.RED_GROUP_RANDOM.getValue()
-				&& (redSend.getRece_number() == redSend.getTota_money()
+				&& (redSend.getRece_number() == redSend.getTota_number()
 						|| redSend.getOver_tm() < System.currentTimeMillis())) {
 			luck_uuid = redReceiveDao.selectMaxMoney(ord_no);
+			log.debug("手气最佳：" + luck_uuid);
 		}
 
 		List<RedReceive> receiveList = redReceiveDao.selectByKey(ord_no, last_id, count);

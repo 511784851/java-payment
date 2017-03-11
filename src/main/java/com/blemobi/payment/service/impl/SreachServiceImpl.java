@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.blemobi.library.cache.UserBaseCache;
+import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
@@ -21,14 +22,18 @@ import com.blemobi.sep.probuf.PaymentProtos.PRedEnveBaseInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PSreachList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
-import com.google.common.base.Strings;
+import com.blemobi.sep.probuf.ResultProtos.PStringList;
+import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
+
+import lombok.extern.log4j.Log4j;
 
 /**
- * 发红包业务实现类
+ * 搜索实现类
  * 
  * @author zhaoyong
  *
  */
+@Log4j
 @Service("sreachService")
 public class SreachServiceImpl implements SreachService {
 
@@ -43,47 +48,67 @@ public class SreachServiceImpl implements SreachService {
 
 	@Override
 	public PMessage list(String uuid, String keyword) throws IOException {
-		String other_uuid = "";
 		PSreachList sreachList = PSreachList.newBuilder().build();
-		if (!Strings.isNullOrEmpty(other_uuid)) {
-			// 全部发送红包记录
-			List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, 0, 100000);
-			// 符合搜索条件的发送红包记录
-			List<RedSend> sreachRedSendList = new ArrayList<>();
-			for (RedSend redSend : allRedSendList) {
-				// 是否符合搜索条件
-				boolean bool = false;
-				if (redSend.getRece_uuid5().indexOf(other_uuid) >= 0)
-					bool = true;
-				else
-					bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), redSend.getOrd_no(),
-							other_uuid);
-				if (bool)
-					sreachRedSendList.add(redSend);
-			}
-			List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
-			for (RedSend redSend : sreachRedSendList) {
-				PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
-				redList.add(redInfo);
-			}
+		PStringSingle request = PStringSingle.newBuilder().setVal(keyword).build();
+		DataPublishGrpcClient client = new DataPublishGrpcClient();
+		PStringList stringList = client.SearchUser(request);
+		log.debug("匹配的uuid：" + stringList);
+		if (stringList != null) {
+			List<String> sreachUUIDs = stringList.getListList();
+			log.debug("匹配的uuid：" + sreachUUIDs);
+			if (sreachUUIDs != null && sreachUUIDs.size() > 0) {
+				// 全部发送红包记录
+				List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, 0, 100000);
+				// 符合搜索条件的发送红包记录
+				List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
+				for (RedSend redSend : allRedSendList) {
+					for (String sreachUUID : sreachUUIDs) {
+						// 是否符合搜索条件
+						boolean bool = false;
+						if (redSend.getRece_uuid5().indexOf(sreachUUID) >= 0)
+							bool = true;
+						else
+							bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), redSend.getOrd_no(),
+									sreachUUID);
+						if (bool) {
+							PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
+							redList.add(redInfo);
+							break;
+						}
+					}
+				}
 
-			List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", 0, 100000);
-			// 符合搜索条件的发送红包记录
-			List<Reward> sreachRewardList = new ArrayList<>();
-			for (Reward reward : allRewardList) {
-				// 是否符合搜索条件
-				if (other_uuid.equals(reward.getSend_uuid()))
-					sreachRewardList.add(reward);
+				List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", 0, 1000000);
+				// 符合搜索条件的发送红包记录
+				List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
+				for (Reward reward : allRewardList) {
+					for (String sreachUUID : sreachUUIDs) {
+						// 是否符合搜索条件
+						if (sreachUUID.equals(reward.getSend_uuid())) {
+							PUserBase userBase = UserBaseCache.get(reward.getUuid());
+							PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
+							rewardInfoList.add(rewardInfo);
+							break;
+						}
+					}
+				}
+				sreachList = PSreachList.newBuilder().addAllRedEnveBaseInfo(redList).addAllRewardInfo(rewardInfoList)
+						.build();
 			}
-			List<PRewardInfo> rewardInfoList = buildRewardList(sreachRewardList);
-
-			sreachList = PSreachList.newBuilder().addAllRedEnveBaseInfo(redList).addAllRewardInfo(rewardInfoList)
-					.build();
 		}
+
 		return ReslutUtil.createReslutMessage(sreachList);
 
 	}
 
+	/**
+	 * 构建PRedEnveBaseInfo对象
+	 * 
+	 * @param redSend
+	 *            红包信息
+	 * @return
+	 * @throws IOException
+	 */
 	private PRedEnveBaseInfo buildRedEnveBaseInfo(RedSend redSend) throws IOException {
 		List<PUserBase> userList5 = getReceUser5(redSend.getRece_uuid5());
 		return PRedEnveBaseInfo.newBuilder().setId(redSend.getId()).setOrdNo(redSend.getOrd_no())
@@ -106,23 +131,6 @@ public class SreachServiceImpl implements SreachService {
 			userList5.add(userBase);
 		}
 		return userList5;
-	}
-
-	/**
-	 * 构建PRewardInfo列表对象
-	 * 
-	 * @param list
-	 * @return
-	 * @throws IOException
-	 */
-	private List<PRewardInfo> buildRewardList(List<Reward> list) throws IOException {
-		List<PRewardInfo> rewardList = new ArrayList<PRewardInfo>();
-		for (Reward reward : list) {
-			PUserBase userBase = UserBaseCache.get(reward.getUuid());
-			PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
-			rewardList.add(rewardInfo);
-		}
-		return rewardList;
 	}
 
 	/**
