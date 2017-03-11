@@ -83,6 +83,7 @@ public class SreachServiceImpl implements SreachService {
 
 				List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", Integer.MAX_VALUE, 1000000);
 				// 符合搜索条件的发送红包记录
+				log.debug("共有 打赏数量：" + allRewardList.size());
 				List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
 				for (Reward reward : allRewardList) {
 					for (String sreachUUID : sreachUUIDs) {
