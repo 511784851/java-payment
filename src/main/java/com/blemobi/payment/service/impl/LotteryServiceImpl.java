@@ -126,7 +126,7 @@ public class LotteryServiceImpl implements LotteryService {
                 Object[] arr = new Object[4];
                 arr[0] = orderno;
                 arr[1] = loc;
-                arr[2] = ' ';
+                arr[2] = " ";
                 arr[3] = 0;
                 param.add(arr);
             }
