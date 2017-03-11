@@ -95,7 +95,7 @@ public class LotteryServiceImpl implements LotteryService {
         if (uuidList == null || uuidList.isEmpty()) {
             throw new BizException(2015012, "抽奖异常");
         }
-        
+
         for (int idx = 0; idx < lottery.getUserListCount(); idx++) {
             String ual = lottery.getUserList(idx).getInfo().getUUID() + "_" + lottery.getUserList(idx).getRegion();
             String u = lottery.getUserList(idx).getInfo().getUUID() + "_";
@@ -109,10 +109,12 @@ public class LotteryServiceImpl implements LotteryService {
         }
         long currTm = System.currentTimeMillis();
         RobotGrpcClient robotClient = new RobotGrpcClient();
-        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus()).setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
+        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(lottery.getBonus())
+                .setServiceNo(OrderEnum.LUCK_DRAW.getValue()).build();
         String orderno = robotClient.generateOrder(oparam).getVal();
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
-                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm, lottery.getRemark() };
+                lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm,
+                lottery.getRemark() };
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new BizException(2015006, "创建抽奖失败，请重试");
@@ -121,7 +123,7 @@ public class LotteryServiceImpl implements LotteryService {
         if (regions != null && regions.size() > 0) {
             List<Object[]> param = new ArrayList<Object[]>();
             for (String loc : regions) {
-                Object[] arr = new Object[3];
+                Object[] arr = new Object[4];
                 arr[0] = orderno;
                 arr[1] = loc;
                 arr[2] = ' ';
@@ -151,7 +153,8 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2015009, "中奖者数量不正确，抽奖异常");
         }
         client = new DataPublishGrpcClient();
-        client.saveFans(orderno, lottery.getGender(), lottery.getRegionList(), uuid, Constants.TABLE_NAMES.LOTTERY_TB.getValue()); //通知GO 存储抽奖参与者
+        client.saveFans(orderno, lottery.getGender(), lottery.getRegionList(), uuid,
+                Constants.TABLE_NAMES.LOTTERY_TB.getValue()); // 通知GO 存储抽奖参与者
         SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
         POrderPay orderPay = signHelper.getOrderPay();
         return ReslutUtil.createReslutMessage(orderPay);
@@ -279,19 +282,28 @@ public class LotteryServiceImpl implements LotteryService {
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
         B2CReq req = new B2CReq();
         req.setCustOrderno(winnerInf.get("id").toString());
-        req.setTransferAmount(new BigDecimal(bonus / 100));
+        req.setFenAmt(bonus);
         req.setCustUid(uuid);
         req.setTransferDesc("领奖");
+        //req.setCustImg("ddd");
+        //req.setCustMobile("18890376529");
+        //req.setCustNickname("nickname");
         B2CResp resp = RongYunWallet.b2cTransfer(req);
-        if(!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())){
+        if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
             log.error(resp.toString());
             throw new BizException(2015020, resp.getRespmsg());
-        }else{
+        } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
-            transactionDao.insert(new Object[]{uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus, 1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm});
-            log.info("完成交易流水插入");
+            RobotGrpcClient robotClient = new RobotGrpcClient();
+            PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus)
+                    .setServiceNo(0).build();
+            String orderno = robotClient.generateOrder(oparam).getVal();
             
+            transactionDao.insert(new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus,
+                    1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
+            log.info("完成交易流水插入");
+
         }
         return viewPrize(uuid, lotteryId);
     }
@@ -318,7 +330,7 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2015010, "5分钟内仅能重抽2次，请稍后再试");
         }
         DataPublishGrpcClient client = new DataPublishGrpcClient();
-        
+
         List<String> uuidList = client.getFansByFilters(shuffle.getGender(), shuffle.getRegionList(), uuid);
         if (uuidList == null || uuidList.size() < shuffle.getWinners()) {
             throw new BizException(2015011, "粉丝数量不够");
@@ -332,9 +344,9 @@ public class LotteryServiceImpl implements LotteryService {
             String[] ulArr = uidAndLoc.split("_");
             String uid = ulArr[0];
             String locCd = "";
-            if(ulArr.length < 2){
+            if (ulArr.length < 2) {
                 locCd = "na;";
-            }else {
+            } else {
                 locCd = ulArr[1];
             }
             PUserBase userBase = null;
@@ -345,8 +357,8 @@ public class LotteryServiceImpl implements LotteryService {
                 throw new BizException(2015100, "用户没有找到");
             }
             uuidList.remove(win);
-            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(userBase.getGender()).setRegion(locCd)
-                    .setInfo(userBase).build();
+            PUserBaseEx w = PUserBaseEx.newBuilder().setAmt(shuffle.getBonus()).setGender(userBase.getGender())
+                    .setRegion(locCd).setInfo(userBase).build();
             winnerList.add(w);
         }
         builder.setCrtTm(System.currentTimeMillis()).addAllUserList(winnerList).setLotteryId("")
@@ -356,7 +368,6 @@ public class LotteryServiceImpl implements LotteryService {
         return ReslutUtil.createReslutMessage(builder.build());
     }
 
-    
     @Override
     public PMessage viewPrize(String uuid, String lotteryId) {
         PWinLottery.Builder builder = PWinLottery.newBuilder();

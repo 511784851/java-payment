@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.cache.UserBaseCache;
+import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.redis.LockManager;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
@@ -36,6 +37,7 @@ import com.blemobi.sep.probuf.PaymentProtos.PRedEnveRece;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveReceList;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveStatus;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 
 import lombok.extern.log4j.Log4j;
 
@@ -292,7 +294,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 		try {
 			B2CReq req = new B2CReq();
 			req.setCustOrderno(ord_no);
-			req.setTransferAmount(new BigDecimal(rece_money / 100));
+			req.setFenAmt(rece_money);
 			req.setCustUid(rece_uuid);
 			req.setTransferDesc("领红包");
 			B2CResp resp = RongYunWallet.b2cTransfer(req);
@@ -302,8 +304,12 @@ public class ReceiveServiceImpl implements ReceiveService {
 			} else {
 				log.info(resp.toString());
 				long currTm = DateTimeUtils.currTime();
+				RobotGrpcClient robotClient = new RobotGrpcClient();
+	            PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money)
+	                    .setServiceNo(0).build();
+	            String orderno = robotClient.generateOrder(oparam).getVal();
 				transactionDao.insert(new Object[] { rece_uuid, ord_no, type + "", rece_money, 1, " ", " ",
-						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm });
+						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno});
 				log.info("完成交易流水插入");
 			}
 		} catch (Exception e) {
