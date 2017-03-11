@@ -293,8 +293,12 @@ public class ReceiveServiceImpl implements ReceiveService {
 		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1);
 		// 转账给用户
 		try {
+		    RobotGrpcClient robotClient = new RobotGrpcClient();
+	        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money)
+	                .setServiceNo(0).build();
+	        String orderno = robotClient.generateOrder(oparam).getVal();
 			B2CReq req = new B2CReq();
-			req.setCustOrderno(ord_no);
+			req.setCustOrderno(orderno);
 			req.setFenAmt(rece_money);
 			req.setCustUid(rece_uuid);
 			req.setTransferDesc("领红包");
@@ -305,10 +309,6 @@ public class ReceiveServiceImpl implements ReceiveService {
 			} else {
 				log.info(resp.toString());
 				long currTm = DateTimeUtils.currTime();
-				RobotGrpcClient robotClient = new RobotGrpcClient();
-	            PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money)
-	                    .setServiceNo(0).build();
-	            String orderno = robotClient.generateOrder(oparam).getVal();
 				transactionDao.insert(new Object[] { rece_uuid, ord_no, type + "", rece_money, 1, " ", " ",
 						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno});
 				log.info("完成交易流水插入");
