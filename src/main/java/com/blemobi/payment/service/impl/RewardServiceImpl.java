@@ -63,7 +63,7 @@ public class RewardServiceImpl implements RewardService {
 	}
 
 	@Override
-	public PMessage list(String uuid, String other_uuid, int type, int idx, int count) {
+	public PMessage list(String uuid, String other_uuid, int type, int idx, int count) throws IOException {
 		idx = checkIdx(idx);
 
 		List<Reward> list = null;
@@ -138,11 +138,12 @@ public class RewardServiceImpl implements RewardService {
 	 * 
 	 * @param list
 	 * @return
+	 * @throws IOException
 	 */
-	private List<PRewardInfo> buildRewardList(List<Reward> list) {
+	private List<PRewardInfo> buildRewardList(List<Reward> list) throws IOException {
 		List<PRewardInfo> rewardList = new ArrayList<PRewardInfo>();
 		for (Reward reward : list) {
-			PUserBase userBase = PUserBase.newBuilder().setUUID(reward.getUuid()).build();
+			PUserBase userBase = UserBaseCache.get(reward.getUuid());
 			PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
 			rewardList.add(rewardInfo);
 		}

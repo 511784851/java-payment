@@ -52,12 +52,13 @@ public class RewardProcess {
 	 * @param idx
 	 * @param count
 	 * @return
+	 * @throws IOException 
 	 */
 	@GET
 	@Path("list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("other_uuid") String other_uuid,
-			@QueryParam("type") int type, @QueryParam("idx") int idx, @QueryParam("count") int count) {
+			@QueryParam("type") int type, @QueryParam("idx") int idx, @QueryParam("count") int count) throws IOException {
 		return rewardService.list(uuid, other_uuid, type, idx, count);
 	}
 
