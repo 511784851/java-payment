@@ -48,7 +48,7 @@ public interface SendService {
 	 * @return
 	 */
 	public PMessage sendGroup(String send_uuid, int number, int money, boolean isRandom, String content,
-			String tick_uuid, PFansFilterParam fansFilterParam);
+			String tick_uuid, PFansFilterParam fansFilterParam) throws IOException;
 
 	/**
 	 * 查询红包发送记录

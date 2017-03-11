@@ -1,6 +1,6 @@
 package com.blemobi.payment.dao;
 
-import com.alicloud.openservices.tablestore.model.Row;
+import java.io.IOException;
 
 /**
  * 阿里云表格存储操作接口类
@@ -21,7 +21,7 @@ public interface TableStoreDao {
 	 *            成员uuid
 	 * @return
 	 */
-	public boolean existsByKey(String tableName, String key, String member);
+	public boolean existsByKey(String tn, String key, String uuid) throws IOException;
 
 	/**
 	 * 查找行
@@ -32,5 +32,5 @@ public interface TableStoreDao {
 	 *            存储的KEY
 	 * @return
 	 */
-	public Row selectByKey(String tableName, String key);
+	public String[] selectByKey(String tn, String key) throws IOException;
 }

@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alicloud.openservices.tablestore.model.Column;
-import com.alicloud.openservices.tablestore.model.Row;
 import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.grpc.RobotGrpcClient;
@@ -18,10 +16,8 @@ import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.RandomDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.TableStoreDao;
-import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.SendService;
-import com.blemobi.payment.service.helper.PushMsgHelper;
 import com.blemobi.payment.service.helper.RandomRedHelper;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.Constants;
@@ -37,7 +33,6 @@ import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
 import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 import com.google.common.base.Strings;
-import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
  * 发红包业务实现类
@@ -74,17 +69,13 @@ public class SendServiceImpl implements SendService {
 			return message;
 
 		String ord_no = createOrdNo(type, money);// 订单号
-//		List<String> list = new ArrayList<>();
-//		list.add(rece_uuid);
-//		PushMsgHelper msg = new PushMsgHelper(send_uuid, ord_no, list, "给你发送一个红包");
-//		msg.redPacketMsg();
 		return savaOrder(ord_no, send_uuid, type, money, each_money, number, content, rece_tota_num, rece_uuid);
 	}
 
 	@Override
 	@Transactional
 	public PMessage sendGroup(String send_uuid, int number, int money, boolean isRandom, String content,
-			String tick_uuid, PFansFilterParam fansFilterParam) {
+			String tick_uuid, PFansFilterParam fansFilterParam) throws IOException {
 		int type = 0;// 红包类型
 		int tota_money = 0;// 红包总金额
 		int each_money = 0;// 单个红包金额
@@ -108,11 +99,11 @@ public class SendServiceImpl implements SendService {
 		if (!bool)
 			throw new RuntimeException("发群红包时，保存参与者失败");
 		// 获得参与者概要
-		//String[] arr = getReceUserData(ord_no);
+		String[] arr = getReceUserData(ord_no);
 		// 参与人数
-		int rece_tota_num = 1;//Integer.parseInt(arr[0]);
+		int rece_tota_num = Integer.parseInt(arr[0]);
 		// 前五个参与者
-		String rece_uuid = "";//arr[1];
+		String rece_uuid = arr[1];
 		// 如果是随机群红包，计算随机金额并保存
 		if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {
 			int[] moneyArray = randomMoney(number, tota_money, ord_no);
@@ -195,26 +186,10 @@ public class SendServiceImpl implements SendService {
 	 * 
 	 * @param key
 	 * @return
+	 * @throws IOException 
 	 */
-	private String[] getReceUserData(String key) {
-		StringBuffer sb = new StringBuffer();
-		Row row = tableStoreDao.selectByKey(TABLE_NAMES.RED_PKG_TB.getValue(), key);
-		if (row == null || row.getColumns().length == 0)
-			throw new BizException(2101010, "没有参与用户");
-
-		String[] arr = new String[2];
-		Column[] columns = row.getColumns();
-		int len = columns.length;
-		arr[0] = len + "";
-		if (len > 5)
-			len = 5;
-		for (int i = 0; i < len; i++) {
-			if (sb.length() > 0)
-				sb.append(",");
-			sb.append(columns[i].getName());
-		}
-		arr[1] = sb.toString();
-		return arr;
+	private String[] getReceUserData(String key) throws IOException {
+		return tableStoreDao.selectByKey(TABLE_NAMES.RED_PKG_TB.getValue(), key);
 	}
 
 	@Override
@@ -329,8 +304,8 @@ public class SendServiceImpl implements SendService {
 	 * @return
 	 */
 	private PMessage verification(String send_uuid, int tota_money, int number, String content) {
-		//if (tota_number < 1)
-			//return ReslutUtil.createErrorMessage(2101001, "红包个数不能少于1！");
+		// if (tota_number < 1)
+		// return ReslutUtil.createErrorMessage(2101001, "红包个数不能少于1！");
 		if (Strings.isNullOrEmpty(content))
 			return ReslutUtil.createErrorMessage(2101002, "红包描述不能为空");
 		if (content.length() > 100)
