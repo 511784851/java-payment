@@ -141,7 +141,7 @@ public class CallbackServiceImpl implements CallbackService {
         }else if(bizType == OrderEnum.REWARD.getValue()){//打赏
             log.info("reward");
             uuid = reward.getRece_uuid();
-            ret = billDao.insert(new Object[]{uuid, ordNo, money, bizType, 1});
+            ret = billDao.insert(new Object[]{uuid, ordNo, money, time,bizType, 1});
             if(ret != 1){
                 throw new RuntimeException("insert into table failed");
             }
