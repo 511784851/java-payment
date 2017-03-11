@@ -46,6 +46,7 @@ public class SreachServiceImpl implements SreachService {
 	@Autowired
 	private TableStoreDao tableStoreDao;
 
+	
 	@Override
 	public PMessage list(String uuid, String keyword) throws IOException {
 		PSreachList sreachList = PSreachList.newBuilder().build();
