@@ -60,10 +60,11 @@ public class JedisDaoImpl implements JedisDao {
 		String key = "payment:LOTTERY:CD:" + uuid;
 		Jedis jedis = RedisManager.getRedis();
 		String times = jedis.get(key);
-		int time = StringUtils.isEmpty(times) ? 1 : Integer.parseInt(times);
+		int time = 1;
+		if(!StringUtils.isEmpty(times)){
+		    time = Integer.parseInt(times) + 1;
+		}
 		jedis.incrBy(key, time);
-		//TODO test 修改为 10s / 2times
-		//jedis.expire(key, 10);// 5mins
 		jedis.expire(key, 5 * 60);// 5mins
 		RedisManager.returnResource(jedis);
 	}
@@ -80,4 +81,12 @@ public class JedisDaoImpl implements JedisDao {
 		Date time = calendar.getTime();
 		return time.getTime() / 1000;
 	}
+
+    @Override
+    public void cleanLotteryCD(String uuid) {
+        String key = "payment:LOTTERY:CD:" + uuid;
+        Jedis jedis = RedisManager.getRedis();
+        jedis.del(key);
+        RedisManager.returnResource(jedis);
+    }
 }

@@ -158,6 +158,7 @@ public class LotteryServiceImpl implements LotteryService {
                 Constants.TABLE_NAMES.LOTTERY_TB.getValue()); // 通知GO 存储抽奖参与者
         SignHelper signHelper = new SignHelper(uuid, lottery.getTotAmt(), orderno, "抽奖");
         POrderPay orderPay = signHelper.getOrderPay();
+        jedisDao.cleanLotteryCD(uuid);
         return ReslutUtil.createReslutMessage(orderPay);
     }
 
