@@ -35,11 +35,13 @@ public class receiveProcess {
 	 * @param ord_no
 	 *            订单号
 	 * @return
+	 * @throws IOException
 	 */
 	@GET
 	@Path("status")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage findRedEnveStatus(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no) {
+	public PMessage findRedEnveStatus(@CookieParam("uuid") String rece_uuid, @QueryParam("ord_no") String ord_no)
+			throws IOException {
 		return receiveService.checkStatus(ord_no, rece_uuid);
 	}
 
@@ -52,11 +54,13 @@ public class receiveProcess {
 	 * @param ord_no
 	 *            业务订单号
 	 * @return
+	 * @throws IOException
 	 */
 	@POST
 	@Path("receive")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage receive(@CookieParam("uuid") String rece_uuid, @FormParam("ord_no") String ord_no) {
+	public PMessage receive(@CookieParam("uuid") String rece_uuid, @FormParam("ord_no") String ord_no)
+			throws IOException {
 		return receiveService.receive(ord_no, rece_uuid);
 	}
 
