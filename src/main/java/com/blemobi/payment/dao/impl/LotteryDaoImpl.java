@@ -21,6 +21,7 @@
 package com.blemobi.payment.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +63,9 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     
     @Override
     public int delPrize(List<String> lotteryId, String uuid) {
-        String sql = "UPDATE t_lotteries SET status = 0 WHERE id IN (?) AND uuid = ?";
-        return this.update(sql, new Object[]{StringUtils.join(lotteryId, ","), uuid});
+        String lotteryIds = "'" + StringUtils.join(lotteryId, "','") + "'";
+        String sql = "UPDATE t_lotteries SET status = 0 WHERE id IN (" + lotteryIds + ") AND uuid = ?";
+        return this.update(sql, new Object[]{uuid});
     }
 
     @Override
@@ -155,4 +157,5 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
         String sql = "SELECT a.id, a.title, a.uuid as suuid, a.remark, a.crt_tm, b.bonus, b.status, b.accept_tm FROM t_lotteries a, t_winners b where a.id = b.lottery_id AND a.id = ? AND b.uuid = ?";
         return this.queryForMap(sql, new Object[]{lotteryId, uuid});
     }
+    
 }
