@@ -1,7 +1,6 @@
 package com.blemobi.payment.service.impl;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +22,11 @@ import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.RedReceive;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.service.ReceiveService;
-import com.blemobi.payment.service.helper.TransferHelper;
 import com.blemobi.payment.util.Constants;
-import com.blemobi.payment.util.DateTimeUtils;
-import com.blemobi.payment.util.RongYunWallet;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.Constants.TABLE_NAMES;
+import com.blemobi.payment.util.DateTimeUtils;
+import com.blemobi.payment.util.RongYunWallet;
 import com.blemobi.payment.util.rongyun.B2CReq;
 import com.blemobi.payment.util.rongyun.B2CResp;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
@@ -73,7 +71,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 	private TransactionDao transactionDao;
 
 	@Override
-	public PMessage checkStatus(String ord_no, String rece_uuid) {
+	public PMessage checkStatus(String ord_no, String rece_uuid) throws IOException {
 		PRedEnveStatus redEnveStatus = check(ord_no, rece_uuid);
 		return ReslutUtil.createReslutMessage(redEnveStatus);
 	}
@@ -85,8 +83,9 @@ public class ReceiveServiceImpl implements ReceiveService {
 	 * @param ord_no
 	 * @param rece_uuid
 	 * @return
+	 * @throws IOException
 	 */
-	private PRedEnveStatus check(String ord_no, String rece_uuid) {
+	private PRedEnveStatus check(String ord_no, String rece_uuid) throws IOException {
 		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
 		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
 		if (redEnveStatus.getStatus() == -1) {
@@ -103,8 +102,9 @@ public class ReceiveServiceImpl implements ReceiveService {
 	 * @param ord_no
 	 * @param rece_uuid
 	 * @return
+	 * @throws IOException
 	 */
-	private PRedEnveStatus checkStatus(RedSend redSend, String ord_no, String rece_uuid) {
+	private PRedEnveStatus checkStatus(RedSend redSend, String ord_no, String rece_uuid) throws IOException {
 		if (redSend == null)
 			throw new RuntimeException("没有找到有效的红包信息:" + ord_no);
 		if (redSend.getSend_uuid().equals(rece_uuid))
@@ -121,11 +121,9 @@ public class ReceiveServiceImpl implements ReceiveService {
 				if (!rece_uuid.equals(redSend.getRece_uuid5()))
 					throw new BizException(2102000, "没有权限");
 			} else {
-				// boolean bool =
-				// tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(),
-				// ord_no, rece_uuid);
-				// if (!bool)
-				// throw new BizException(2102000, "没有权限");
+				boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
+				if (!bool)
+					throw new BizException(2102000, "没有权限");
 			}
 		}
 		return PRedEnveStatus.newBuilder().setStatus(status).setReceMoney(rece_money).setContent(redSend.getContent())
@@ -151,7 +149,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 
 	@Override
 	@Transactional
-	public PMessage receive(String ord_no, String rece_uuid) {
+	public PMessage receive(String ord_no, String rece_uuid) throws IOException {
 		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
 		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
 		int status = redEnveStatus.getStatus();
@@ -259,7 +257,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 						|| redSend.getOver_tm() < System.currentTimeMillis())) {
 			luck_uuid = redReceiveDao.selectMaxMoney(ord_no);
 		}
-		
+
 		List<RedReceive> receiveList = redReceiveDao.selectByKey(ord_no, last_id, count);
 		List<PRedEnveRece> list = new ArrayList<PRedEnveRece>();
 		for (RedReceive redReceive : receiveList) {
@@ -293,10 +291,9 @@ public class ReceiveServiceImpl implements ReceiveService {
 		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1);
 		// 转账给用户
 		try {
-		    RobotGrpcClient robotClient = new RobotGrpcClient();
-	        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money)
-	                .setServiceNo(0).build();
-	        String orderno = robotClient.generateOrder(oparam).getVal();
+			RobotGrpcClient robotClient = new RobotGrpcClient();
+			PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money).setServiceNo(0).build();
+			String orderno = robotClient.generateOrder(oparam).getVal();
 			B2CReq req = new B2CReq();
 			req.setCustOrderno(orderno);
 			req.setFenAmt(rece_money);
@@ -310,7 +307,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 				log.info(resp.toString());
 				long currTm = DateTimeUtils.currTime();
 				transactionDao.insert(new Object[] { rece_uuid, ord_no, type + "", rece_money, 1, " ", " ",
-						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno});
+						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
 				log.info("完成交易流水插入");
 			}
 		} catch (Exception e) {

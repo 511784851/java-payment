@@ -20,7 +20,7 @@ public interface ReceiveService {
 	 *            订单号
 	 * @return
 	 */
-	public PMessage checkStatus(String ord_no, String rece_uuid);
+	public PMessage checkStatus(String ord_no, String rece_uuid) throws IOException;
 
 	/**
 	 * 领红包
@@ -32,7 +32,7 @@ public interface ReceiveService {
 	 *            业务订单号
 	 * @return
 	 */
-	public PMessage receive(String ord_no, String rece_uuid);
+	public PMessage receive(String ord_no, String rece_uuid) throws IOException;
 
 	/**
 	 * 查看红包详情
