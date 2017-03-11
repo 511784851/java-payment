@@ -21,10 +21,8 @@
 package com.blemobi.payment.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -52,7 +50,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public int createLottery(Object[] param) {
-        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, remark) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_lotteries(id, title, typ, winners, tot_amt, remain_amt, remain_cnt, status, uuid, crt_tm, upd_tm, remark, refund_status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.update(sql, param);
     }
     @Override
@@ -156,6 +154,27 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public Map<String, Object> viewLottery(String lotteryId, String uuid) {
         String sql = "SELECT a.id, a.title, a.uuid as suuid, a.remark, a.crt_tm, b.bonus, b.status, b.accept_tm FROM t_lotteries a, t_winners b where a.id = b.lottery_id AND a.id = ? AND b.uuid = ?";
         return this.queryForMap(sql, new Object[]{lotteryId, uuid});
+    }
+    @Override
+    public List<Map<String, Object>> getExpireLottery(long expTm) {
+        String sql = "SELECT id, tot_amt, remain_amt, status, remain_cnt, winners, uuid  FROM t_lotteries WHERE status IN(0, 2) AND crt_tm > ?";
+        return this.queryForList(sql, new Object[]{expTm});
+    }
+    @Override
+    public int updateExpireLottery(String lotteryId, long updTm, int updStatus, int status) {
+        String sql = "UPDATE t_lotteries SET status = ?, refund_status = 1, upd_tm = ? WHERE id = ? AND status = ?";
+        return this.update(sql, new Object[]{updStatus, updTm, lotteryId, status});
+    }
+    
+    public Map<String, Object> getUnacceptAmt(String lotteryId){
+        String sql = "SELECT COUNT(1) as cnt, SUM(bonus) amt FROM t_winners WHERE lottery_id = ? AND status = 0";
+        return this.queryForMap(sql, lotteryId);
+    }
+    
+    @Override
+    public int updateExpireWinners(String lotteryId) {
+        String sql = "UPDATE t_winners SET status = 2 WHERE lottery_id = ? AND status = 0";
+        return this.update(sql, lotteryId);
     }
     
 }

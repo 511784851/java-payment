@@ -1,7 +1,9 @@
 package com.blemobi.payment.service;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.blemobi.payment.model.RedSend;
 import com.blemobi.sep.probuf.DataPublishingProtos.PFansFilterParam;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
@@ -63,4 +65,8 @@ public interface SendService {
 	 * @throws IOException
 	 */
 	public PMessage list(String send_uuid, int idx, int count) throws IOException;
+	
+	public List<RedSend> selectByOver();
+	
+	public void updateRef(RedSend rs);
 }
