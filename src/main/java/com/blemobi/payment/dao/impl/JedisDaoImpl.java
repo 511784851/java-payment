@@ -48,7 +48,7 @@ public class JedisDaoImpl implements JedisDao {
 
 	@Override
 	public Integer getUserLotteryRefreshTimes(String uuid) {
-		String key = "LOTTERY:CD:" + uuid;
+		String key = "payment:LOTTERY:CD:" + uuid;
 		Jedis jedis = RedisManager.getRedis();
 		String times = jedis.get(key);
 		RedisManager.returnResource(jedis);
@@ -57,7 +57,7 @@ public class JedisDaoImpl implements JedisDao {
 
 	@Override
 	public void setUserLotteryRefreshTimes(String uuid) {
-		String key = "LOTTERY:CD:" + uuid;
+		String key = "payment:LOTTERY:CD:" + uuid;
 		Jedis jedis = RedisManager.getRedis();
 		String times = jedis.get(key);
 		int time = StringUtils.isEmpty(times) ? 1 : Integer.parseInt(times);
