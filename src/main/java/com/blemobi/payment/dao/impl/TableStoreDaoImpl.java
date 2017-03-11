@@ -1,16 +1,16 @@
 package com.blemobi.payment.dao.impl;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Repository;
 
-import com.alicloud.openservices.tablestore.SyncClient;
-import com.alicloud.openservices.tablestore.model.GetRowRequest;
-import com.alicloud.openservices.tablestore.model.GetRowResponse;
-import com.alicloud.openservices.tablestore.model.PrimaryKey;
-import com.alicloud.openservices.tablestore.model.PrimaryKeyBuilder;
-import com.alicloud.openservices.tablestore.model.PrimaryKeyValue;
-import com.alicloud.openservices.tablestore.model.Row;
-import com.alicloud.openservices.tablestore.model.SingleRowQueryCriteria;
+import com.alibaba.fastjson.JSONObject;
 import com.blemobi.payment.dao.TableStoreDao;
+import com.blemobi.payment.excepiton.BizException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 阿里云表格存储操作实现类
@@ -20,49 +20,39 @@ import com.blemobi.payment.dao.TableStoreDao;
  */
 @Repository("tableStoreDao")
 public class TableStoreDaoImpl implements TableStoreDao {
-	final static String endPoint = "http://rongliang-test.cn-shenzhen.ots.aliyuncs.com";
-	final static String accessKeyId = "LTAIqjq4OplpzZRS";
-	final static String accessKeySecret = "GbtpMcQHxTBElHLVwC4UDl1lSsmFK4";
-	final static String instanceName = "rongliang-test";
-
-	private static SyncClient client = new SyncClient(endPoint, accessKeyId, accessKeySecret, instanceName);
-
 	@Override
-	public boolean existsByKey(String tableName, String key, String member) {
-		SingleRowQueryCriteria criteria = buildCriteria(tableName, key);
-		// 设置读取某些列
-		criteria.addColumnsToGet(member);
-		GetRowResponse getRowResponse = client.getRow(new GetRowRequest(criteria));
-		Row row = getRowResponse.getRow();
-		return !(row == null);
+	public boolean existsByKey(String tn, String key, String uuid) throws IOException {
+		String url = "http://localhost:9015/v1/tablestore/exists?tn=" + tn + "&key=" + key + "&uuid=" + uuid;
+		JSONObject jsonObject = call(url);
+		return jsonObject.getBooleanValue("bool");
 	}
 
 	@Override
-	public Row selectByKey(String tableName, String key) {
-		SingleRowQueryCriteria criteria = buildCriteria(tableName, key);
-		GetRowResponse getRowResponse = client.getRow(new GetRowRequest(criteria));
-		Row row = getRowResponse.getRow();
-		return row;
+	public String[] selectByKey(String tn, String key) throws IOException {
+		String url = "http://localhost:9015/v1/tablestore/find-row?tn=" + tn + "&key=" + key;
+		JSONObject jsonObject = call(url);
+		Integer count = jsonObject.getInteger("count");
+		if (count == null || count == 0)
+			throw new BizException(2101010, "没有参与用户");
+
+		String[] arr = new String[2];
+		arr[0] = count + "";
+		arr[1] = jsonObject.getString("uuid");
+		return arr;
 	}
 
-	/**
-	 * 读取条件
-	 * 
-	 * @param tableName
-	 *            表名称
-	 * @param key
-	 *            行的key
-	 * @return
-	 */
-	private SingleRowQueryCriteria buildCriteria(String tableName, String key) {
-		// 构造主键
-		PrimaryKeyBuilder primaryKeyBuilder = PrimaryKeyBuilder.createPrimaryKeyBuilder();
-		primaryKeyBuilder.addPrimaryKeyColumn("key", PrimaryKeyValue.fromString(key));
-		PrimaryKey primaryKey = primaryKeyBuilder.build();
-		// 读一行
-		SingleRowQueryCriteria criteria = new SingleRowQueryCriteria(tableName, primaryKey);
-		// 设置读取最新版本
-		criteria.setMaxVersions(1);
-		return criteria;
+	private JSONObject call(String url) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+		Request request = new Request.Builder().url(url).get().build();
+		Response resp = client.newCall(request).execute();
+		JSONObject json = null;
+		if (resp.isSuccessful()) {
+			String body = resp.body().string();
+			json = JSONObject.parseObject(body);
+			System.out.println(json);
+		} else {
+			throw new RuntimeException("访问表格存储服务失败");
+		}
+		return json;
 	}
 }

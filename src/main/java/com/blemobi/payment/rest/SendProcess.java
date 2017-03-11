@@ -74,6 +74,7 @@ public class SendProcess {
 	 * @param filter_skipUuid
 	 *            反选掉的用户
 	 * @return
+	 * @throws IOException
 	 */
 	@POST
 	@Path("send-group")
@@ -82,7 +83,8 @@ public class SendProcess {
 			@FormParam("money") int money, @FormParam("isRandom") boolean isRandom,
 			@FormParam("content") String content, @FormParam("tick_uuid") String tick_uuid,
 			@FormParam("filter_gender") int filter_gender, @FormParam("filter_region") String filter_region,
-			@FormParam("filter_negate") boolean filter_negate, @FormParam("filter_skipUuid") String filter_skipUuid) {
+			@FormParam("filter_negate") boolean filter_negate, @FormParam("filter_skipUuid") String filter_skipUuid)
+			throws IOException {
 
 		PFansFilterParam fansFilterParam = null;
 		if (Strings.isNullOrEmpty(tick_uuid))
