@@ -80,7 +80,7 @@ public class CallbackServiceImpl implements CallbackService {
         String desc = "";
         Reward reward = null;
         RedSend rs =null;
-        if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue()){
+        if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_RANDOM.getValue()){
             //红包
             log.info("red");
              rs = redSendDao.selectByKey(ordNo, 0);
