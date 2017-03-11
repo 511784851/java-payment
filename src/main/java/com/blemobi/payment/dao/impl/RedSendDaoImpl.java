@@ -69,7 +69,7 @@ public class RedSendDaoImpl implements RedSendDao {
 		long time = System.currentTimeMillis();
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
-		sql.append("id, ord_no, type, rece_money, tota_money ");
+		sql.append("id, ord_no, type, rece_money, tota_money, send_uuid ");
 		sql.append("from t_red_send ");
 		sql.append("WHERE pay_status=1 AND ref_status=0 AND over_tm<? AND rece_money<tota_money");
 		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);

@@ -10,6 +10,7 @@ import com.blemobi.library.health.HealthManager;
 import com.blemobi.library.jetty.JettyServer;
 import com.blemobi.library.jetty.ServerFilter;
 import com.blemobi.library.log.LoggerManager;
+import com.blemobi.payment.bat.RefundThread;
 
 import lombok.extern.log4j.Log4j;
 
@@ -51,6 +52,9 @@ public class PaymentManager {
 		log.info("Start Payment Server Finish!");
 		// 初始化Consul日志管理
 		LoggerManager.startService();
+		//退款扫描
+		RefundThread rt = new RefundThread();
+        (new Thread(rt)).start();
 	}
 
 	/**

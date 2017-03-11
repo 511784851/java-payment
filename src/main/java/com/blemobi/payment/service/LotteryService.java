@@ -21,6 +21,7 @@
 package com.blemobi.payment.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
@@ -95,5 +96,18 @@ public interface LotteryService {
      * @return
      */
     public PMessage lotteryDetail(String lotteryId);
+    
+    /**
+     * @Description 查询过期的订单
+     * @author HUNTER.POON
+     * @return
+     */
+    public List<Map<String, Object>> getExpireLottery();
+    
+    /**
+     * @Description 将订单改为过期，退款 
+     * @author HUNTER.POON
+     */
+    public void doRefund(Map<String, Object> map);
     
 }
