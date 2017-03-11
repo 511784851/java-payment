@@ -52,8 +52,10 @@ public class SreachServiceImpl implements SreachService {
 		PStringSingle request = PStringSingle.newBuilder().setVal(keyword).build();
 		DataPublishGrpcClient client = new DataPublishGrpcClient();
 		PStringList stringList = client.SearchUser(request);
+		log.debug("匹配的uuid：" + stringList);
 		if (stringList != null) {
 			List<String> sreachUUIDs = stringList.getListList();
+			log.debug("匹配的uuid：" + sreachUUIDs);
 			if (sreachUUIDs != null && sreachUUIDs.size() > 0) {
 				// 全部发送红包记录
 				List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, 0, 100000);
