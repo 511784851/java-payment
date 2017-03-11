@@ -2,6 +2,9 @@ package com.blemobi.payment.dao;
 
 import java.util.List;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
+
 import com.blemobi.payment.model.RedSend;
 
 /**
@@ -63,4 +66,19 @@ public interface RedSendDao {
 	 * @return
 	 */
 	public int paySucc(String ordNo);
+
+	/**
+	 * 查询符合退款条件的红包订单
+	 * 
+	 * @return
+	 */
+	public List<RedSend> selectByOver();
+
+	/**
+	 * 退款成功时修改状态
+	 * 
+	 * @param ord_no
+	 * @return
+	 */
+	public int updateRef(String ord_no);
 }

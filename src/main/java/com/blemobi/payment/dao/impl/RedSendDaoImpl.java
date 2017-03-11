@@ -65,6 +65,25 @@ public class RedSendDaoImpl implements RedSendDao {
 		return jdbcTemplate.query(sql.toString(), rowMapper, idx, uuid, count);
 	}
 
+	public List<RedSend> selectByOver() {
+		long time = System.currentTimeMillis();
+		StringBuffer sql = new StringBuffer();
+		sql.append("select ");
+		sql.append("id, ord_no, type, rece_money, tota_money ");
+		sql.append("from t_red_send ");
+		sql.append("WHERE pay_status=1 AND ref_status=0 AND over_tm<? AND rece_money<tota_money");
+		RowMapper<RedSend> rowMapper = new BeanPropertyRowMapper<RedSend>(RedSend.class);
+		return jdbcTemplate.query(sql.toString(), rowMapper, time);
+	}
+
+	public int updateRef(String ord_no) {
+		StringBuffer sql = new StringBuffer();
+		sql.append("update t_red_send set ");
+		sql.append("ref_status=1 ");
+		sql.append("where ord_no=? and pay_status=1 and ref_status=0 AND over_tm<? AND rece_money<tota_money");
+		return jdbcTemplate.update(sql.toString(), ord_no);
+	}
+
 	@Override
 	public int paySucc(String ordNo) {
 		String sql = "UPDATE t_red_send SET pay_status = 1 WHERE ord_no = ? AND pay_status = 0";

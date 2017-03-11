@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -38,7 +38,7 @@ public class SreachProcess {
 	 * @return
 	 * @throws IOException
 	 */
-	@POST
+	@GET
 	@Path("list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
 	public PMessage list(@CookieParam("uuid") String uuid, @FormParam("keyword") String keyword) throws IOException {
