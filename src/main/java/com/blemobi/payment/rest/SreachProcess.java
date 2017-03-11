@@ -7,6 +7,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import com.blemobi.payment.service.SreachService;
 import com.blemobi.payment.util.InstanceFactory;
@@ -41,7 +42,7 @@ public class SreachProcess {
 	@GET
 	@Path("list")
 	@Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-	public PMessage list(@CookieParam("uuid") String uuid, @FormParam("keyword") String keyword) throws IOException {
+	public PMessage list(@CookieParam("uuid") String uuid, @QueryParam("keyword") String keyword) throws IOException {
 		return sreachService.list(uuid, keyword);
 	}
 }
