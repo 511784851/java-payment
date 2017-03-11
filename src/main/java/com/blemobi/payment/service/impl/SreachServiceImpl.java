@@ -81,7 +81,7 @@ public class SreachServiceImpl implements SreachService {
 					}
 				}
 
-				List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", 0, 1000000);
+				List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", Integer.MAX_VALUE, 1000000);
 				// 符合搜索条件的发送红包记录
 				List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
 				for (Reward reward : allRewardList) {
