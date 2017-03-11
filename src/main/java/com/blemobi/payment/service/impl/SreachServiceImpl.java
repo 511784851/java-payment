@@ -59,6 +59,7 @@ public class SreachServiceImpl implements SreachService {
 			if (sreachUUIDs != null && sreachUUIDs.size() > 0) {
 				// 全部发送红包记录
 				List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, 0, 100000);
+				log.debug("共有发红包数量：" + allRedSendList.size());
 				// 符合搜索条件的发送红包记录
 				List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
 				for (RedSend redSend : allRedSendList) {
@@ -70,10 +71,10 @@ public class SreachServiceImpl implements SreachService {
 						else
 							bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), redSend.getOrd_no(),
 									sreachUUID);
+						log.debug(sreachUUID + " 是否符合搜索条件：" + bool);
 						if (bool) {
 							PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
 							redList.add(redInfo);
-							break;
 						}
 					}
 				}
