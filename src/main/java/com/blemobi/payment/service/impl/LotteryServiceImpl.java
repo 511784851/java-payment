@@ -295,8 +295,13 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
+            RobotGrpcClient robotClient = new RobotGrpcClient();
+            PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus)
+                    .setServiceNo(0).build();
+            String orderno = robotClient.generateOrder(oparam).getVal();
+            
             transactionDao.insert(new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus,
-                    1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm });
+                    1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
             log.info("完成交易流水插入");
 
         }
