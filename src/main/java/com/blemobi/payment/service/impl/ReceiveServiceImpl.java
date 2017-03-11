@@ -256,7 +256,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 		String luck_uuid = "";
 		if (redSend.getType() == OrderEnum.RED_GROUP_RANDOM.getValue()
 				&& (redSend.getRece_number() == redSend.getTota_money()
-						|| redSend.getOver_tm() > System.currentTimeMillis())) {
+						|| redSend.getOver_tm() < System.currentTimeMillis())) {
 			luck_uuid = redReceiveDao.selectMaxMoney(ord_no);
 		}
 		List<RedReceive> receiveList = redReceiveDao.selectByKey(ord_no, last_id, count);
