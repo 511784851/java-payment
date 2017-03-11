@@ -402,6 +402,10 @@ public class LotteryServiceImpl implements LotteryService {
             //id, tot_amt, remain_amt, status, remain_cnt, winners, uuid
             String lotteryId = map.get("id").toString();
             String status = map.get("status").toString();
+            long crt = Long.parseLong(map.get("crt_tm").toString());
+            if(DateTimeUtils.in24Hours(crt)){
+               continue; 
+            }
             Integer remainAmt = Integer.parseInt(map.get("remain_amt").toString());
             Integer remainCnt = Integer.parseInt(map.get("remain_cnt").toString());
             if(remainAmt == null || remainAmt.intValue() <= 0 || remainCnt == null || remainCnt.intValue() <= 0){
