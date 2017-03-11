@@ -280,14 +280,15 @@ public class LotteryServiceImpl implements LotteryService {
         remainAmt -= bonus;
         lotteryDao.acceptPrize(lotteryId, uuid);
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
+        RobotGrpcClient robotClient = new RobotGrpcClient();
+        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus)
+                .setServiceNo(0).build();
+        String orderno = robotClient.generateOrder(oparam).getVal();
         B2CReq req = new B2CReq();
-        req.setCustOrderno(winnerInf.get("id").toString());
+        req.setCustOrderno(orderno);
         req.setFenAmt(bonus);
         req.setCustUid(uuid);
         req.setTransferDesc("领奖");
-        //req.setCustImg("ddd");
-        //req.setCustMobile("18890376529");
-        //req.setCustNickname("nickname");
         B2CResp resp = RongYunWallet.b2cTransfer(req);
         if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
             log.error(resp.toString());
@@ -295,11 +296,6 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
-            RobotGrpcClient robotClient = new RobotGrpcClient();
-            PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus)
-                    .setServiceNo(0).build();
-            String orderno = robotClient.generateOrder(oparam).getVal();
-            
             transactionDao.insert(new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus,
                     1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
             log.info("完成交易流水插入");

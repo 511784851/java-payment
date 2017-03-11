@@ -111,7 +111,7 @@ public class CallbackServiceImpl implements CallbackService {
         }
         //uuid, biz_ord_no, biz_typ, amt, ptf_sts, ptf_msg, trans_desc, corg_ord_no, corg_sts, corg_msg, crt_tm, upd_tm
         long currTm = DateTimeUtils.currTime();
-        ret = transactionDao.insert(new Object[]{uuid, ordNo, bizType+"", money, 1, " ", desc, corgOrdId, corgSts, corgMsg, currTm, currTm, " "});
+        ret = transactionDao.insert(new Object[]{uuid, ordNo, bizType+"", money, 1, " ", desc, corgOrdId, corgSts, corgMsg, currTm, currTm, ordNo});
         log.info("完成交易流水插入");
         if(ret != 1){
             throw new RuntimeException("insert into table failed");

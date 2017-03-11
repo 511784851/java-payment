@@ -17,8 +17,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class LotteryProcessTest {
 
-   private static final String BASE_URL = "http://192.168.7.245";
-   // private static final String BASE_URL = "http://127.0.0.1";
+   //private static final String BASE_URL = "http://192.168.7.245";
+   private static final String BASE_URL = "http://127.0.0.1";
     private static int port = 9014;
     private static final String URI = "/v1/payment/lottery/";
     //private static Map<String, String> cookies = new HashMap<String, String>();
@@ -27,13 +27,13 @@ public class LotteryProcessTest {
     @Before
     public void setup() {
         //        Cookie cookie0 = new Cookie("uuid", "1470823631370937498");
-Cookie cookie0 = new Cookie("uuid", "1470564357760884743");
+Cookie cookie0 = new Cookie("uuid", "1470564370290423368");
         Cookie cookie1 = new Cookie("token", "GOmF/8UFINqy7NmU7cWhaSoBbTIgMTYyM2M0MTJkNzMyNzM0YmU0YTI3YWM4ZmI2NTBiYmQ=");
         cookies.add(cookie0);
         cookies.add(cookie1);
         String[] arg = new String[] {"-env", "local" };
         try {
-         //   PaymentManager.main(arg);
+           PaymentManager.main(arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,8 +82,8 @@ Cookie cookie0 = new Cookie("uuid", "1470564357760884743");
         //删除历史
         action = "delete";
         param.clear();
-        //param.put("lotteryId", "1,2");
-        //HttpUtils.getInstance().post(getPath(action), param, cookies);
+        param.put("lotteryId", "520170311839966685359460353,520170311799642233849729033");
+        HttpUtils.getInstance().post(getPath(action), param, cookies);
         
         //列表
 //        action = "list";
@@ -102,9 +102,9 @@ Cookie cookie0 = new Cookie("uuid", "1470564357760884743");
       System.out.println(url);
       HttpUtils.getInstance().get(url, cookies);
         */
-        action = "accept";
+        /*action = "accept";
         param.clear();
         param.put("lotteryId", "52017030832590426610411409409");
-        HttpUtils.getInstance().post(getPath(action), param, cookies);
+        HttpUtils.getInstance().post(getPath(action), param, cookies);*/
     }
 }
