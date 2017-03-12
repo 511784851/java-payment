@@ -121,7 +121,7 @@ public class CallbackServiceImpl implements CallbackService {
             //推送消息
         	if(bizType == OrderEnum.RED_ORDINARY.getValue()){
         		List<String> list = new ArrayList<>();
-        		list.add(rs.getSend_uuid());
+        		list.add(rs.getRece_uuid5());
         		PushMsgHelper pushMgr = new PushMsgHelper(uuid, ordNo, list, desc);
                 pushMgr.redPacketMsg();
         	} else{
