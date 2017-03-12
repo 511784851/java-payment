@@ -119,7 +119,7 @@ public class SendServiceImpl implements SendService {
             int[] moneyArray = randomMoney(number, tota_money, ord_no);
             randomDao.insert(ord_no, moneyArray);
         }
-        return savaOrder(ord_no, send_uuid, type, money, each_money, number, content, rece_tota_num, rece_uuid);
+        return savaOrder(ord_no, send_uuid, type, tota_money, each_money, number, content, rece_tota_num, rece_uuid);
     }
 
     /**
