@@ -78,6 +78,25 @@ public class LotteryProcess {
     // return lotteryService.shuffleLottery(uuid, shuffle);
     // }
 
+    private void validation(Integer bonus, Integer cnt, String title, String desc){
+        if( bonus == null){
+            throw new BizException(2105001, "请输入单个金额，0.01-200.00元");
+        }
+        if( bonus.intValue() < 1 ||  bonus.intValue() > 20000){
+            throw new BizException(2105000, "单个中奖金额为0.01-200.00元");
+        }
+        
+        if( cnt == null || cnt.intValue() < 1 ||  cnt.intValue() > 50){
+            throw new BizException(2105002, "请设置1-50个中奖人数");
+        }
+        if(StringUtils.isEmpty(title) || title.length() > 20){
+            throw new BizException(2105006, "请输入标题，1-20个字符");
+        }
+        if(!StringUtils.isEmpty(desc) && desc.length() > 50){
+            throw new BizException(2105004, "最多仅支持50个字符");
+        }
+    }
+    
     @POST
     @Path("shuffle")
     @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
@@ -85,6 +104,7 @@ public class LotteryProcess {
             @FormParam("title") String title, @FormParam("winners") Integer winners, @FormParam("region") String region,
             @FormParam("remark") String remark, @FormParam("gender") Integer gender, @FormParam("bonus") Integer bonus,
             @FormParam("totAmt") Integer totAmt) {
+        validation(bonus, winners, title, remark);
         PShuffle.Builder builder = PShuffle.newBuilder().setTitle(title).setWinners(winners).setRemark(remark).setGender(gender)
                 .setBonus(bonus).setTotAmt(totAmt);
         if(!StringUtils.isEmpty(region)){
@@ -111,6 +131,7 @@ public class LotteryProcess {
             @FormParam("title") String title, @FormParam("winners") Integer winners, @FormParam("region") String region,
             @FormParam("remark") String remark, @FormParam("gender") Integer gender, @FormParam("bonus") Integer bonus,
             @FormParam("totAmt") Integer totAmt, @FormParam("uuid") String uuids, @FormParam("genders") String genders, @FormParam("regions") String regions) {
+        validation(bonus, winners, title, remark);
         PLotteryConfirm.Builder builder = PLotteryConfirm.newBuilder();
         builder.setTitle(title).setWinners(winners).setRemark(remark).setGender(gender).setBonus(bonus).setTotAmt(totAmt);
         if(!StringUtils.isEmpty(region)){
