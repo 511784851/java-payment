@@ -109,9 +109,7 @@ public class SendServiceImpl implements SendService {
 		// 生成订单号
 		String ord_no = createOrdNo(type, tota_money);
 		// 保存参与者
-		boolean bool = saveFans(ord_no, tick_uuid, fansFilterParam);
-		if (!bool)
-			throw new RuntimeException("发群红包时，保存参与者失败，fansFilterParam：" + fansFilterParam);
+		saveFans(ord_no, tick_uuid, fansFilterParam);
 		// 获得参与者概要
 		String[] arr = tableStoreDao.selectByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no);
 		if (arr == null)
