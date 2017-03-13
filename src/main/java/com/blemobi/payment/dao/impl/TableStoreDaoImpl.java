@@ -29,7 +29,7 @@ public class TableStoreDaoImpl implements TableStoreDao {
 
 	@Override
 	public String[] selectByKey(String tn, String key) throws IOException {
-		String url = "http://localhost:9015/v1/tablestore/find-row?tn=" + tn + "&key=" + key;
+		String url = "http://127.0.0.1:9015/v1/tablestore/find-row?tn=" + tn + "&key=" + key;
 		JSONObject jsonObject = call(url);
 		Integer count = jsonObject.getInteger("count");
 		if (count == null || count == 0)

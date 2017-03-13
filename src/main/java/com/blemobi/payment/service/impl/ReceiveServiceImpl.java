@@ -119,11 +119,11 @@ public class ReceiveServiceImpl implements ReceiveService {
 		} else {
 			if (redSend.getType() == OrderEnum.RED_ORDINARY.getValue()) {
 				if (!rece_uuid.equals(redSend.getRece_uuid5()))
-					throw new BizException(2102000, "没有权限");
+					throw new BizException(2101000, "没有权限");
 			} else {
 				boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
 				if (!bool)
-					throw new BizException(2102000, "没有权限");
+					throw new BizException(2101000, "没有权限");
 			}
 		}
 		return PRedEnveStatus.newBuilder().setStatus(status).setReceMoney(rece_money).setContent(redSend.getContent())
