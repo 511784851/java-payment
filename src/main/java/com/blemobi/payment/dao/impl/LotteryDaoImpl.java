@@ -125,7 +125,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     }
     @Override
     public int paySucc(String ordNo, int amt) {
-        String sql = "UPDATE t_lotteries SET status = 2 WHERE id = ? AND status = 1 AND tot_amt = ?";
+        String sql = "UPDATE t_lotteries SET status = 2, refund_status = 0 WHERE id = ? AND status = 1 AND tot_amt = ?";
         Object[] param = new Object[]{ordNo, amt};
         return this.update(sql, param);
     }
