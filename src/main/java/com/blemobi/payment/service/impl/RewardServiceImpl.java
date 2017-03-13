@@ -47,6 +47,8 @@ public class RewardServiceImpl implements RewardService {
 	@Override
 	@Transactional
 	public PMessage reward(String send_uuid, int money, String content, String rece_uuid) {
+		if (Strings.isNullOrEmpty(content))
+			content = "";
 		PMessage message = verification(send_uuid, money, content, rece_uuid);
 		if (message != null)
 			return message;
@@ -167,7 +169,7 @@ public class RewardServiceImpl implements RewardService {
 		if (money < Constants.min_each_money)
 			return ReslutUtil.createErrorMessage(2102004, "打赏金额不能少于0.01元");
 		if (money > Constants.max_each_money)
-			return ReslutUtil.createErrorMessage(2102005, "打赏金额不能超过200元");
+			return ReslutUtil.createErrorMessage(2102005, "打赏金额最大仅支持200元");
 
 		int has_send_money = jedisDao.findDailySendMoney(send_uuid);
 		if (has_send_money + money > Constants.max_daily_money)

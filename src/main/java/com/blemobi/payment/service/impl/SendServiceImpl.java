@@ -2,6 +2,7 @@ package com.blemobi.payment.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,8 @@ public class SendServiceImpl implements SendService {
 		int number = 1;// 红包数量固定为1
 		int each_money = 0;// 单个红包金额固定为0
 		int rece_tota_num = 1;// 参与人数固定为1
-
+		if (Strings.isNullOrEmpty(content))
+			content = "";
 		// 验证红包发送是否符合规则
 		PMessage message = verification(send_uuid, money, content, rece_uuid);
 		if (message != null)
@@ -98,6 +100,8 @@ public class SendServiceImpl implements SendService {
 			each_money = money;
 			tota_money = each_money * number;
 		}
+		if (Strings.isNullOrEmpty(content))
+			content = "";
 		// 验证红包发送是否符合规则
 		PMessage message = verification(send_uuid, tota_money, number, content);
 		if (message != null)
@@ -107,9 +111,11 @@ public class SendServiceImpl implements SendService {
 		// 保存参与者
 		boolean bool = saveFans(ord_no, tick_uuid, fansFilterParam);
 		if (!bool)
-			throw new RuntimeException("发群红包时，保存参与者失败");
+			throw new RuntimeException("发群红包时，保存参与者失败，fansFilterParam：" + fansFilterParam);
 		// 获得参与者概要
-		String[] arr = getReceUserData(ord_no);
+		String[] arr = tableStoreDao.selectByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no);
+		if (arr == null)
+			return ReslutUtil.createErrorMessage(2101001, "红包没有领取用户");
 		// 参与人数
 		int rece_tota_num = Integer.parseInt(arr[0]);
 		// 前五个参与者
@@ -181,25 +187,12 @@ public class SendServiceImpl implements SendService {
 		if (Strings.isNullOrEmpty(tick_uuid)) {
 			fansSaveParamBuilder.setFilter(filter);
 		} else {
-			List<String> list = new ArrayList<String>();
-			for (String uuid : tick_uuid.split(","))
-				list.add(uuid);
+			List<String> list = Arrays.asList(tick_uuid.split(","));
 			fansSaveParamBuilder.addAllUuid(list);
 		}
 
 		DataPublishGrpcClient client = new DataPublishGrpcClient();
 		return client.saveFans(fansSaveParamBuilder.build());
-	}
-
-	/**
-	 * 获得群红包总参与人数以及前五个参与者uuid
-	 * 
-	 * @param key
-	 * @return
-	 * @throws IOException
-	 */
-	private String[] getReceUserData(String key) throws IOException {
-		return tableStoreDao.selectByKey(TABLE_NAMES.RED_PKG_TB.getValue(), key);
 	}
 
 	@Override
