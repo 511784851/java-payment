@@ -130,12 +130,19 @@ public class SendProcess {
 	 */
 	private PFansFilterParam buildFilterParam(String send_uuid, int filter_gender, String filter_region,
 			boolean filter_negate, String filter_skipUuid) {
-		String[] filter_region_arr = filter_region.split(",");
-		String[] filter_skipUuid_arr = filter_skipUuid.split(",");
 
-		PFansFilterParam fansFilterParam = PFansFilterParam.newBuilder().setUuid(send_uuid).setGender(filter_gender)
-				.addAllRegion(Arrays.asList(filter_region_arr)).setNegate(filter_negate)
-				.addAllSkipUuid(Arrays.asList(filter_skipUuid_arr)).build();
-		return fansFilterParam;
+		PFansFilterParam.Builder fansFilterParam = PFansFilterParam.newBuilder().setUuid(send_uuid)
+				.setGender(filter_gender).setNegate(filter_negate);
+
+		if (!Strings.isNullOrEmpty(filter_region)) {
+			String[] filter_region_arr = filter_region.split(",");
+			fansFilterParam.addAllRegion(Arrays.asList(filter_region_arr));
+		}
+		if (!Strings.isNullOrEmpty(filter_skipUuid)) {
+			String[] filter_skipUuid_arr = filter_skipUuid.split(",");
+			fansFilterParam.addAllSkipUuid(Arrays.asList(filter_skipUuid_arr));
+		}
+
+		return fansFilterParam.build();
 	}
 }

@@ -28,8 +28,8 @@ public class RedSendDaoImpl implements RedSendDao {
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_red_send (");
 		sql.append(
-				"ord_no, send_uuid, type, tota_money, each_money, tota_number, rece_money, rece_number, content, send_tm, over_tm, rece_tota_num, rece_uuid5, pay_status, ref_status");
-		sql.append(") values (?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?, ?, ?,0, 0)");
+				"ord_no, send_uuid, type, tota_money, each_money, tota_number, content, send_tm, over_tm, rece_tota_num, rece_uuid5, rece_money, rece_number, pay_status, ref_status");
+		sql.append(") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0)");
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 

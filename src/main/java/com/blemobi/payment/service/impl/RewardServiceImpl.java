@@ -13,6 +13,7 @@ import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.RewardDao;
+import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.Reward;
 import com.blemobi.payment.service.RewardService;
 import com.blemobi.payment.service.helper.SignHelper;
@@ -46,6 +47,8 @@ public class RewardServiceImpl implements RewardService {
 	@Override
 	@Transactional
 	public PMessage reward(String send_uuid, int money, String content, String rece_uuid) {
+		if (Strings.isNullOrEmpty(content))
+			content = "";
 		PMessage message = verification(send_uuid, money, content, rece_uuid);
 		if (message != null)
 			return message;
@@ -96,7 +99,7 @@ public class RewardServiceImpl implements RewardService {
 			money = rewardDao.selectrTotalMoony(reward.getSend_uuid(), uuid);
 			list = rewardDao.selectByPage(reward.getSend_uuid(), uuid, idx, count);
 		} else
-			throw new RuntimeException("没有权限查看打赏详情");
+			throw new BizException(2101000, "没有权限");
 
 		// 打赏信息
 		PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
@@ -160,19 +163,17 @@ public class RewardServiceImpl implements RewardService {
 	 */
 	private PMessage verification(String send_uuid, int money, String content, String rece_uuid) {
 		if (Strings.isNullOrEmpty(rece_uuid))
-			return ReslutUtil.createErrorMessage(2101002, "打赏没有选择领赏人");
-		if (Strings.isNullOrEmpty(content))
-			return ReslutUtil.createErrorMessage(2101002, "打赏描述不能为空");
+			return ReslutUtil.createErrorMessage(2102001, "打赏没有选择领赏用户");
 		if (content.length() > 100)
-			return ReslutUtil.createErrorMessage(2101003, "打赏描述不能超过100个字符");
+			return ReslutUtil.createErrorMessage(2102003, "打赏描述不能超过100个字符");
 		if (money < Constants.min_each_money)
-			return ReslutUtil.createErrorMessage(2101004, "打赏金额不能少于0.01元");
+			return ReslutUtil.createErrorMessage(2102004, "打赏金额不能少于0.01元");
 		if (money > Constants.max_each_money)
-			return ReslutUtil.createErrorMessage(2101005, "打赏金额不能超过200元");
+			return ReslutUtil.createErrorMessage(2102005, "打赏金额最大仅支持200元");
 
 		int has_send_money = jedisDao.findDailySendMoney(send_uuid);
 		if (has_send_money + money > Constants.max_daily_money)
-			return ReslutUtil.createErrorMessage(2101007, "每天发送总金额（红包、抽奖、打赏）不能超过30000元 ");
+			return ReslutUtil.createErrorMessage(2101006, "每天发送总金额（红包、抽奖、打赏）不能超过30000元 ");
 		return null;
 	}
 

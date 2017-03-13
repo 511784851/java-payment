@@ -2,9 +2,6 @@ package com.blemobi.payment.dao;
 
 import java.util.List;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.RowMapper;
-
 import com.blemobi.payment.model.RedSend;
 
 /**
