@@ -145,4 +145,16 @@ public class HttpUtils {
         System.out.println(body);
         return body;
     }
+    public String get(String url) throws IOException {
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        String body = null;
+        if(response.isSuccessful()){
+            body = response.body().string(); 
+        }else{
+            System.err.println("error");
+        }
+        System.out.println(body);
+        return body;
+    }
 }

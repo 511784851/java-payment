@@ -55,11 +55,12 @@ public class RefundThread implements Runnable {
             try {
                 doExpLotteries();
                 doExpRedbag();
+                log.debug("处理完成");
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
                 log.error("thread sleep failed", e);
             }
-            log.debug("处理完成");
+            
         }
     }
 
