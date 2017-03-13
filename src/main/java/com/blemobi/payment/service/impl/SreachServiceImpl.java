@@ -46,21 +46,18 @@ public class SreachServiceImpl implements SreachService {
 	@Autowired
 	private TableStoreDao tableStoreDao;
 
-	
 	@Override
 	public PMessage list(String uuid, String keyword) throws IOException {
 		PSreachList sreachList = PSreachList.newBuilder().build();
 		PStringSingle request = PStringSingle.newBuilder().setVal(keyword).build();
 		DataPublishGrpcClient client = new DataPublishGrpcClient();
 		PStringList stringList = client.SearchUser(request);
-		log.debug("匹配的uuid：" + stringList);
+		log.debug(keyword + " 匹配的uuid：" + stringList);
 		if (stringList != null) {
 			List<String> sreachUUIDs = stringList.getListList();
-			log.debug("匹配的uuid：" + sreachUUIDs);
 			if (sreachUUIDs != null && sreachUUIDs.size() > 0) {
 				// 全部发送红包记录
 				List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, Integer.MAX_VALUE, 100000);
-				log.debug("共有发红包数量：" + allRedSendList.size());
 				// 符合搜索条件的发送红包记录
 				List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
 				for (RedSend redSend : allRedSendList) {
@@ -83,12 +80,11 @@ public class SreachServiceImpl implements SreachService {
 
 				List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", Integer.MAX_VALUE, 1000000);
 				// 符合搜索条件的发送红包记录
-				log.debug("共有 打赏数量：" + allRewardList.size());
 				List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
 				for (Reward reward : allRewardList) {
 					for (String sreachUUID : sreachUUIDs) {
 						// 是否符合搜索条件
-						if (sreachUUID.equals(reward.getSend_uuid())) {
+						if (sreachUUID.equals(reward.getUuid())) {
 							PUserBase userBase = UserBaseCache.get(reward.getUuid());
 							PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
 							rewardInfoList.add(rewardInfo);
