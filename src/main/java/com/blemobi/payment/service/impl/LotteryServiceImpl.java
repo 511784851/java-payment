@@ -205,14 +205,7 @@ public class LotteryServiceImpl implements LotteryService {
             builder.setWinners(Integer.parseInt(detail.get("winners").toString()));
             builder.setRemark(detail.get("remark").toString());
         }
-        List<Map<String, Object>> locations = lotteryDao.lotteryLocations(lotteryId);
-        List<String> regions = new ArrayList<>();
-        if (locations != null && !locations.isEmpty()) {
-            for (Map<String, Object> loc : locations) {
-                regions.add(loc.get("loc_cd").toString());
-            }
-            builder.addAllRegion(regions);
-        }
+        Map<String, String> locs = new HashMap<String, String>();
         List<Map<String, Object>> users = lotteryDao.lotteryUsers(lotteryId);
         if (users != null && !users.isEmpty()) {
             List<PUserBaseEx> userList = new ArrayList<PUserBaseEx>();
@@ -229,12 +222,28 @@ public class LotteryServiceImpl implements LotteryService {
                     log.error("uuid:[" + uuid + "]在缓存中没有找到");
                     throw new RuntimeException("用户没有找到");
                 }
-                uBuilder.setRegion(usr.get("loc_cd").toString());
+                String loc = usr.get("loc_cd").toString();
+                uBuilder.setRegion(loc);
+                locs.put(loc, loc);
                 uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));
                 userList.add(uBuilder.build());
             }
             builder.addAllUserList(userList);
         }
+        
+        
+        List<Map<String, Object>> locations = lotteryDao.lotteryLocations(lotteryId);
+        List<String> regions = new ArrayList<>();
+        if (locations != null && !locations.isEmpty()) {
+            for (Map<String, Object> loc : locations) {
+                String location = loc.get("loc_cd").toString();
+                if(locs.containsKey(location)){
+                    regions.add(location);
+                }
+            }
+            builder.addAllRegion(regions);
+        }
+        
         return ReslutUtil.createReslutMessage(builder.build());
     }
 
