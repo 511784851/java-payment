@@ -36,6 +36,7 @@ import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.dao.TransactionDao;
+import com.blemobi.payment.excepiton.BizException;
 import com.blemobi.payment.model.RedSend;
 import com.blemobi.payment.model.Reward;
 import com.blemobi.payment.service.CallbackService;
@@ -99,7 +100,7 @@ public class CallbackServiceImpl implements CallbackService {
             ret = rewardDao.paySucc(ordNo);
         }
         if(ret != 1){
-            throw new RuntimeException("update red bag or lottery record failed");
+            throw new BizException(2015016, "操作数据库异常");
         }
         jedisDao.incrByDailySendMoney(uuid, money);//累计日支出
         log.info("累计用户支出完成");
@@ -107,14 +108,14 @@ public class CallbackServiceImpl implements CallbackService {
         ret = billDao.insert(new Object[]{uuid, ordNo, money,time, bizType, 0});
         log.info("完成账单插入");
         if(ret != 1){
-            throw new RuntimeException("insert into table failed");
+            throw new BizException(2015016, "操作数据库异常");
         }
         //uuid, biz_ord_no, biz_typ, amt, ptf_sts, ptf_msg, trans_desc, corg_ord_no, corg_sts, corg_msg, crt_tm, upd_tm
         long currTm = DateTimeUtils.currTime();
         ret = transactionDao.insert(new Object[]{uuid, ordNo, bizType+"", money, 1, " ", desc, corgOrdId, corgSts, corgMsg, currTm, currTm, ordNo});
         log.info("完成交易流水插入");
         if(ret != 1){
-            throw new RuntimeException("insert into table failed");
+            throw new BizException(2015016, "操作数据库异常");
         }
         if(bizType == OrderEnum.RED_ORDINARY.getValue() || bizType == OrderEnum.RED_GROUP_EQUAL.getValue() || bizType == OrderEnum.RED_GROUP_RANDOM.getValue()){
             //红包
@@ -143,7 +144,7 @@ public class CallbackServiceImpl implements CallbackService {
             uuid = reward.getRece_uuid();
             ret = billDao.insert(new Object[]{uuid, ordNo, money, time,bizType, 1});
             if(ret != 1){
-                throw new RuntimeException("insert into table failed");
+                throw new BizException(2015016, "操作数据库异常");
             }
         }
         

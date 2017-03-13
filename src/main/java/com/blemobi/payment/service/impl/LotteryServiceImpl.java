@@ -297,7 +297,7 @@ public class LotteryServiceImpl implements LotteryService {
         B2CResp resp = RongYunWallet.b2cTransfer(req);
         if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
             log.error(resp.toString());
-            throw new BizException(2015020, resp.getRespmsg());
+            throw new BizException(2015020, "转账失败");
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
@@ -321,7 +321,7 @@ public class LotteryServiceImpl implements LotteryService {
     public PMessage delPrize(String uuid, List<String> lotteryId) {
         int ret = lotteryDao.delPrize(lotteryId, uuid);
         if (ret != lotteryId.size()) {
-            throw new BizException(2015009, "删除失败");
+            throw new BizException(2015015, "删除失败");
         }
         return ReslutUtil.createSucceedMessage();
     }
@@ -332,7 +332,7 @@ public class LotteryServiceImpl implements LotteryService {
         log.info("jedisDao:" + jedisDao);
         int amt = jedisDao.findDailySendMoney(uuid);
         if ((amt + shuffle.getTotAmt()) > Constants.max_daily_money) {// 支出超出上限
-            throw new BizException(2015005, "单日支出超出上限");
+            throw new BizException(2015014, "单日支出超出上限");
         }
         Integer times = jedisDao.getUserLotteryRefreshTimes(uuid);
         if (times > 1) {
@@ -461,11 +461,11 @@ public class LotteryServiceImpl implements LotteryService {
         }
         int ret = lotteryDao.updateExpireLottery(lotteryId, updTm, updStatus, status);
         if(ret != 1){
-            throw new RuntimeException("更新lottery：" + lotteryId + "异常");
+            throw new BizException(2015016, "操作数据库异常");
         }
         ret = lotteryDao.updateExpireWinners(lotteryId);
         if(ret != cnt.intValue()){
-            throw new RuntimeException("更新winners：" + lotteryId + "异常");
+            throw new BizException(2015016, "操作数据库异常");
         }
         //B2C
         String desc = "领奖退款";
@@ -478,14 +478,14 @@ public class LotteryServiceImpl implements LotteryService {
         B2CResp resp = RongYunWallet.b2cTransfer(req);
         if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
             log.error(resp.toString());
-            throw new BizException(2015020, resp.getRespmsg());
+            throw new BizException(2015020, "转账失败");
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
             ret = transactionDao.insert(new Object[] {uuid, lotteryId, "0", remainAmt,
                     1, " ", desc, resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, ordNo });
             if(ret != 1){
-                throw new RuntimeException("insert into transaction table异常");
+                throw new BizException(2015021, "插入流水失败");
             }
             log.info("完成交易流水插入");
 
