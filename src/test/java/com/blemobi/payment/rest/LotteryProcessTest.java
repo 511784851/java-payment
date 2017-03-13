@@ -17,8 +17,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class LotteryProcessTest {
 
-   private static final String BASE_URL = "http://192.168.7.245";
-   //private static final String BASE_URL = "http://127.0.0.1";
+    //private static final String BASE_URL = "http://192.168.7.245";
+   private static final String BASE_URL = "http://127.0.0.1";
     private static int port = 9014;
     private static final String URI = "/v1/payment/lottery/";
     //private static Map<String, String> cookies = new HashMap<String, String>();
@@ -33,7 +33,7 @@ Cookie cookie0 = new Cookie("uuid", "1470564370290423368");
         cookies.add(cookie1);
         String[] arg = new String[] {"-env", "local" };
         try {
-         //  PaymentManager.main(arg);
+           PaymentManager.main(arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,10 +92,10 @@ Cookie cookie0 = new Cookie("uuid", "1470564370290423368");
 //        url += "?startIndex=0&keywords=";
 //        HttpUtils.getInstance().get(url, cookies);
         //详情
-//         action = "detail";
-//         String url = getPath(action);
-//         url += "?lotteryId=520170228286148971922067456";
-//        HttpUtils.getInstance().get(url, cookies);
+         action = "detail";
+         String url = getPath(action);
+         url += "?lotteryId=520170313478097480010125313";
+        //HttpUtils.getInstance().get(url, cookies);
         
         /*action = "view";
       String url = getPath(action);

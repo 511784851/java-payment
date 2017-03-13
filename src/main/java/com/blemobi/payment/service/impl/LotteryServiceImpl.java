@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -117,7 +115,7 @@ public class LotteryServiceImpl implements LotteryService {
         String orderno = robotClient.generateOrder(oparam).getVal();
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
                 lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm,
-                lottery.getRemark(), 0};
+                lottery.getRemark(), -1};
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new RuntimeException("创建抽奖失败，请重试");

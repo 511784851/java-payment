@@ -157,7 +157,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     }
     @Override
     public List<Map<String, Object>> getExpireLottery(long expTm) {
-        String sql = "SELECT id, tot_amt, remain_amt, status, remain_cnt, winners, uuid, crt_tm  FROM t_lotteries WHERE status IN(0, 2) AND crt_tm > ?";
+        String sql = "SELECT id, tot_amt, remain_amt, status, remain_cnt, winners, uuid, crt_tm  FROM t_lotteries WHERE status IN(0, 2) AND crt_tm > ? AND refund_status = 0 ";
         return this.queryForList(sql, new Object[]{expTm});
     }
     @Override
