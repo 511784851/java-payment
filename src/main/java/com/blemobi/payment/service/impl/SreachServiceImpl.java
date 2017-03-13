@@ -46,7 +46,6 @@ public class SreachServiceImpl implements SreachService {
 	@Autowired
 	private TableStoreDao tableStoreDao;
 
-	
 	@Override
 	public PMessage list(String uuid, String keyword) throws IOException {
 		PSreachList sreachList = PSreachList.newBuilder().build();
@@ -87,6 +86,7 @@ public class SreachServiceImpl implements SreachService {
 				List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
 				for (Reward reward : allRewardList) {
 					for (String sreachUUID : sreachUUIDs) {
+						log.debug(sreachUUID + "：" + reward.getSend_uuid());
 						// 是否符合搜索条件
 						if (sreachUUID.equals(reward.getSend_uuid())) {
 							PUserBase userBase = UserBaseCache.get(reward.getUuid());
