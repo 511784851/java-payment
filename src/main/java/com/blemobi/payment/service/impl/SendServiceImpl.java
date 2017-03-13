@@ -108,6 +108,8 @@ public class SendServiceImpl implements SendService {
 			return message;
 		// 生成订单号
 		String ord_no = createOrdNo(type, tota_money);
+		if (Strings.isNullOrEmpty(ord_no))
+			throw new RuntimeException("发红包时，生成订单号出错");
 		// 保存参与者
 		saveFans(ord_no, tick_uuid, fansFilterParam);
 		// 获得参与者概要
@@ -118,7 +120,7 @@ public class SendServiceImpl implements SendService {
 		int rece_tota_num = Integer.parseInt(arr[0]);
 		// 前五个参与者
 		String rece_uuid = arr[1];
-		// 如果是随机群红包，计算随机金额并保存
+		// 如果是随机红包，计算随机金额并保存
 		if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {
 			int[] moneyArray = randomMoney(number, tota_money, ord_no);
 			randomDao.insert(ord_no, moneyArray);
@@ -130,14 +132,23 @@ public class SendServiceImpl implements SendService {
 	 * 保存订单
 	 * 
 	 * @param ord_no
+	 *            订单号
 	 * @param send_uuid
+	 *            发送者uuid
 	 * @param type
+	 *            类型
 	 * @param money
+	 *            总金额
 	 * @param each_money
+	 *            的那个金额
 	 * @param number
+	 *            数量
 	 * @param content
+	 *            描述
 	 * @param rece_tota_num
+	 *            参与人数
 	 * @param rece_uuid
+	 *            前5个参与用户uuid
 	 * @return
 	 */
 	private PMessage savaOrder(String ord_no, String send_uuid, int type, int tota_money, int each_money, int number,
@@ -259,14 +270,9 @@ public class SendServiceImpl implements SendService {
 	 */
 	private String createOrdNo(int type, int money) {
 		PPayOrderParma payOrderParma = PPayOrderParma.newBuilder().setAmount(money).setServiceNo(type).build();
-
 		RobotGrpcClient client = new RobotGrpcClient();
 		PStringSingle ordNoString = client.generateOrder(payOrderParma);
-		String ord_no = ordNoString != null ? ordNoString.getVal() : "";
-		if (Strings.isNullOrEmpty(ord_no))
-			throw new RuntimeException("发红包时，生成订单号出错");
-
-		return ord_no;
+		return ordNoString.getVal();
 	}
 
 	/**

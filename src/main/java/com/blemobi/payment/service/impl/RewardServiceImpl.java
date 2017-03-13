@@ -99,7 +99,7 @@ public class RewardServiceImpl implements RewardService {
 			money = rewardDao.selectrTotalMoony(reward.getSend_uuid(), uuid);
 			list = rewardDao.selectByPage(reward.getSend_uuid(), uuid, idx, count);
 		} else
-			throw new BizException(2101000, "没有权限");
+			throw new BizException(1901010, "没有权限");
 
 		// 打赏信息
 		PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
