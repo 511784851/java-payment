@@ -65,7 +65,9 @@ public class JedisDaoImpl implements JedisDao {
 		    time = Integer.parseInt(times) + 1;
 		}
 		jedis.incrBy(key, time);
-		jedis.expire(key, 5 * 60);// 5mins
+		//jedis.expire(key, 5 * 60);// 5mins
+		//TODO PROD remove
+		jedis.expire(key, 10);// 10sec
 		RedisManager.returnResource(jedis);
 	}
 
