@@ -124,7 +124,7 @@ public class BillServiceImpl implements BillService {
 		PBillInfo.Builder billInfoBuilder = PBillInfo.newBuilder().setId(bill.getId()).setOrdNo(bill.getOrd_no())
 				.setMoney(bill.getMoney()).setTime(bill.getTime()).setType(bill.getType());
 		if (type == 0) {// 收入账单需要发送用户信息
-			PUserBase userBase = UserBaseCache.get(bill.getUuid());
+			PUserBase userBase = UserBaseCache.get(bill.getFrom_uuid());
 			billInfoBuilder.setUserBase(userBase);
 		}
 		return billInfoBuilder.build();

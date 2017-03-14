@@ -37,7 +37,7 @@ public class BillDaoImpl implements BillDao {
 	public List<Bill> selectByPage(String uuid, int status, int idx, int count) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
-		sql.append("id, uuid, ord_no, money, time, type ");
+		sql.append("id, uuid, ord_no, money, time, type, from_uuid ");
 		sql.append("from t_bill ");
 		sql.append("where uuid=? and status=? and id<? order by id desc limit ?");
 
