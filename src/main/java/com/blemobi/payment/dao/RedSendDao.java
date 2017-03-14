@@ -18,8 +18,7 @@ public interface RedSendDao {
 	 *            SQL参数
 	 * @return
 	 */
-	public int insert(String content, String ord_no, String send_uuid, int type, int tota_money, int each_money,
-			int number, long send_tm, long over_tm, int rece_tota_num, String rece_uuid);
+	public int insert(Object... args);
 
 	/**
 	 * 查询红包发送详情

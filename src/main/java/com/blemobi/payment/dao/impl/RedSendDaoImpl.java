@@ -8,11 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.blemobi.library.redis.RedisManager;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.model.RedSend;
-
-import redis.clients.jedis.Jedis;
 
 /**
  * 发红包数据库操作实现类
@@ -23,23 +20,16 @@ import redis.clients.jedis.Jedis;
 @Repository("redSendDao")
 public class RedSendDaoImpl implements RedSendDao {
 
-	private final String CONTENT_KEY = "payment:content:";
-
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public int insert(String content, Object... args) {
-		String key = CONTENT_KEY + args[0];
-		Jedis jedis = RedisManager.getRedis();
-		jedis.set(key, content);
-		RedisManager.returnResource(jedis);
-
+	public int insert(Object... args) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_red_send (");
 		sql.append(
-				"ord_no, send_uuid, type, tota_money, each_money, tota_number, send_tm, over_tm, rece_tota_num, rece_uuid5, rece_money, rece_number, pay_status, ref_status");
-		sql.append(") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0)");
+				"ord_no, send_uuid, type, tota_money, each_money, tota_number, content, send_tm, over_tm, rece_tota_num, rece_uuid5, rece_money, rece_number, pay_status, ref_status");
+		sql.append(") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0)");
 		return jdbcTemplate.update(sql.toString(), args);
 	}
 
