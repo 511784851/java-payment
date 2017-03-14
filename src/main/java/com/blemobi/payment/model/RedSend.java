@@ -120,7 +120,6 @@ public class RedSend {
 			content = jedis.get(key);
 			RedisManager.returnResource(jedis);
 		}
-
 		return content;
 	}
 

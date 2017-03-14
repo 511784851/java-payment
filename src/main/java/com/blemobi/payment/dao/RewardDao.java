@@ -19,7 +19,7 @@ public interface RewardDao {
 	 *            SQL参数
 	 * @return
 	 */
-	public int insert(Object... args);
+	public int insert(String ord_no, String send_uuid, String rece_uuid, int money, String content, long send_tm);
 
 	/**
 	 * 根据订单号查询详情
