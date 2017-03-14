@@ -18,7 +18,7 @@ public interface RedSendDao {
 	 *            SQL参数
 	 * @return
 	 */
-	public int insert(Object... args);
+	public int insert(String ord_no, String content, Object... args);
 
 	/**
 	 * 查询红包发送详情

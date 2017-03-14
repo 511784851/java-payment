@@ -8,8 +8,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.blemobi.library.redis.RedisManager;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.model.RedSend;
+
+import redis.clients.jedis.Jedis;
 
 /**
  * 发红包数据库操作实现类
@@ -20,11 +23,18 @@ import com.blemobi.payment.model.RedSend;
 @Repository("redSendDao")
 public class RedSendDaoImpl implements RedSendDao {
 
+	private final String CONTENT_KEY = "payment:content:";
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public int insert(Object... args) {
+	public int insert(String ord_no, String content, Object... args) {
+		String key = CONTENT_KEY + ord_no;
+		Jedis jedis = RedisManager.getRedis();
+		jedis.set(key, content);
+		RedisManager.returnResource(jedis);
+
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_red_send (");
 		sql.append(

@@ -156,7 +156,7 @@ public class SendServiceImpl implements SendService {
 		long send_tm = System.currentTimeMillis();// 发送时间
 		long over_tm = send_tm + Constants.max_interval_Time;// 失效时间
 		// 保存订单数据
-		int rs = redSendDao.insert(ord_no, send_uuid, type, tota_money, each_money, number, content, send_tm, over_tm,
+		int rs = redSendDao.insert(ord_no, content, send_uuid, type, tota_money, each_money, number, send_tm, over_tm,
 				rece_tota_num, rece_uuid);
 		if (rs != 1)
 			throw new RuntimeException("发红包时，保存数据失败");
