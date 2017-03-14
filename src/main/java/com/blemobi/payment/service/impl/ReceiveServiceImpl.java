@@ -72,43 +72,29 @@ public class ReceiveServiceImpl implements ReceiveService {
 
 	@Override
 	public PMessage checkStatus(String ord_no, String rece_uuid) throws IOException {
-		PRedEnveStatus redEnveStatus = check(ord_no, rece_uuid);
+		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
+		PRedEnveStatus redEnveStatus = check(redSend, ord_no, rece_uuid);
 		return ReslutUtil.createReslutMessage(redEnveStatus);
 	}
 
 	/**
-	 * 验证红包针对用户状态
+	 * 验证红包状态
 	 * 
 	 * @param redSend
+	 *            红包信息
 	 * @param ord_no
+	 *            订单号
 	 * @param rece_uuid
+	 *            领取者uuid
 	 * @return
 	 * @throws IOException
 	 */
-	private PRedEnveStatus check(String ord_no, String rece_uuid) throws IOException {
-		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
-		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
-		if (redEnveStatus.getStatus() == -1) {
-			int status = checkStatus(redSend);
-			redEnveStatus = redEnveStatus.toBuilder().setStatus(status).build();
-		}
-		return redEnveStatus;
-	}
-
-	/**
-	 * 验证用户是否已领红包以及有权限领红包
-	 * 
-	 * @param redSend
-	 * @param ord_no
-	 * @param rece_uuid
-	 * @return
-	 * @throws IOException
-	 */
-	private PRedEnveStatus checkStatus(RedSend redSend, String ord_no, String rece_uuid) throws IOException {
+	private PRedEnveStatus check(RedSend redSend, String ord_no, String rece_uuid) throws IOException {
 		if (redSend == null)
 			throw new RuntimeException("没有找到有效的红包信息:" + ord_no);
-		if (redSend.getSend_uuid().equals(rece_uuid))
-			throw new RuntimeException("发送者自己无法查看红包状态");
+		boolean bool = jurisdiction(redSend, ord_no, rece_uuid);
+		if (!bool)
+			throw new BizException(1901010, "没有权限");
 
 		int status = -1; // 0-可领取，1-已领取，2-已过期，3-已领完
 		int rece_money = 0; // 已领取金额
@@ -117,86 +103,86 @@ public class ReceiveServiceImpl implements ReceiveService {
 			status = 1;// 已领取
 			rece_money = receive.getMoney();
 		} else {
-			if (redSend.getType() == OrderEnum.RED_ORDINARY.getValue()) {
-				if (!rece_uuid.equals(redSend.getRece_uuid5()))
-					throw new BizException(1901010, "没有权限");
-			} else {
-				boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
-				if (!bool)
-					throw new BizException(1901010, "没有权限");
-			}
+			if (redSend.getRece_number() >= redSend.getTota_number()
+					|| redSend.getRece_money() >= redSend.getTota_money())
+				status = 3;// 已领完
+			else if (redSend.getOver_tm() < System.currentTimeMillis())
+				status = 2;// 已过期
+			else
+				status = 0;// 可领取
 		}
 		return PRedEnveStatus.newBuilder().setStatus(status).setReceMoney(rece_money).setContent(redSend.getContent())
 				.build();
 	}
 
 	/**
-	 * 验证红包是否已领完或已过期
+	 * 是否有权限领取红包
 	 * 
 	 * @param redSend
+	 *            红包信息
+	 * @param ord_no
+	 *            订单号
+	 * @param rece_uuid
+	 *            领取者uuid
 	 * @return
+	 * @throws IOException
 	 */
-	private int checkStatus(RedSend redSend) {
-		int status = -1; // 0-可领取，1-已领取，2-已过期，3-已领完
-		if (redSend.getRece_number() >= redSend.getTota_number() || redSend.getRece_money() >= redSend.getTota_money())
-			status = 3;// 已领完
-		else if (redSend.getOver_tm() < System.currentTimeMillis())
-			status = 2;// 已过期
-		else
-			status = 0;// 可领取
-		return status;
+	private boolean jurisdiction(RedSend redSend, String ord_no, String rece_uuid) throws IOException {
+		if (redSend.getType() == OrderEnum.RED_ORDINARY.getValue()) {
+			if (rece_uuid.equals(redSend.getRece_uuid5()))
+				return true;
+		} else {
+			boolean bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), ord_no, rece_uuid);
+			if (bool)
+				return true;
+		}
+		return false;
 	}
 
 	@Override
 	@Transactional
 	public PMessage receive(String ord_no, String rece_uuid) throws IOException {
-		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
-		PRedEnveStatus redEnveStatus = checkStatus(redSend, ord_no, rece_uuid);
-		int status = redEnveStatus.getStatus();
-		if (status == -1) {
-			String lock = LOCK_KEY + ord_no;
-			boolean bool = LockManager.getLock(lock, 120);
-			if (!bool)
-				throw new RuntimeException("领红包时获得同步锁出错");
-			try {
-				status = checkStatus(redSend);
-				if (status == 0) {// 可领取
-					long now_tm = System.currentTimeMillis();
-					int rece_money = 0; // 已领取金额
-					int type = redSend.getType();
-					if (type == OrderEnum.RED_ORDINARY.getValue()) {// 普通红包
-						rece_money = redSend.getTota_money();
-					} else if (type == OrderEnum.RED_GROUP_EQUAL.getValue()) {// 等额群红包
-						rece_money = redSend.getEach_money();
-					} else if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {// 随机群红包
-						rece_money = randomDao.selectByKey(ord_no, redSend.getRece_number());
-					}
-					if (rece_money < Constants.min_each_money)
-						throw new RuntimeException("领取红包时获取金额出错");
-					receiveing(ord_no, rece_uuid, rece_money, now_tm, type);
-
-					redEnveStatus = redEnveStatus.toBuilder().setStatus(1).setReceMoney(rece_money).build();
+		PRedEnveStatus redEnveStatus = null;
+		String lock = LOCK_KEY + ord_no;
+		boolean bool = LockManager.getLock(lock, 120);
+		if (!bool)
+			throw new RuntimeException("领红包时获得同步锁出错");
+		try {
+			RedSend redSend = redSendDao.selectByKey(ord_no, 1);
+			redEnveStatus = check(redSend, ord_no, rece_uuid);
+			int status = redEnveStatus.getStatus();
+			if (status == 0) {// 可领取
+				int rece_money = 0; // 领取金额
+				int type = redSend.getType();
+				if (type == OrderEnum.RED_ORDINARY.getValue()) {// 普通红包
+					rece_money = redSend.getTota_money();
+				} else if (type == OrderEnum.RED_GROUP_EQUAL.getValue()) {// 等额群红包
+					rece_money = redSend.getEach_money();
+				} else if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {// 随机群红包
+					rece_money = randomDao.selectByKey(ord_no, redSend.getRece_number());
 				}
-			} finally {
-				LockManager.releaseLock(lock);
+				if (rece_money < Constants.min_each_money)
+					throw new RuntimeException("领取红包时获取金额出错");
+				receiveing(ord_no, rece_uuid, rece_money, type);
+				redEnveStatus = redEnveStatus.toBuilder().setStatus(1).setReceMoney(rece_money).build();
 			}
+		} finally {
+			LockManager.releaseLock(lock);
 		}
 		return ReslutUtil.createReslutMessage(redEnveStatus);
 	}
 
 	@Override
 	public PMessage findInfo(String ord_no, String rece_uuid) throws IOException {
-		long now_tm = System.currentTimeMillis();
 		RedSend redSend = redSendDao.selectByKey(ord_no, 1);
-		boolean status = now_tm >= redSend.getOver_tm();// 红包是否已过期
 		int user_rece_money = 0;// 当前用户领取的金额（单位：分），如果是0表示网红自己查看详情
 		if (!redSend.getSend_uuid().equals(rece_uuid)) {
 			RedReceive receive = redReceiveDao.selectByKey(ord_no, rece_uuid);
 			if (receive == null)
-				throw new RuntimeException("没有权限领取红包: " + ord_no);
+				throw new BizException(1901010, "没有权限");
 			user_rece_money = receive.getMoney();// 已领取金额
 		}
-
+		boolean status = System.currentTimeMillis() >= redSend.getOver_tm();// 红包是否已过期
 		PRedEnveInfo redInfo = buildRedInfo(redSend, ord_no, user_rece_money, status);
 		return ReslutUtil.createReslutMessage(redInfo);
 	}
@@ -251,14 +237,8 @@ public class ReceiveServiceImpl implements ReceiveService {
 	 * @throws IOException
 	 */
 	private List<PRedEnveRece> getReceUser(RedSend redSend, String ord_no, int last_id, int count) throws IOException {
-		String luck_uuid = "";
-		if (redSend.getType() == OrderEnum.RED_GROUP_RANDOM.getValue()
-				&& (redSend.getRece_number() == redSend.getTota_number()
-						|| redSend.getOver_tm() < System.currentTimeMillis())) {
-			luck_uuid = redReceiveDao.selectMaxMoney(ord_no);
-			log.debug("手气最佳：" + luck_uuid);
-		}
-
+		String luck_uuid = getLuckUser(redSend, ord_no);
+		log.debug("手气最佳：" + luck_uuid);
 		List<RedReceive> receiveList = redReceiveDao.selectByKey(ord_no, last_id, count);
 		List<PRedEnveRece> list = new ArrayList<PRedEnveRece>();
 		for (RedReceive redReceive : receiveList) {
@@ -269,6 +249,25 @@ public class ReceiveServiceImpl implements ReceiveService {
 			list.add(p_receive);
 		}
 		return list;
+	}
+
+	/**
+	 * 找出手气最佳的用户
+	 * 
+	 * @param redSend
+	 *            红包信息
+	 * @param ord_no
+	 *            订单号
+	 * @return
+	 */
+	private String getLuckUser(RedSend redSend, String ord_no) {
+		String luck_uuid = "";
+		if (redSend.getType() == OrderEnum.RED_GROUP_RANDOM.getValue()
+				&& (redSend.getRece_number() == redSend.getTota_number()
+						|| redSend.getOver_tm() < System.currentTimeMillis())) {
+			luck_uuid = redReceiveDao.selectMaxMoney(ord_no);
+		}
+		return luck_uuid;
 	}
 
 	/**
@@ -283,7 +282,8 @@ public class ReceiveServiceImpl implements ReceiveService {
 	 * @param rece_tm
 	 *            领取时间
 	 */
-	private void receiveing(String ord_no, String rece_uuid, int rece_money, long rece_tm, int type) {
+	private void receiveing(String ord_no, String rece_uuid, int rece_money, int type) {
+		long rece_tm = System.currentTimeMillis();
 		// 保存领取记录
 		redReceiveDao.insert(ord_no, rece_uuid, rece_money, rece_tm);
 		// 更新红包已领取金额和数量
@@ -291,28 +291,24 @@ public class ReceiveServiceImpl implements ReceiveService {
 		// 保存流水
 		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1);
 		// 转账给用户
-		try {
-			RobotGrpcClient robotClient = new RobotGrpcClient();
-			PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money).setServiceNo(0).build();
-			String orderno = robotClient.generateOrder(oparam).getVal();
-			B2CReq req = new B2CReq();
-			req.setCustOrderno(orderno);
-			req.setFenAmt(rece_money);
-			req.setCustUid(rece_uuid);
-			req.setTransferDesc("领红包");
-			B2CResp resp = RongYunWallet.b2cTransfer(req);
-			if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
-				log.error(resp.toString());
-				throw new BizException(2015020, resp.getRespmsg());
-			} else {
-				log.info(resp.toString());
-				long currTm = DateTimeUtils.currTime();
-				transactionDao.insert(new Object[] { rece_uuid, ord_no, type + "", rece_money, 1, " ", " ",
-						resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
-				log.info("完成交易流水插入");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		RobotGrpcClient robotClient = new RobotGrpcClient();
+		PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money).setServiceNo(0).build();
+		String orderno = robotClient.generateOrder(oparam).getVal();
+		B2CReq req = new B2CReq();
+		req.setCustOrderno(orderno);
+		req.setFenAmt(rece_money);
+		req.setCustUid(rece_uuid);
+		req.setTransferDesc("领红包");
+		B2CResp resp = RongYunWallet.b2cTransfer(req);
+		if (!Constants.RESPSTS.SUCCESS.getValue().equals(resp.getRespstat())) {
+			log.error(resp.toString());
+			throw new RuntimeException("领红包转账失败：" + resp.getRespmsg());
+		} else {
+			log.info(resp.toString());
+			long currTm = DateTimeUtils.currTime();
+			transactionDao.insert(new Object[] { rece_uuid, ord_no, type + "", rece_money, 1, " ", " ",
+					resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
+			log.info("完成交易流水插入");
 		}
 	}
 
