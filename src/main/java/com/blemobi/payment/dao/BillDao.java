@@ -20,7 +20,7 @@ public interface BillDao {
 	 *            SQL参数（注意status：1-收入，0-支出）
 	 * @return
 	 */
-	public int insert(Object... args);
+	public int insert(String uuid, String ord_no, int money, long time, int type, int status, String from_uuid);
 
 	/**
 	 * 查询账单

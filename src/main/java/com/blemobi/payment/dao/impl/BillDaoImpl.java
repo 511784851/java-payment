@@ -25,12 +25,12 @@ public class BillDaoImpl implements BillDao {
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public int insert(Object... args) {
+	public int insert(String uuid, String ord_no, int money, long time, int type, int status, String from_uuid) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_bill (");
-		sql.append("uuid, ord_no, money, time, type, status");
-		sql.append(") values (?, ?, ?, ?, ?, ?)");
-		return jdbcTemplate.update(sql.toString(), args);
+		sql.append("uuid, ord_no, money, time, type, status, from_uuid");
+		sql.append(") values (?, ?, ?, ?, ?, ?, ?)");
+		return jdbcTemplate.update(sql.toString(), uuid, ord_no, money, time, type, status, from_uuid);
 	}
 
 	@Override

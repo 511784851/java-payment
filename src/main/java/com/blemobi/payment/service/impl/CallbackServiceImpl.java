@@ -55,20 +55,20 @@ import lombok.extern.log4j.Log4j;
 @Service("callbackService")
 public class CallbackServiceImpl implements CallbackService {
 
-    @Autowired
-    private TransactionDao transactionDao;
-    @Autowired
-    private LotteryDao lotteryDao;
-    @Autowired
-    private RedSendDao redSendDao;
-    @Autowired
-    private RewardDao rewardDao;
-    @Autowired
-    private JedisDao jedisDao;
-    @Autowired
-    private BillDao billDao;
+	@Autowired
+	private TransactionDao transactionDao;
+	@Autowired
+	private LotteryDao lotteryDao;
+	@Autowired
+	private RedSendDao redSendDao;
+	@Autowired
+	private RewardDao rewardDao;
+	@Autowired
+	private JedisDao jedisDao;
+	@Autowired
+	private BillDao billDao;
 
-    @Override
+	@Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Boolean paySucc(String amount, long time, String ordNo, String recUid, String corgOrdId, String corgSts,
             String corgMsg) {
@@ -106,7 +106,7 @@ public class CallbackServiceImpl implements CallbackService {
         jedisDao.incrByDailySendMoney(uuid, money);// 累计日支出
         log.info("累计用户支出完成");
         // uuid,ord_no,money,time,type,
-        ret = billDao.insert(new Object[] {uuid, ordNo, money, time, bizType, 0 });
+        ret = billDao.insert(uuid, ordNo, money, time, bizType, 0,"" );
         log.info("完成账单插入");
         if (ret != 1) {
             throw new RuntimeException("操作数据库异常");
@@ -144,8 +144,7 @@ public class CallbackServiceImpl implements CallbackService {
             pushMgr.lotteryMsg();
         } else if (bizType == OrderEnum.REWARD.getValue()) {// 打赏
             log.info("reward");
-            uuid = reward.getRece_uuid();
-            ret = billDao.insert(new Object[] {uuid, ordNo, money, time, bizType, 1 });
+            ret = billDao.insert(reward.getRece_uuid(), ordNo, money, time, bizType, 1 , uuid);
             if (ret != 1) {
                 throw new RuntimeException("操作数据库异常");
             }

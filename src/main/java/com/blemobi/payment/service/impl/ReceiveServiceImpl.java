@@ -163,7 +163,7 @@ public class ReceiveServiceImpl implements ReceiveService {
 				}
 				if (rece_money < Constants.min_each_money)
 					throw new RuntimeException("领取红包时获取金额出错");
-				receiveing(ord_no, rece_uuid, rece_money, type);
+				receiveing(ord_no, redSend.getSend_uuid(), rece_uuid, rece_money, type);
 				redEnveStatus = redEnveStatus.toBuilder().setStatus(1).setReceMoney(rece_money).build();
 			}
 		} finally {
@@ -282,14 +282,14 @@ public class ReceiveServiceImpl implements ReceiveService {
 	 * @param rece_tm
 	 *            领取时间
 	 */
-	private void receiveing(String ord_no, String rece_uuid, int rece_money, int type) {
+	private void receiveing(String ord_no, String send_uuid, String rece_uuid, int rece_money, int type) {
 		long rece_tm = System.currentTimeMillis();
 		// 保存领取记录
 		redReceiveDao.insert(ord_no, rece_uuid, rece_money, rece_tm);
 		// 更新红包已领取金额和数量
 		redSendDao.update(ord_no, rece_money);
-		// 保存流水
-		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1);
+		// 保存收入流水
+		billDao.insert(rece_uuid, ord_no, rece_money, rece_tm, type, 1, send_uuid);
 		// 转账给用户
 		RobotGrpcClient robotClient = new RobotGrpcClient();
 		PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(rece_money).setServiceNo(0).build();

@@ -310,7 +310,7 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
-            ret = billDao.insert(new Object[]{uuid, lotteryId, bonus, DateTimeUtils.currTime(), Constants.OrderEnum.LUCK_DRAW.getValue(), 1});
+            ret = billDao.insert(uuid, lotteryId, bonus, DateTimeUtils.currTime(), Constants.OrderEnum.LUCK_DRAW.getValue(), 1, inf.get("uuid").toString());
             if(ret != 1){
                 throw new RuntimeException("更新账单失败");
             }

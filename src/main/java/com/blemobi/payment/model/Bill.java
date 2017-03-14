@@ -16,8 +16,18 @@ public class Bill {
 
 	private int status;
 
+	private int from_uuid;
+
 	public int getId() {
 		return id;
+	}
+
+	public int getFrom_uuid() {
+		return from_uuid;
+	}
+
+	public void setFrom_uuid(int from_uuid) {
+		this.from_uuid = from_uuid;
 	}
 
 	public void setId(int id) {
