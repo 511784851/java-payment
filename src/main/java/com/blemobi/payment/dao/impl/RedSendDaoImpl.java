@@ -29,8 +29,8 @@ public class RedSendDaoImpl implements RedSendDao {
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public int insert(String ord_no, String content, Object... args) {
-		String key = CONTENT_KEY + ord_no;
+	public int insert(String content, Object... args) {
+		String key = CONTENT_KEY + args[0];
 		Jedis jedis = RedisManager.getRedis();
 		jedis.set(key, content);
 		RedisManager.returnResource(jedis);
@@ -40,7 +40,7 @@ public class RedSendDaoImpl implements RedSendDao {
 		sql.append(
 				"ord_no, send_uuid, type, tota_money, each_money, tota_number, send_tm, over_tm, rece_tota_num, rece_uuid5, rece_money, rece_number, pay_status, ref_status");
 		sql.append(") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0)");
-		return jdbcTemplate.update(sql.toString(), ord_no, args);
+		return jdbcTemplate.update(sql.toString(), args);
 	}
 
 	@Override
