@@ -142,7 +142,7 @@ public class LotteryProcess {
             String[] gArr = genders.split(",");
             String[] lArr = regions.split(",");
             if(uArr.length != gArr.length || uArr.length != lArr.length){
-                throw new BizException(2017000, "中奖者名单有误");
+                throw new RuntimeException("中奖者名单有误");
             }
             List<PUserBaseEx> ue = new ArrayList<PUserBaseEx>();
             int idx = 0;
@@ -158,7 +158,7 @@ public class LotteryProcess {
             }
             builder.addAllUserList(ue);
         }else {
-            throw new BizException(2017000, "中奖者名单有误");
+            throw new RuntimeException("中奖者名单有误");
         }
         PMessage ret = lotteryService.createLottery(uuid, builder.build());
         return ret;
