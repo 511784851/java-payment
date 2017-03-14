@@ -80,7 +80,7 @@ public class SendServiceImpl implements SendService {
 		if (message != null)
 			return message;
 
-		String ord_no = System.currentTimeMillis()+"";//createOrdNo(type, money);// 订单号
+		String ord_no = createOrdNo(type, money);// 订单号
 		return savaOrder(ord_no, send_uuid, type, money, each_money, number, content, rece_tota_num, rece_uuid);
 	}
 
