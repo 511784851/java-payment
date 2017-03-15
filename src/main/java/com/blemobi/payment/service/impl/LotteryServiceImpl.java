@@ -213,6 +213,7 @@ public class LotteryServiceImpl implements LotteryService {
                 PUserBaseEx.Builder uBuilder = PUserBaseEx.newBuilder();
                 uBuilder.setAmt(Integer.parseInt(usr.get("bonus").toString()));
                 String uuid = usr.get("uuid").toString();
+                uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));  
                 PUserBase.Builder infBuilder = PUserBase.newBuilder();
                 infBuilder.setUUID(uuid);
                 try {
