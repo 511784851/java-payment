@@ -344,7 +344,7 @@ public class LotteryServiceImpl implements LotteryService {
             throw new BizException(2101006, "单日支出超出上限");
         }
         Integer times = jedisDao.getUserLotteryRefreshTimes(uuid);
-        if (times > 1) {
+        if (times > 0) {
             throw new BizException(2105005, "操作过于频繁，稍后再试");
         }
         DataPublishGrpcClient client = new DataPublishGrpcClient();
