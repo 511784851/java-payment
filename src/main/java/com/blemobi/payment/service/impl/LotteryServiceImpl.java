@@ -480,7 +480,7 @@ public class LotteryServiceImpl implements LotteryService {
         //B2C
         String desc = "领奖退款";
         B2CReq req = new B2CReq();
-        String ordNo = "1" + lotteryId;
+        String ordNo = "T" + lotteryId;
         req.setCustOrderno(ordNo);
         req.setFenAmt(remainAmt);
         req.setCustUid(uuid);
