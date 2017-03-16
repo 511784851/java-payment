@@ -92,15 +92,8 @@ public class RandomRedHelper {
 		// 计算出随机金额最大值
 		int max_random_money = get_max_random_money(surplus_money, surplus_number, next_surplus_number);
 		// 产生一个从min_random_money到max_random_money之间的随机数
-		int money = 1;
-		if (max_random_money != min_random_money) {
-			Random random = new Random();
-			money = random.nextInt(max_random_money - min_random_money) + min_random_money;
-		} else {
-			money = min_random_money;
-		}
-
-		return money;
+		Random random = new Random();
+		return random.nextInt(max_random_money - min_random_money + 1) + min_random_money;
 	}
 
 	/**
@@ -167,7 +160,7 @@ public class RandomRedHelper {
 	 */
 	public static void main(String[] args) {
 		for (int i = 0; i < 10000; i++) {
-			RandomRedHelper rdh1 = new RandomRedHelper(200000, 10);
+			RandomRedHelper rdh1 = new RandomRedHelper(3, 2);
 			int[] r1 = rdh1.distribution();
 			for (int r = 0; r < r1.length; r++)
 				System.out.print(r1[r] + ",");
