@@ -13,6 +13,7 @@ import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.redis.LockManager;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
+import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.RandomDao;
 import com.blemobi.payment.dao.RedReceiveDao;
 import com.blemobi.payment.dao.RedSendDao;
@@ -54,21 +55,18 @@ public class ReceiveServiceImpl implements ReceiveService {
 
 	@Autowired
 	private RedSendDao redSendDao;
-
 	@Autowired
 	private RedReceiveDao redReceiveDao;
-
 	@Autowired
 	private RandomDao randomDao;
-
 	@Autowired
 	private BillDao billDao;
-
 	@Autowired
 	private TableStoreDao tableStoreDao;
-
 	@Autowired
 	private TransactionDao transactionDao;
+	@Autowired
+	private JedisDao jedisDao;
 
 	@Override
 	public PMessage checkStatus(String ord_no, String rece_uuid) throws IOException {
@@ -159,7 +157,12 @@ public class ReceiveServiceImpl implements ReceiveService {
 				} else if (type == OrderEnum.RED_GROUP_EQUAL.getValue()) {// 等额群红包
 					rece_money = redSend.getEach_money();
 				} else if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {// 随机群红包
-					rece_money = randomDao.selectByKey(ord_no, redSend.getRece_number());
+					try {
+						// 随机金额存储优化，下次版本可取消此操作
+						rece_money = randomDao.selectByKey(ord_no, redSend.getRece_number());
+					} catch (Exception e) {
+						rece_money = jedisDao.findRandomMoneyByOrdNoAndIdx(ord_no, redSend.getRece_number());
+					}
 				}
 				if (rece_money < Constants.min_each_money)
 					throw new RuntimeException("领取红包时获取金额出错");

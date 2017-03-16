@@ -2,6 +2,7 @@ package com.blemobi.payment.dao.impl;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 //github.com/blemobi/java-payment.git
@@ -22,8 +23,34 @@ import redis.clients.jedis.Jedis;
 @Repository("jedisDao")
 public class JedisDaoImpl implements JedisDao {
 
+	/** 存储红包随机金额 list */
+	private final String RANDOM_KEY = "payment:random:";
+
 	/** 存储用户单日发送总金额 string */
 	private final String DAILY_KEY = "payment:daily:";
+
+	@Override
+	public int putRedRandDomMoney(String ord_no, int... moneys) {
+		String key = RANDOM_KEY + ord_no;
+		Jedis jedis = RedisManager.getRedis();
+		String[] arr = new String[moneys.length];
+		int i = 0;
+		for (int money : moneys)
+			arr[i++] = money + "";
+		jedis.rpushx(key, arr);
+		jedis.expire(key, 48 * 60 * 60);
+		RedisManager.returnResource(jedis);
+		return 0;
+	}
+
+	@Override
+	public int findRandomMoneyByOrdNoAndIdx(String ord_no, long idx) {
+		String key = RANDOM_KEY + ord_no;
+		Jedis jedis = RedisManager.getRedis();
+		List<String> set = jedis.lrange(key, idx, idx);
+		RedisManager.returnResource(jedis);
+		return Integer.parseInt(set.get(0));
+	}
 
 	@Override
 	public long incrByDailySendMoney(String send_uuid, int money) {
@@ -61,8 +88,8 @@ public class JedisDaoImpl implements JedisDao {
 		Jedis jedis = RedisManager.getRedis();
 		String times = jedis.get(key);
 		int time = 1;
-		if(!StringUtils.isEmpty(times)){
-		    time = Integer.parseInt(times) + 1;
+		if (!StringUtils.isEmpty(times)) {
+			time = Integer.parseInt(times) + 1;
 		}
 		jedis.incrBy(key, time);
 		jedis.expire(key, 5);// 5sec
@@ -82,11 +109,11 @@ public class JedisDaoImpl implements JedisDao {
 		return time.getTime() / 1000;
 	}
 
-    @Override
-    public void cleanLotteryCD(String uuid) {
-        String key = "payment:LOTTERY:CD:" + uuid;
-        Jedis jedis = RedisManager.getRedis();
-        jedis.del(key);
-        RedisManager.returnResource(jedis);
-    }
+	@Override
+	public void cleanLotteryCD(String uuid) {
+		String key = "payment:LOTTERY:CD:" + uuid;
+		Jedis jedis = RedisManager.getRedis();
+		jedis.del(key);
+		RedisManager.returnResource(jedis);
+	}
 }
