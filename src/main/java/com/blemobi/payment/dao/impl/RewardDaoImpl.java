@@ -8,12 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.blemobi.library.redis.RedisManager;
 import com.blemobi.payment.dao.RewardDao;
 import com.blemobi.payment.model.Reward;
 import com.google.common.base.Strings;
-
-import redis.clients.jedis.Jedis;
 
 /**
  * 打赏数据库操作实现类
@@ -24,23 +21,16 @@ import redis.clients.jedis.Jedis;
 @Repository("rewardDao")
 public class RewardDaoImpl implements RewardDao {
 
-	private final String CONTENT_KEY = "payment:content:";
-
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public int insert(String ord_no, String send_uuid, String rece_uuid, int money, String content, long send_tm) {
-		String key = CONTENT_KEY + ord_no;
-		Jedis jedis = RedisManager.getRedis();
-		jedis.set(key, content);
-		RedisManager.returnResource(jedis);
-
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_reward (");
 		sql.append("ord_no, send_uuid, rece_uuid, money, content, send_tm, pay_status ");
-		sql.append(") values (?, ?, ?, ?, '', ?, 0)");
-		return jdbcTemplate.update(sql.toString(), ord_no, send_uuid, rece_uuid, money, send_tm);
+		sql.append(") values (?, ?, ?, ?, ?, ?, 0)");
+		return jdbcTemplate.update(sql.toString(), ord_no, send_uuid, rece_uuid, money, content, send_tm);
 	}
 
 	@Override
