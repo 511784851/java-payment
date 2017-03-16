@@ -210,12 +210,11 @@ public class LotteryServiceImpl implements LotteryService {
         if (users != null && !users.isEmpty()) {
             List<PUserBaseEx> userList = new ArrayList<PUserBaseEx>();
             for (Map<String, Object> usr : users) {
+                String uuid = usr.get("uuid").toString();
+                log.debug("中奖用户UUID：" + uuid);
                 PUserBaseEx.Builder uBuilder = PUserBaseEx.newBuilder();
                 uBuilder.setAmt(Integer.parseInt(usr.get("bonus").toString()));
-                String uuid = usr.get("uuid").toString();
                 uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));  
-                PUserBase.Builder infBuilder = PUserBase.newBuilder();
-                infBuilder.setUUID(uuid);
                 try {
                     PUserBase userBase = UserBaseCache.get(uuid);
                     uBuilder.setInfo(userBase);
@@ -226,7 +225,6 @@ public class LotteryServiceImpl implements LotteryService {
                 String loc = usr.get("loc_cd").toString();
                 uBuilder.setRegion(loc);
                 locs.put(loc, loc);
-                uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));
                 userList.add(uBuilder.build());
             }
             builder.addAllUserList(userList);
@@ -234,8 +232,8 @@ public class LotteryServiceImpl implements LotteryService {
         
         
         List<Map<String, Object>> locations = lotteryDao.lotteryLocations(lotteryId);
-        List<String> regions = new ArrayList<>();
         if (locations != null && !locations.isEmpty()) {
+            List<String> regions = new ArrayList<>();
             for (Map<String, Object> loc : locations) {
                 String location = loc.get("loc_cd").toString();
                 if(locs.containsKey(location)){
