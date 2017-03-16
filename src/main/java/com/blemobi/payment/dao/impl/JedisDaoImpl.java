@@ -37,7 +37,7 @@ public class JedisDaoImpl implements JedisDao {
 		int i = 0;
 		for (int money : moneys)
 			arr[i++] = money + "";
-		jedis.rpushx(key, arr);
+		jedis.rpush(key, arr);
 		jedis.expire(key, 48 * 60 * 60);
 		RedisManager.returnResource(jedis);
 		return 0;
