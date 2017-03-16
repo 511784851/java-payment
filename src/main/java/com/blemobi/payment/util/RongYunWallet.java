@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.blemobi.library.consul.BaseService;
 import com.blemobi.payment.excepiton.BizException;
-import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.rongyun.B2CReq;
 import com.blemobi.payment.util.rongyun.B2CResp;
 
@@ -61,7 +61,7 @@ public final class RongYunWallet {
         param.remove("fenAmt");
         String sign = SignUtil.sign(param);
         param.put("sign", sign);
-        String reqUri = Constants.RONG_YUN_BASE_URL + Constants.B2C_TRANSFER_URI;
+        String reqUri = BaseService.getProperty("ry.transferURI");
         return reqRongYun(reqUri, param, B2CResp.class);
     }
 
