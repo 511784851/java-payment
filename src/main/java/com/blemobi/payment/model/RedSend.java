@@ -1,10 +1,5 @@
 package com.blemobi.payment.model;
 
-import com.blemobi.library.redis.RedisManager;
-import com.google.common.base.Strings;
-
-import redis.clients.jedis.Jedis;
-
 public class RedSend {
 
 	private int id;
@@ -111,15 +106,7 @@ public class RedSend {
 		this.rece_number = rece_number;
 	}
 
-	private final String CONTENT_KEY = "payment:content:";
-
 	public String getContent() {
-		if (Strings.isNullOrEmpty(content)) {
-			String key = CONTENT_KEY + ord_no;
-			Jedis jedis = RedisManager.getRedis();
-			content = jedis.get(key);
-			RedisManager.returnResource(jedis);
-		}
 		return content;
 	}
 
