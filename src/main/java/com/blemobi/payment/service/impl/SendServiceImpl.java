@@ -340,7 +340,7 @@ public class SendServiceImpl implements SendService {
 		// B2C
 		String desc = "红包退款";
 		B2CReq req = new B2CReq();
-		String ordNo = "1" + rs.getOrd_no();
+		String ordNo = "T" + rs.getOrd_no();
 		req.setCustOrderno(ordNo);
 		int refAmt = rs.getTota_money() - rs.getRece_money();
 		req.setFenAmt(refAmt);
