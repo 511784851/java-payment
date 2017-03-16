@@ -91,11 +91,11 @@ public final class RongYunWallet {
                 log.info("rong yun response:" + json);
                 return JSON.parseObject(json, clazz);
             }else {
-                throw new BizException(2106000, "请求融云钱包出现异常");
+                throw new RuntimeException("请求融云钱包出现异常");
             }
         } catch (IOException e) {
             log.error("request rong yun wallet failed", e);
-            throw new BizException(2106000, "请求融云钱包出现异常");
+            throw new RuntimeException("请求融云钱包出现异常");
         }
     }
     
