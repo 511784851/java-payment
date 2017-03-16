@@ -15,7 +15,6 @@ import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.JedisDao;
-import com.blemobi.payment.dao.RandomDao;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.dao.TableStoreDao;
 import com.blemobi.payment.dao.TransactionDao;
@@ -58,11 +57,7 @@ public class SendServiceImpl implements SendService {
 	@Autowired
 	private TransactionDao transactionDao;
 	@Autowired
-	private RandomDao randomDao;
-
-	@Autowired
 	private JedisDao jedisDao;
-
 	@Autowired
 	private TableStoreDao tableStoreDao;
 
@@ -123,7 +118,7 @@ public class SendServiceImpl implements SendService {
 		// 如果是随机红包，计算随机金额并保存
 		if (type == OrderEnum.RED_GROUP_RANDOM.getValue()) {
 			int[] moneyArray = randomMoney(number, tota_money, ord_no);
-			randomDao.insert(ord_no, moneyArray);
+			jedisDao.putRedRandDomMoney(ord_no, moneyArray);
 		}
 		return savaOrder(ord_no, send_uuid, type, tota_money, each_money, number, content, rece_tota_num, rece_uuid);
 	}
