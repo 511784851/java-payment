@@ -8,6 +8,28 @@ package com.blemobi.payment.dao;
  */
 public interface JedisDao {
 
+	/**
+	 * 存放随机红包金额
+	 * 
+	 * @param ord_no
+	 *            订单号
+	 * @param moneys
+	 *            随机金额数组
+	 * @return
+	 */
+	public int putRedRandDomMoney(String ord_no, int... moneys);
+
+	/**
+	 * 获取随机金额
+	 * 
+	 * @param ord_no
+	 *            订单号
+	 * @param idx
+	 *            索引
+	 * @return
+	 */
+	public int findRandomMoneyByOrdNoAndIdx(String ord_no, long idx);
+
 	public void setUserLotteryRefreshTimes(String uuid);
 
 	/**
@@ -37,7 +59,7 @@ public interface JedisDao {
 	 * @return 单日已发送总金额（单位：分）
 	 */
 	public int findDailySendMoney(String send_uuid);
-	
+
 	public void cleanLotteryCD(String uuid);
 
 }
