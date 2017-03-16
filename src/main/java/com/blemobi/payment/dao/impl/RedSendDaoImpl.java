@@ -8,11 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.blemobi.library.redis.RedisManager;
 import com.blemobi.payment.dao.RedSendDao;
 import com.blemobi.payment.model.RedSend;
-
-import redis.clients.jedis.Jedis;
 
 /**
  * 发红包数据库操作实现类
@@ -23,19 +20,12 @@ import redis.clients.jedis.Jedis;
 @Repository("redSendDao")
 public class RedSendDaoImpl implements RedSendDao {
 
-	private final String CONTENT_KEY = "payment:content:";
-
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public int insert(String ord_no, String send_uuid, int type, int tota_money, int each_money, int number,
 			String content, long send_tm, long over_tm, int rece_tota_num, String rece_uuid) {
-		// String key = CONTENT_KEY + ord_no;
-		// Jedis jedis = RedisManager.getRedis();
-		// jedis.set(key, content);
-		// RedisManager.returnResource(jedis);
-
 		StringBuffer sql = new StringBuffer();
 		sql.append("insert into t_red_send (");
 		sql.append(
@@ -78,7 +68,7 @@ public class RedSendDaoImpl implements RedSendDao {
 	}
 
 	public List<RedSend> selectByOver() {
-		long time = System.currentTimeMillis();
+		long time = System.currentTimeMillis() - 5 * 60 * 1000;
 		StringBuffer sql = new StringBuffer();
 		sql.append("select ");
 		sql.append("id, ord_no, type, rece_money, tota_money, send_uuid ");
@@ -89,7 +79,7 @@ public class RedSendDaoImpl implements RedSendDao {
 	}
 
 	public int updateRef(String ord_no) {
-		long time = System.currentTimeMillis();
+		long time = System.currentTimeMillis() - 5 * 60 * 1000;
 		StringBuffer sql = new StringBuffer();
 		sql.append("update t_red_send set ");
 		sql.append("ref_status=1 ");
