@@ -49,56 +49,95 @@ public class SreachServiceImpl implements SreachService {
 	@Override
 	public PMessage list(String uuid, String keyword) throws IOException {
 		PSreachList sreachList = PSreachList.newBuilder().build();
-		PStringSingle request = PStringSingle.newBuilder().setVal(keyword).build();
-		DataPublishGrpcClient client = new DataPublishGrpcClient();
-		PStringList stringList = client.SearchUser(request);
+		PStringList stringList = getNicknameByKeyword(keyword);
 		log.debug(keyword + " 匹配的uuid：" + stringList);
 		if (stringList != null) {
 			List<String> sreachUUIDs = stringList.getListList();
 			if (sreachUUIDs != null && sreachUUIDs.size() > 0) {
-				// 全部发送红包记录
-				List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, Integer.MAX_VALUE, 100000);
-				// 符合搜索条件的发送红包记录
-				List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
-				for (RedSend redSend : allRedSendList) {
-					for (String sreachUUID : sreachUUIDs) {
-						// 是否符合搜索条件
-						boolean bool = false;
-						if (redSend.getRece_uuid5().indexOf(sreachUUID) >= 0)
-							bool = true;
-						else
-							bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), redSend.getOrd_no(),
-									sreachUUID);
-						log.debug(sreachUUID + " 是否符合搜索条件：" + bool);
-						if (bool) {
-							PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
-							redList.add(redInfo);
-							break;
-						}
-					}
-				}
-
-				List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", Integer.MAX_VALUE, 1000000);
-				// 符合搜索条件的发送红包记录
-				List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
-				for (Reward reward : allRewardList) {
-					for (String sreachUUID : sreachUUIDs) {
-						// 是否符合搜索条件
-						if (sreachUUID.equals(reward.getUuid())) {
-							PUserBase userBase = UserBaseCache.get(reward.getUuid());
-							PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
-							rewardInfoList.add(rewardInfo);
-							break;
-						}
-					}
-				}
+				// 搜索红包发送记录
+				List<PRedEnveBaseInfo> redList = sreachSendRed(uuid, sreachUUIDs);
+				// 搜索收到的打赏记录
+				List<PRewardInfo> rewardInfoList = sreachReward(uuid, sreachUUIDs);
 				sreachList = PSreachList.newBuilder().addAllRedEnveBaseInfo(redList).addAllRewardInfo(rewardInfoList)
 						.build();
 			}
 		}
-
 		return ReslutUtil.createReslutMessage(sreachList);
+	}
 
+	/**
+	 * 搜索红包发送记录
+	 * 
+	 * @param uuid
+	 *            发送用户uuid
+	 * @param sreachUUIDs
+	 *            参与用户uuid
+	 * @return
+	 * @throws IOException
+	 */
+	private List<PRedEnveBaseInfo> sreachSendRed(String uuid, List<String> sreachUUIDs) throws IOException {
+		// 全部发送红包记录
+		List<RedSend> allRedSendList = redSendDao.selectByPage(uuid, Integer.MAX_VALUE, 100000);
+		// 符合搜索条件的发送红包记录
+		List<PRedEnveBaseInfo> redList = new ArrayList<PRedEnveBaseInfo>();
+		for (RedSend redSend : allRedSendList) {
+			for (String sreachUUID : sreachUUIDs) {
+				// 是否符合搜索条件
+				boolean bool = false;
+				if (redSend.getRece_uuid5().indexOf(sreachUUID) >= 0)
+					bool = true;
+				else
+					bool = tableStoreDao.existsByKey(TABLE_NAMES.RED_PKG_TB.getValue(), redSend.getOrd_no(),
+							sreachUUID);
+				if (bool) {
+					PRedEnveBaseInfo redInfo = buildRedEnveBaseInfo(redSend);
+					redList.add(redInfo);
+					break;
+				}
+			}
+		}
+		return redList;
+	}
+
+	/**
+	 * 搜索收到的打赏记录
+	 * 
+	 * @param uuid
+	 *            领赏用户uuid
+	 * @param sreachUUIDs
+	 *            要搜索的打赏用户uuid
+	 * @return
+	 * @throws IOException
+	 */
+	private List<PRewardInfo> sreachReward(String uuid, List<String> sreachUUIDs) throws IOException {
+		List<Reward> allRewardList = rewardDao.selectReceByPage(uuid, "", Integer.MAX_VALUE, 1000000);
+		// 符合搜索条件的发送红包记录
+		List<PRewardInfo> rewardInfoList = new ArrayList<PRewardInfo>();
+		for (Reward reward : allRewardList) {
+			for (String sreachUUID : sreachUUIDs) {
+				// 是否符合搜索条件
+				if (sreachUUID.equals(reward.getUuid())) {
+					PUserBase userBase = UserBaseCache.get(reward.getUuid());
+					PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
+					rewardInfoList.add(rewardInfo);
+					break;
+				}
+			}
+		}
+		return rewardInfoList;
+	}
+
+	/**
+	 * 匹配uuid
+	 * 
+	 * @param keyword
+	 *            昵称
+	 * @return
+	 */
+	private PStringList getNicknameByKeyword(String keyword) {
+		PStringSingle request = PStringSingle.newBuilder().setVal(keyword).build();
+		DataPublishGrpcClient client = new DataPublishGrpcClient();
+		return client.SearchUser(request);
 	}
 
 	/**

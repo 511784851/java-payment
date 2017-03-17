@@ -34,7 +34,9 @@ public class RandomRedHelper {
 	 * 构造方法
 	 * 
 	 * @param tota_money
+	 *            总金额（单位：分）
 	 * @param tota_number
+	 *            红包数量
 	 */
 	public RandomRedHelper(int tota_money, int tota_number) {
 		this.tota_money = tota_money;
@@ -45,7 +47,7 @@ public class RandomRedHelper {
 	/**
 	 * 随机金额分配
 	 * 
-	 * @return
+	 * @return 分配好的随机金额
 	 */
 	public int[] distribution() {
 		calculation(0, tota_money);
@@ -76,7 +78,9 @@ public class RandomRedHelper {
 	 * 生成本次随机金额
 	 * 
 	 * @param idx_number
-	 * @param money
+	 *            第几个红包（0开始）
+	 * @param surplus_money
+	 *            剩余总金额
 	 * @return
 	 */
 	private int doRandomMoney(int idx_number, int surplus_money) {
@@ -100,7 +104,9 @@ public class RandomRedHelper {
 	 * 计算出随机金额最小值
 	 * 
 	 * @param surplus_money
+	 *            剩余总金额
 	 * @param next_surplus_number
+	 *            领完本次剩余的红包数量
 	 * @return
 	 */
 	private int get_min_random_money(int surplus_money, int next_surplus_number) {
@@ -117,8 +123,11 @@ public class RandomRedHelper {
 	 * 计算出随机金额最大值
 	 * 
 	 * @param surplus_money
+	 *            剩余总金额
 	 * @param surplus_number
+	 *            剩余的红包数量
 	 * @param next_surplus_number
+	 *            领完本次剩余的红包数量
 	 * @return
 	 */
 	private int get_max_random_money(int surplus_money, int surplus_number, int next_surplus_number) {

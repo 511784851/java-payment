@@ -53,19 +53,39 @@ public class SignHelper {
 	 *            业务订单号
 	 * @param goodsName
 	 *            商品名称
+	 * @param recAccountType
+	 *            0-个人，1-企业
+	 * @param receivedId
+	 *            收款账户
 	 */
-	public SignHelper(String cusId, int fenMoney, String ord_no, String goodsName) {
+	private SignHelper(String cusId, int fenMoney, String ord_no, String goodsName, int recAccountType,
+			String receivedId) {
 		this.cusId = cusId;
 		this.fenMoney = fenMoney;
 		this.ord_no = ord_no;
 		this.goodsName = goodsName;
-		this.recAccountType = 1;// 企业
-		this.receivedId = "miwukeji";// 企业账户
-
+		this.recAccountType = 0;// 个人
+		this.receivedId = receivedId;// 个人账户
 	}
 
 	/**
-	 * 构造方法
+	 * 构造方法（企业收款）
+	 * 
+	 * @param cusId
+	 *            用户uuid
+	 * @param fenMoney
+	 *            支付金额（单位：分）
+	 * @param orderNum
+	 *            业务订单号
+	 * @param goodsName
+	 *            商品名称
+	 */
+	public SignHelper(String cusId, int fenMoney, String ord_no, String goodsName) {
+		this(cusId, fenMoney, ord_no, goodsName, 1, partnerId);
+	}
+
+	/**
+	 * 构造方法 （个人收款）
 	 * 
 	 * @param cusId
 	 *            用户uuid
@@ -79,13 +99,7 @@ public class SignHelper {
 	 *            个人账户
 	 */
 	public SignHelper(String cusId, int fenMoney, String ord_no, String goodsName, String receivedId) {
-		this.cusId = cusId;
-		this.fenMoney = fenMoney;
-		this.ord_no = ord_no;
-		this.goodsName = goodsName;
-		this.recAccountType = 0;// 个人
-		this.receivedId = receivedId;// 个人账户
-
+		this(cusId, fenMoney, ord_no, goodsName, 0, receivedId);
 	}
 
 	/**
@@ -124,7 +138,6 @@ public class SignHelper {
 		params.put("receiveUid", receivedId);
 		params.put("seckey", seckey);
 		params.put("recAccountType", recAccountType + "");
-
 		return params;
 	}
 

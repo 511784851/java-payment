@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
 	public PMessage celebrity(String uuid, String keyword) throws IOException {
 		// 获得全部网红用户
 		List<PGroupString> list = getAllCelebrity(uuid, keyword);
-		log.debug("用户【" + uuid + "】，网红分组数量：" + list.size());
 		List<PCelebrityGroup> cgList = new ArrayList<PCelebrityGroup>();
 		for (PGroupString groupString : list) {
 			PCelebrityGroup celebrityGroup = buildPCelebrityGroup(groupString);
@@ -75,7 +74,6 @@ public class UserServiceImpl implements UserService {
 	private PCelebrityGroup buildPCelebrityGroup(PGroupString groupString) throws IOException {
 		String group = groupString.getGroup();
 		List<PCelebrityInfo> userList = getUserInfoList(groupString);
-		log.debug("分组：" + group + " ; 网红总数：" + userList.size());
 		PCelebrityGroup celebrityGroup = PCelebrityGroup.newBuilder().setGroup(group).addAllCelebrityInfo(userList)
 				.build();
 		return celebrityGroup;
@@ -91,7 +89,7 @@ public class UserServiceImpl implements UserService {
 	private List<PCelebrityInfo> getUserInfoList(PGroupString groupString) throws IOException {
 		ProtocolStringList stringList = groupString.getListList();
 		PStringList stringVOList = getUserVOInfoList(stringList);
-		log.debug("网红数量：" + stringList.size() + " ; 网红VO数量：" + stringVOList.getListCount());
+		log.debug("网红数量：" + stringList.size() + " ; 找到网红VO数量：" + stringVOList.getListCount());
 		List<PCelebrityInfo> userList = new ArrayList<PCelebrityInfo>();
 		for (int i = 0; i < stringList.size(); i++) {
 			String uuid = stringList.get(i);

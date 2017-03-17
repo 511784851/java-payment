@@ -17,86 +17,94 @@ import com.blemobi.sep.probuf.RobotProtos.ERobotPushType;
  */
 public class PushMsgHelper {
 
-    private String send_uuid;
-    private String ord_no;
-    private List<String> toList;
-    private String desc;
-    /**
-     * @Description TODO
-     * @param send_uuid
-     * @param ord_no
-     * @param toList
-     */
-    public PushMsgHelper(String send_uuid, String ord_no, List<String> toList, String desc) {
-        super();
-        this.send_uuid = send_uuid;
-        this.ord_no = ord_no;
-        this.toList = toList;
-        this.desc = desc;
-    }
+	private String send_uuid;
+	private String ord_no;
+	private List<String> toList;
+	private String desc;
 
-    /**
-     * 构造方法
-     * 
-     * @param send_uuid
-     *            消息来源用户uuid
-     * @param ord_no
-     *            业务订单号
-     * @param targetKey
-     *            OTS存储的KEY
-     */
-    public PushMsgHelper(String send_uuid, String ord_no, String desc) {
-        this.send_uuid = send_uuid;
-        this.ord_no = ord_no;
-        this.desc = desc;
-    }
+	/**
+	 * 构造方法
+	 * 
+	 * @param send_uuid
+	 *            消息来源用户uuid
+	 * @param ord_no
+	 *            业务订单号
+	 * @param toList
+	 *            消息目标用户uuid
+	 * @param desc
+	 *            消息内容
+	 */
+	public PushMsgHelper(String send_uuid, String ord_no, List<String> toList, String desc) {
+		super();
+		this.send_uuid = send_uuid;
+		this.ord_no = ord_no;
+		this.toList = toList;
+		this.desc = desc;
+	}
 
-    /**
-     * 推送红包消息
-     */
-    public void redPacketMsg() {
-        // 红包信息
-        PBRedPacketNotifyMsg redPacketNotifyMsg = PBRedPacketNotifyMsg.newBuilder().setOrdNo(ord_no).setText(desc).build();
-        // 消息内容
-        PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setRedpacket(redPacketNotifyMsg).build();
-        push(robotRawNotifyMsg, ERobotPushType.RedPacket);
+	/**
+	 * 构造方法
+	 * 
+	 * @param send_uuid
+	 *            消息来源用户uuid
+	 * @param ord_no
+	 *            业务订单号
+	 * @param desc
+	 *            消息内容
+	 */
+	public PushMsgHelper(String send_uuid, String ord_no, String desc) {
+		this.send_uuid = send_uuid;
+		this.ord_no = ord_no;
+		this.desc = desc;
+	}
 
-    }
+	/**
+	 * 推送红包消息
+	 */
+	public void redPacketMsg() {
+		// 红包信息
+		PBRedPacketNotifyMsg redPacketNotifyMsg = PBRedPacketNotifyMsg.newBuilder().setOrdNo(ord_no).setText(desc)
+				.build();
+		// 消息内容
+		PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setRedpacket(redPacketNotifyMsg).build();
+		push(robotRawNotifyMsg, ERobotPushType.RedPacket);
 
-    /**
-     * 推送抽奖消息
-     */
-    public void lotteryMsg() {
-        // 红包信息
-        PBLotteryNotifyMsg lotteryNotifyMsg = PBLotteryNotifyMsg.newBuilder().setOrdNo(ord_no).setText(desc).build();
-        // 消息内容
-        PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setLottery(lotteryNotifyMsg).build();
-        push(robotRawNotifyMsg, ERobotPushType.Lottery);
+	}
 
-    }
+	/**
+	 * 推送抽奖消息
+	 */
+	public void lotteryMsg() {
+		// 红包信息
+		PBLotteryNotifyMsg lotteryNotifyMsg = PBLotteryNotifyMsg.newBuilder().setOrdNo(ord_no).setText(desc).build();
+		// 消息内容
+		PRobotRawNotifyMsg robotRawNotifyMsg = PRobotRawNotifyMsg.newBuilder().setLottery(lotteryNotifyMsg).build();
+		push(robotRawNotifyMsg, ERobotPushType.Lottery);
 
-    /**
-     * 推送
-     * 
-     * @param robotRawNotifyMsg
-     *            消息内容
-     * @param robotPushType
-     *            消息类型
-     */
-    private void push(PRobotRawNotifyMsg robotRawNotifyMsg, ERobotPushType robotPushType) {
-        // 消息类型
-        PRobotNotifyMsg robotNotifyMsg = null;
-        if (toList != null && toList.size() > 0) {
-            robotNotifyMsg = PRobotNotifyMsg.newBuilder().addAllTo(toList).setFrom(send_uuid)
-                    .setMsgType(robotPushType).setContent(robotRawNotifyMsg).build();
-        } else {
-            robotNotifyMsg = PRobotNotifyMsg.newBuilder().setFrom(send_uuid)
-                    .setMsgType(robotPushType).setContent(robotRawNotifyMsg).build();
-        }
-        // 批量消息
-        PRobotNotifyMsgList robotNotifyMsgList = PRobotNotifyMsgList.newBuilder().addList(robotNotifyMsg).build();
+	}
 
-        RobotGrpcClient client = new RobotGrpcClient();
-        client.push(robotNotifyMsgList);
-    }
+	/**
+	 * 推送
+	 * 
+	 * @param robotRawNotifyMsg
+	 *            消息内容
+	 * @param robotPushType
+	 *            消息类型
+	 */
+	private void push(PRobotRawNotifyMsg robotRawNotifyMsg, ERobotPushType robotPushType) {
+		// 消息类型
+		PRobotNotifyMsg robotNotifyMsg = null;
+		if (toList != null && toList.size() > 0) {
+			robotNotifyMsg = PRobotNotifyMsg.newBuilder().addAllTo(toList).setFrom(send_uuid).setMsgType(robotPushType)
+					.setContent(robotRawNotifyMsg).build();
+		} else {
+			robotNotifyMsg = PRobotNotifyMsg.newBuilder().setFrom(send_uuid).setMsgType(robotPushType)
+					.setContent(robotRawNotifyMsg).build();
+		}
+		// 批量消息
+		PRobotNotifyMsgList robotNotifyMsgList = PRobotNotifyMsgList.newBuilder().addList(robotNotifyMsg).build();
+
+		RobotGrpcClient client = new RobotGrpcClient();
+		client.push(robotNotifyMsgList);
+	}
 }
