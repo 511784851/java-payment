@@ -51,6 +51,14 @@ public final class DateTimeUtils {
         return DAY > sub;
     }
     
+    public static int compare(long dt1, long dt2){
+        if(dt1 > dt2)
+            return 1;
+        if(dt1 < dt2)
+            return -1;
+        return 0;
+    }
+    
     public static void main(String[] args) {
         System.out.println(DateTimeUtils.calcTime(TimeUnit.DAYS, -30));
     }

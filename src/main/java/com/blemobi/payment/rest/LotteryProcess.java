@@ -46,8 +46,6 @@ import com.pakulov.jersey.protobuf.internal.MediaTypeExt;
 
 /**
  * @ClassName LotteryProcess
-
-import com.pakulov.jersey.protobu
  * @Description 抽奖接口
  * @author HUNTER.POON
  * @Date 2017年2月18日 下午12:05:45
