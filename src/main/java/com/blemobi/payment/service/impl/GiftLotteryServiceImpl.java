@@ -98,9 +98,9 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.debug("UUID:[" + uuid + "]操作过于频繁，稍后再试.");
             throw new BizException(2105005, "操作过于频繁，稍后再试");
         }
+        log.debug("获取查询粉丝的grpc接口");
         DataPublishGrpcClient client = new DataPublishGrpcClient();
-        // Long tm = DateTimeUtils.calcTime(TimeUnit.DAYS, -(30 * 3));
-        // List<String> expList = giftLotteryDao.queryLimits(new Object[] {uuid, tm });
+        log.debug("获取查询粉丝的grpc接口：" + client);
         List<String> uuidList = client.getFansByFilters(gender, regions, uuid, LIMIT_SIZE);
         if (uuidList == null || uuidList.size() < winners) {
             log.debug("UUID:[" + uuid + "]粉丝数量不够.");
