@@ -89,7 +89,7 @@ public class GiftLotteryProcess {
             @FormParam("giftCnt") String giftCnt) {
         log.debug("uuid:["+ uuid + "]shuffle");
         validation(title, remark, overdueTm);
-        List<String> regionList = null;
+        List<String> regionList = new ArrayList<String>();
         if (!StringUtils.isEmpty(regions)) {
             regionList = Arrays.asList(regions.split(","));
         }
@@ -133,7 +133,7 @@ public class GiftLotteryProcess {
             @FormParam("giftCnt") String giftCnt, @FormParam("uuidList") String uuidList,
             @FormParam("genderList") String genderList, @FormParam("regionList") String regionList) {
         validation(title, remark, overdueTm);
-        List<String> regionLists = null;
+        List<String> regionLists = new ArrayList<String>();
         if (!StringUtils.isEmpty(regions)) {
             regionLists = Arrays.asList(regions.split(","));
         }

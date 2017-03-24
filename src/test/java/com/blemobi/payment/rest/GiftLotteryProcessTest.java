@@ -21,15 +21,15 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class GiftLotteryProcessTest {
 
-    // private static final String BASE_URL = "http://192.168.7.245";
-    private static final String BASE_URL = "http://127.0.0.1";
+    private static final String BASE_URL = "http://192.168.7.245";
+    //private static final String BASE_URL = "http://127.0.0.1";
     private static int port = 9014;
     private static final String URI = "/v1/payment/giftlottery/";
     private static List<Cookie> cookies = new ArrayList<>();
 
     @Before
     public void setup() {
-        Cookie cookie0 = new Cookie("uuid", "1470564370290423368");
+        Cookie cookie0 = new Cookie("uuid", "1470563129739262662");
         Cookie cookie1 = new Cookie("token",
                 "GOmF/8UFINqy7NmU7cWhaSoBbTIgMTYyM2M0MTJkNzMyNzM0YmU0YTI3YWM4ZmI2NTBiYmQ=");
         cookies.add(cookie0);
@@ -53,30 +53,31 @@ public class GiftLotteryProcessTest {
         Map<String, String> param = new HashMap<String, String>();
         param.put("title", "测试");
         param.put("overdueTm", DateTimeUtils.calcTime(TimeUnit.DAYS, 2) + "");
-        param.put("winners", "3");
+        param.put("winners", "4");
         param.put("locCnt", "2");
-        param.put("regions", "CN;0001,CN;0002");
+        param.put("regions", "CN;3701,CN;6540");
         param.put("remark", "1234");
         param.put("gender", "-1");
         param.put("giftNm", "IPHONE7,U盘");
-        param.put("giftCnt", "1,2");
-        HttpUtils.getInstance().post(getPath(action), param, cookies);
+        param.put("giftCnt", "1,3");
+        //HttpUtils.getInstance().post(getPath(action), param, cookies);
 
         // 确认抽奖
         action = "confirm";
         param.clear();
-        // 1470745499613875660_CN;6101, 1470663570819724205_CN;3506, 1470584248405601560_
-        /**/
-        param.put("title", "三月");
-        param.put("winners", "3");
-        param.put("regions", "CN;6101,CN;3506");
+        param.put("title", "测试");
+        param.put("overdueTm", DateTimeUtils.calcTime(TimeUnit.DAYS, 2) + "");
+        param.put("winners", "4");
+        param.put("locCnt", "2");
+        param.put("regions", "CN;3701,CN;6540");
         param.put("remark", "1234");
         param.put("gender", "-1");
-        param.put("bonus", "1");
-        param.put("totAmt", "3");
-        param.put("uuid", "1470745499613875660,1470663570819724205");
-        param.put("genders", "0,0");
-       // HttpUtils.getInstance().post(getPath(action), param, cookies);
+        param.put("giftNm", "IPHONE7,U盘");
+        param.put("giftCnt", "1,3");
+        param.put("uuidList", "1481558064279125258,1481558242396559459,1470753921857608048,1481558594837018113");
+        param.put("regionList", "CN;6540,CN;3701,CN;3701,CN;6540");
+        param.put("genderList", "0,0,1,0");
+        HttpUtils.getInstance().post(getPath(action), param, cookies);
 
         // 领奖
         action = "accept";

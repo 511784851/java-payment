@@ -80,7 +80,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
      */
     @Override
     public int saveGifts(List<Object[]> param) {
-        String sql = "INSERT INTO (id, lottery_id, gift_nm, gift_cnt, remain_cnt, crt_tm, overdue_tm, upd_tm, sort) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO t_gift (id, lottery_id, gift_nm, gift_cnt, remain_cnt, crt_tm, overdue_tm, upd_tm, sort) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return this.batchUpdate(sql, param).length;
     }
 
