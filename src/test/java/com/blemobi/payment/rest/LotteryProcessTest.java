@@ -31,9 +31,9 @@ Cookie cookie0 = new Cookie("uuid", "1470564370290423368");
         Cookie cookie1 = new Cookie("token", "GOmF/8UFINqy7NmU7cWhaSoBbTIgMTYyM2M0MTJkNzMyNzM0YmU0YTI3YWM4ZmI2NTBiYmQ=");
         cookies.add(cookie0);
         cookies.add(cookie1);
-        String[] arg = new String[] {"-env", "local" };
+        String[] arg = new String[] {"-env", "test" };
         try {
-           PaymentManager.main(arg);
+          // PaymentManager.main(arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
