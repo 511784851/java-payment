@@ -126,7 +126,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         String orderno = robotClient.generateOrder(oparam).getVal();
         Long currTm = DateTimeUtils.currTime();
         // id, title, gender, remark, area_cnt, overdue_tm, uuid, status, winners, remain_cnt, crt_tm, upd_tm
-        Object[] lotteryParam = new Object[] {orderno, title, gender, locCnt, overdueTm, uuid, 1, winners, winners,
+        Object[] lotteryParam = new Object[] {orderno, title, gender, remark, locCnt, overdueTm, uuid, 1, winners, winners,
                 currTm, currTm };
         log.debug(
                 "新增实物抽奖参数:(id, title, gender, remark, area_cnt, overdue_tm, uuid, status, winners, remain_cnt, crt_tm, upd_tm)"
