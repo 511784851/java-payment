@@ -52,7 +52,7 @@ public class GiftLotteryProcessTest {
         String action = "shuffle";
         Map<String, String> param = new HashMap<String, String>();
         param.put("title", "测试");
-        param.put("overdueTm", DateTimeUtils.calcTime(TimeUnit.DAYS, 2) + "");
+        param.put("overdueTm", DateTimeUtils.calcTime(TimeUnit.DAYS, 1) + "");
         param.put("winners", "4");
         param.put("locCnt", "2");
         param.put("regions", "CN;3701,CN;6540");
@@ -65,51 +65,61 @@ public class GiftLotteryProcessTest {
         // 确认抽奖
         action = "confirm";
         param.clear();
-        param.put("title", "测试");
-        param.put("overdueTm", DateTimeUtils.calcTime(TimeUnit.DAYS, 2) + "");
+        param.put("title", "测试1");
+        param.put("overdueTm", DateTimeUtils.calcTime(TimeUnit.HOURS, 12) + "");
         param.put("winners", "4");
         param.put("locCnt", "2");
         param.put("regions", "CN;3701,CN;6540");
         param.put("remark", "1234");
         param.put("gender", "-1");
-        param.put("giftNm", "IPHONE7,U盘");
+        param.put("giftNm", "xx,33盘");
         param.put("giftCnt", "1,3");
         param.put("uuidList", "1481558064279125258,1481558242396559459,1470753921857608048,1481558594837018113");
         param.put("regionList", "CN;6540,CN;3701,CN;3701,CN;6540");
         param.put("genderList", "0,0,1,0");
-        HttpUtils.getInstance().post(getPath(action), param, cookies);
+        //HttpUtils.getInstance().post(getPath(action), param, cookies);
 
-        // 领奖
+        // 查看抽奖
+        action = "view";
+        param.clear();
+        String url = getPath(action);
+        url += "?lotteryId=5201703241491483880945963013";
+        //HttpUtils.getInstance().get(url, cookies);
+        
+        //accept
         action = "accept";
         param.clear();
-        // param.put("lotteryId", "1");
-        // HttpUtils.getInstance().post(getPath(action), param, cookies);
-
+        param.put("lotteryId", "5201703241491483880945963013");
+        //HttpUtils.getInstance().post(getPath(action), param, cookies);
+        
+        // 列表
+        action = "list";
+        url = getPath(action);
+        url += "?startIndex=0&keywords=";
+        //HttpUtils.getInstance().get(url, cookies);
+        // 详情
+        action = "detail";
+        url = getPath(action);
+        url += "?lotteryId=5201703242002794308696100870";
+        //HttpUtils.getInstance().get(url, cookies);
+        
         // 删除历史
         action = "delete";
         param.clear();
-        param.put("lotteryId", "520170311839966685359460353,520170311799642233849729033");
-        // HttpUtils.getInstance().post(getPath(action), param, cookies);
-
-        // 列表
-        // action = "list";
-        // String url = getPath(action);
-        // url += "?startIndex=0&keywords=";
-        // HttpUtils.getInstance().get(url, cookies);
-        // 详情
-        action = "detail";
-        String url = getPath(action);
-        url += "?lotteryId=520170313478097480010125313";
-        // HttpUtils.getInstance().get(url, cookies);
-
-        /*
-         * action = "view"; String url = getPath(action); url += "?lotteryId=5201703083259046610411409409";
-         * System.out.println(url); HttpUtils.getInstance().get(url, cookies);
-         */
-        /*
-         * action = "accept"; param.clear(); param.put("lotteryId", "52017030832590426610411409409");
-         * HttpUtils.getInstance().post(getPath(action), param, cookies);
-         */
+        param.put("lotteryId", "5201703242002794308696100870");
+        //HttpUtils.getInstance().post(getPath(action), param, cookies);
+        //编辑资料
+        action = "edit";
+        param.clear();
+        param.put("lotteryId", "5201703241491483880945963013");
+        param.put("uuid", "1481558064279125258");
+        //param.put("rcvNm", "张三2x");
+        param.put("rcvAddr", "深圳");
+        param.put("rcvPhone", "188xxxxxxxx");
+        //param.put("rcvEmail", "x");
+        param.put("rcvRemark", "ddddsfsfsdfs");
+        HttpUtils.getInstance().post(getPath(action), param, cookies);
+        
         }catch(Exception ex){
             ex.printStackTrace();
         }

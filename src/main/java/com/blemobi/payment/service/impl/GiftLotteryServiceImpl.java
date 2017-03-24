@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -126,8 +126,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         String orderno = robotClient.generateOrder(oparam).getVal();
         Long currTm = DateTimeUtils.currTime();
         // id, title, gender, remark, area_cnt, overdue_tm, uuid, status, winners, remain_cnt, crt_tm, upd_tm
-        Object[] lotteryParam = new Object[] {orderno, title, gender, remark, locCnt, overdueTm, uuid, 1, winners, winners,
-                currTm, currTm };
+        Object[] lotteryParam = new Object[] {orderno, title, gender, remark, locCnt, overdueTm, uuid, 1, winners,
+                winners, currTm, currTm };
         log.debug(
                 "新增实物抽奖参数:(id, title, gender, remark, area_cnt, overdue_tm, uuid, status, winners, remain_cnt, crt_tm, upd_tm)"
                         + StringUtils.join(lotteryParam, ","));
@@ -225,7 +225,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             status = 3;
         }
         // status = ?, remain_cnt = ?, upd_tm = ? WHERE id = ? AND uuid = ? AND overdue_tm > ?
-        Object[] lotteryparam = new Object[] {status, remainCnt, currTm, lotteryId, uuid, currTm };
+        Object[] lotteryparam = new Object[] {status, remainCnt, currTm, lotteryId, currTm };
         ret = giftLotteryDao.updateLottery(lotteryparam);
         if (ret != 1) {
             log.error("更新实物抽奖表异常");
@@ -262,6 +262,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
     public PMessage list(String uuid, String keywords, Integer start) {
         List<Map<String, Object>> list = giftLotteryDao.historyLotteries(uuid, keywords, start);
         PLotteryList.Builder builder = PLotteryList.newBuilder();
+
         if (list != null && !list.isEmpty()) {
             List<PLotterySingle> sList = new ArrayList<PLotterySingle>();
             for (Map<String, Object> map : list) {
@@ -271,6 +272,9 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 b.setWinners(Integer.parseInt(map.get("winners").toString()));
                 String lotteryId = map.get("id").toString();
                 b.setLotteryId(lotteryId);
+                Long ot = Long.parseLong(map.get("overdue_tm").toString());
+                Boolean in24 = DateTimeUtils.in24Hours(ot, System.currentTimeMillis());
+                b.setIn24Hours(in24);
                 List<String> uuidList = giftLotteryDao.lotteryTop5WinnerList(lotteryId);
                 if (uuidList != null && !uuidList.isEmpty()) {
                     List<PUserBase> uList = new ArrayList<PUserBase>();
@@ -307,7 +311,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 .setRemark(lotteryInfo.get("remark").toString())
                 .setStatus(Integer.parseInt(lotteryInfo.get("status").toString()))
                 .setTitle(lotteryInfo.get("title").toString())
-                .setWinners(Integer.parseInt(lotteryInfo.get("winners").toString())).setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString()));
+                .setWinners(Integer.parseInt(lotteryInfo.get("winners").toString()))
+                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString()));
         List<String> locList = giftLotteryDao.lotteryLocList(lotteryId);
         if (locList != null && !locList.isEmpty()) {
             builder.addAllRegions(locList);
@@ -321,7 +326,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 gb.setGiftCnt(Integer.parseInt(gift.get("gift_cnt").toString())).setGiftId(gift.get("id").toString())
                         .setGiftNm(gift.get("gift_nm").toString());
                 PGiftInfo g = gb.build();
-                gmap.put("", g);
+                gmap.put(gift.get("id").toString(), g);
                 gList.add(g);
             }
             builder.addAllGifts(gList);
@@ -331,7 +336,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             List<PUserBaseGiftEx> wList = new ArrayList<PUserBaseGiftEx>();
             for (Map<String, Object> winner : winnerList) {
                 PUserBaseGiftEx.Builder ub = PUserBaseGiftEx.newBuilder();
-                String uid = winner.get("").toString();
+                String uid = winner.get("uuid").toString();
                 PUserBase userBase = null;
                 try {
                     userBase = UserBaseCache.get(uid);
@@ -384,14 +389,42 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
     public PMessage edit(String uuid, String lotteryId, String uuid1, String rcvNm, String rcvAddr, String rcvPhone,
             String rcvEmail, String rcvRemark) {
         Boolean isSelf = uuid.equals(uuid1);
+        boolean f1 = false, f2 = false, f3 = false;
+        if (StringUtils.isBlank(rcvNm) || StringUtils.isBlank(rcvAddr) || StringUtils.isBlank(rcvPhone)) {
+            if(StringUtils.isBlank(rcvNm)){
+                rcvNm = " ";
+            }
+            if(StringUtils.isBlank(rcvAddr)){
+                rcvAddr = " ";
+            }
+            if(StringUtils.isBlank(rcvPhone)){
+                rcvPhone = " ";
+            }
+            f1 = true;
+        }
+        if (StringUtils.isBlank(rcvEmail)) {
+            if(StringUtils.isBlank(rcvEmail)){
+                rcvEmail = " ";
+            }
+            f2 = true;
+        }
+        if (StringUtils.isBlank(rcvRemark)) {
+            if(StringUtils.isBlank(rcvRemark)){
+                rcvRemark = " ";
+            }
+            f3 = true;
+        }
+        if (f1 && f2 && f3) {
+            throw new BizException(215016, "请至少输入收货信息、邮箱、留言中的一种");
+        }
         // status, gift_id, edit_cnt
         Map<String, Object> wInfo = giftLotteryDao.queryWinner(new Object[] {uuid1, lotteryId });
-        Integer editCnt = Integer.parseInt(wInfo.get("edit_cnt").toString());
-        if (editCnt.intValue() > 1) {
-            throw new BizException(215015, "更新次数超出限制");
-        }
         Integer status = Integer.parseInt(wInfo.get("status").toString());
+        Integer editCnt = Integer.parseInt(wInfo.get("edit_cnt").toString());
         if (isSelf) {
+            if (editCnt.intValue() > 1) {
+                throw new BizException(215015, "更新次数超出限制");
+            }
             editCnt++;
             String rcv_nm = wInfo.get("rcv_nm").toString();
             String rcv_phone = wInfo.get("rcv_phone").toString();

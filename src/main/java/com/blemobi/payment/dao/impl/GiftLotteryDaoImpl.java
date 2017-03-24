@@ -90,7 +90,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
      */
     @Override
     public int updateLottery(Object[] param) {
-        String sql = "UPDATE t_gift_lottery SET status = ?, remain_cnt = ?, upd_tm = ? WHERE id = ? AND uuid = ? AND overdue_tm > ?";
+        String sql = "UPDATE t_gift_lottery SET status = ?, remain_cnt = ?, upd_tm = ? WHERE id = ? AND overdue_tm > ?";
         return this.update(sql, param);
     }
 
@@ -100,7 +100,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
      */
     @Override
     public Map<String, Object> queryLottery(String param) {
-        String sql = "SELECT title, gender, remark, area_cnt, overdue_tm, status, winners, remain_cnt, crt_tm WHERE id = ?";
+        String sql = "SELECT title, gender, remark, area_cnt, overdue_tm, status, winners, remain_cnt, crt_tm FROM t_gift_lottery WHERE id = ?";
         return this.queryForMap(sql, param);
     }
 
@@ -112,7 +112,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
     public List<Map<String, Object>> historyLotteries(String uuid, String keywords, Integer startIdx) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, winners, crt_tm FROM t_gift_lottery WHERE uuid = ? ");
+        sql.append("SELECT id, title, winners, crt_tm, overdue_tm FROM t_gift_lottery WHERE uuid = ? ");
         param.add(uuid);
         if (!StringUtils.isEmpty(keywords)) {
             param.add("%" + keywords + "%");
@@ -131,7 +131,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
      */
     @Override
     public List<String> lotteryLocList(String lotteryId) {
-        String sql = "SELECT loc_cd, loc_nm FROM t_gift_location WHERE lottery_id = ? ORDER BY ID ASC";
+        String sql = "SELECT loc_cd FROM t_gift_location WHERE lottery_id = ? ORDER BY ID ASC";
         return this.queryForList(sql, String.class, lotteryId);
     }
 
@@ -188,7 +188,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public Map<String, Object> queryWinner(Object[] param) {
-        String sql = "SELECT status, gift_id, edit_cnt, rcv_nm, rcv_phone, rcv_addr, rcv_email, rcv_remark, b_rcv_nm, b_rcv_phone, b_rcv_addr, b_rcv_email, b_rcv_remark FROM t_gift WHERE uuid = ? AND lottery_id = ?";
+        String sql = "SELECT status, gift_id, edit_cnt, rcv_nm, rcv_phone, rcv_addr, rcv_email, rcv_remark, b_rcv_nm, b_rcv_phone, b_rcv_addr, b_rcv_email, b_rcv_remark FROM t_gift_winner WHERE uuid = ? AND lottery_id = ?";
         return this.queryForMap(sql, param);
     }
 

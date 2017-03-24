@@ -51,6 +51,11 @@ public final class DateTimeUtils {
         return DAY > sub;
     }
     
+    public static boolean in24Hours(long ms1, long ms2){
+        long sub = ms1 - ms2;
+        return DAY > sub;
+    }
+    
     public static int compare(long dt1, long dt2){
         if(dt1 > dt2)
             return 1;
