@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blemobi.library.cache.UserBaseCache;
 import com.blemobi.library.grpc.DataPublishGrpcClient;
+import com.blemobi.library.grpc.NotifyGrpcClient;
 import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.GiftLotteryDao;
@@ -47,13 +48,24 @@ import com.blemobi.payment.util.Constants;
 import com.blemobi.payment.util.Constants.OrderEnum;
 import com.blemobi.payment.util.DateTimeUtils;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
+import com.blemobi.sep.probuf.NotificationApiProtos.PNotifyInternalMessage;
+import com.blemobi.sep.probuf.NotificationApiProtos.PNotifyInternalMessageList;
+import com.blemobi.sep.probuf.NotificationProtos.ENotifyType;
+import com.blemobi.sep.probuf.NotificationProtos.PNotifyMessage;
+import com.blemobi.sep.probuf.NotificationProtos.PNotifyRawMessage;
+import com.blemobi.sep.probuf.NotificationProtos.PNotifySimple;
 import com.blemobi.sep.probuf.PaymentProtos.PGiftInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PGiftLotteryDetail;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryList;
 import com.blemobi.sep.probuf.PaymentProtos.PLotterySingle;
 import com.blemobi.sep.probuf.PaymentProtos.PUserBaseGiftEx;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
+import com.blemobi.sep.probuf.RobotApiProtos.PBLotteryNotifyMsg;
 import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
+import com.blemobi.sep.probuf.RobotApiProtos.PRobotNotifyMsg;
+import com.blemobi.sep.probuf.RobotApiProtos.PRobotNotifyMsgList;
+import com.blemobi.sep.probuf.RobotApiProtos.PRobotRawNotifyMsg;
+import com.blemobi.sep.probuf.RobotProtos.ERobotPushType;
 
 import lombok.extern.log4j.Log4j;
 
@@ -380,8 +392,24 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
     }
 
     @Override
-    public PMessage remind(String lotteryId, List<String> uuidList) {
-        // TODO 通知
+    public PMessage remind(String uuid, String lotteryId, List<String> uuidList) {
+        RobotGrpcClient client = new RobotGrpcClient();
+        PRobotNotifyMsgList.Builder builder = PRobotNotifyMsgList.newBuilder();
+        PRobotNotifyMsg.Builder rnmBuilder = PRobotNotifyMsg.newBuilder();
+        PRobotRawNotifyMsg.Builder rrnmBuilder = PRobotRawNotifyMsg.newBuilder();
+        PBLotteryNotifyMsg.Builder lnmBuilder = PBLotteryNotifyMsg.newBuilder();
+        PUserBase userBase = null;
+        try {
+            userBase = UserBaseCache.get(uuid);
+        } catch (IOException e) {
+            log.error("uuid:[" + uuid + "]在缓存中没有找到");
+            throw new RuntimeException("用户没有找到");
+        }
+        lnmBuilder.setOrdNo(lotteryId).setType(ERobotPushType.LotteryRemind).setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
+        rrnmBuilder.setLottery(lnmBuilder.build());
+        rnmBuilder.addAllTo(uuidList).setFrom(uuid).setMsgType(ERobotPushType.LotteryRemind).setContent(rrnmBuilder.build());
+        builder.addList(rnmBuilder.build());
+        client.push(builder.build());
         return ReslutUtil.createSucceedMessage();
     }
 
@@ -391,25 +419,25 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         Boolean isSelf = uuid.equals(uuid1);
         boolean f1 = false, f2 = false, f3 = false;
         if (StringUtils.isBlank(rcvNm) || StringUtils.isBlank(rcvAddr) || StringUtils.isBlank(rcvPhone)) {
-            if(StringUtils.isBlank(rcvNm)){
+            if (StringUtils.isBlank(rcvNm)) {
                 rcvNm = " ";
             }
-            if(StringUtils.isBlank(rcvAddr)){
+            if (StringUtils.isBlank(rcvAddr)) {
                 rcvAddr = " ";
             }
-            if(StringUtils.isBlank(rcvPhone)){
+            if (StringUtils.isBlank(rcvPhone)) {
                 rcvPhone = " ";
             }
             f1 = true;
         }
         if (StringUtils.isBlank(rcvEmail)) {
-            if(StringUtils.isBlank(rcvEmail)){
+            if (StringUtils.isBlank(rcvEmail)) {
                 rcvEmail = " ";
             }
             f2 = true;
         }
         if (StringUtils.isBlank(rcvRemark)) {
-            if(StringUtils.isBlank(rcvRemark)){
+            if (StringUtils.isBlank(rcvRemark)) {
                 rcvRemark = " ";
             }
             f3 = true;
@@ -417,7 +445,6 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         if (f1 && f2 && f3) {
             throw new BizException(215016, "请至少输入收货信息、邮箱、留言中的一种");
         }
-        // status, gift_id, edit_cnt
         Map<String, Object> wInfo = giftLotteryDao.queryWinner(new Object[] {uuid1, lotteryId });
         Integer status = Integer.parseInt(wInfo.get("status").toString());
         Integer editCnt = Integer.parseInt(wInfo.get("edit_cnt").toString());
@@ -436,14 +463,42 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             String b_rcv_addr = wInfo.get("b_rcv_addr").toString();
             String b_rcv_email = wInfo.get("b_rcv_email").toString();
             String b_rcv_remark = wInfo.get("b_rcv_remark").toString();
+            String giftId = wInfo.get("gift_id").toString();
             if (!rcv_nm.equals(b_rcv_nm) || !rcv_phone.equals(b_rcv_phone) || !rcv_addr.equals(b_rcv_addr)
                     || !rcv_email.equals(b_rcv_email) || !rcv_remark.equals(b_rcv_remark)) {
                 status = 3;
             }
+            Map<String, Object> lottery = giftLotteryDao.queryLottery(lotteryId);
+            String uid = lottery.get("uuid").toString();
+            Map<String, Object> gift = giftLotteryDao.queryGift(new Object[] {giftId, lotteryId });
+            NotifyGrpcClient client = new NotifyGrpcClient();
+            PNotifyInternalMessageList.Builder builder = PNotifyInternalMessageList.newBuilder();
+            PNotifyInternalMessage.Builder nimBuilder = PNotifyInternalMessage.newBuilder();
+            PNotifyMessage.Builder nmBuilder = PNotifyMessage.newBuilder();
+            PNotifySimple.Builder nsBuilder = PNotifySimple.newBuilder();
+            PNotifyRawMessage.Builder nrmBuilder = PNotifyRawMessage.newBuilder();
+            String uri = String.format(
+                    "payment://lottery/editrcv?uuid=%s&lottery_id=%s&gift_nm=%s&rcv_nm=%s&rcv_addr=%s&rcv_phone=%s&rcv_email=%s&rcv_remark=%s",
+                    uuid, lotteryId, gift.get("gift_nm").toString(), rcvNm, rcvAddr, rcvPhone, rcvEmail, rcvRemark);
+            nsBuilder.setUri(uri);
+            PUserBase userBase = null;
+            try {
+                userBase = UserBaseCache.get(uuid);
+            } catch (IOException e) {
+                log.error("uuid:[" + uuid + "]在缓存中没有找到");
+                throw new RuntimeException("用户没有找到");
+            }
+            String desc = "你的粉丝" + userBase.getNickname() + "更新了领奖收货资料，请注意查看。";
+            nrmBuilder.setContent(desc).setSimple(nsBuilder.build());
+            nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build());
+            nimBuilder.setService("payment").setStateless(true).addRecipient(uid).setMessage(nmBuilder.build());
+            builder.addList(nimBuilder.build());
+            
+            
+            client.send(builder.build());
         }
         giftLotteryDao.updateLoc(rcvNm, rcvAddr, rcvPhone, rcvEmail, rcvRemark, isSelf, editCnt, status, lotteryId,
                 uuid1);
         return ReslutUtil.createSucceedMessage();
     }
-
 }

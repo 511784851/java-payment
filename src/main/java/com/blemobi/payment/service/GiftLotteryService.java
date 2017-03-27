@@ -50,7 +50,7 @@ public interface GiftLotteryService {
 
     public PMessage delete(String uuid, List<String> lotteryId);
 
-    public PMessage remind(String lotteryId, List<String> uuidList);
+    public PMessage remind(String uuid, String lotteryId, List<String> uuidList);
 
     public PMessage edit(String uuid, String lotteryId, String uuid1, String rcvNm, String rcvAddr, String rcvPhone,
             String rcvEmail, String rcvRemark);

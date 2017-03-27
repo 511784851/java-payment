@@ -100,7 +100,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
      */
     @Override
     public Map<String, Object> queryLottery(String param) {
-        String sql = "SELECT title, gender, remark, area_cnt, overdue_tm, status, winners, remain_cnt, crt_tm FROM t_gift_lottery WHERE id = ?";
+        String sql = "SELECT title, gender, remark, area_cnt, overdue_tm, status, winners, remain_cnt, crt_tm, uuid FROM t_gift_lottery WHERE id = ?";
         return this.queryForMap(sql, param);
     }
 
@@ -182,7 +182,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public Map<String, Object> queryGift(Object[] param) {
-        String sql = "SELECT remain_cnt, overdue_tm FROM t_gift WHERE id = ? AND lottery_id = ?";
+        String sql = "SELECT gift_nm, remain_cnt, overdue_tm FROM t_gift WHERE id = ? AND lottery_id = ?";
         return this.queryForMap(sql, param);
     }
 

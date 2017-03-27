@@ -202,17 +202,6 @@ public class GiftLotteryProcess {
         return lotteryService.view(lotteryId);
     }
 
-    @POST
-    @Path("remind")
-    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
-    public PMessage remind(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
-            @FormParam("lotteryId") String lotteryId, String uuidList) {
-        if(StringUtils.isEmpty(uuidList)){
-            log.debug("没有通知的目标用户");
-            throw new RuntimeException("没有通知的目标用户");
-        }
-        return lotteryService.remind(lotteryId, Arrays.asList(uuidList.split(",")));
-    }
 
     @POST
     @Path("delete")
@@ -234,5 +223,17 @@ public class GiftLotteryProcess {
             @FormParam("rcvAddr") String rcvAddr, @FormParam("rcvPhone") String rcvPhone,
             @FormParam("rcvEmail") String rcvEmail, @FormParam("rcvRemark") String rcvRemark) {
         return lotteryService.edit(uuid, lotteryId, uuid1, rcvNm, rcvAddr, rcvPhone, rcvEmail, rcvRemark);
+    }
+    
+    @POST
+    @Path("remind")
+    @Produces(MediaTypeExt.APPLICATION_PROTOBUF)
+    public PMessage remind(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
+            @FormParam("lotteryId") String lotteryId, @FormParam("uuidList") String uuidList) {
+        if(StringUtils.isEmpty(uuidList) || StringUtils.isEmpty(lotteryId)){
+            log.debug("没有通知的目标用户、或者抽奖包ID为空");
+            throw new RuntimeException("没有通知的目标用户、或者抽奖包ID为空");
+        }
+        return lotteryService.remind(uuid, lotteryId, Arrays.asList(uuidList.split(",")));
     }
 }
