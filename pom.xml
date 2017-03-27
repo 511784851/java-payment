@@ -12,17 +12,10 @@
 	<url>http://maven.apache.org</url>
 
 	<repositories>
-		<!-- 
 		<repository>
 			<id>central</id>
 			<name>74e19e93c610-releases</name>
 			<url>http://120.24.236.93:8081/artifactory/libs-release</url>
-		</repository>
-		 -->
-		<repository>
-			<id>project.local</id>
-			<name>project</name>
-			<url>file:${project.basedir}/lib</url>
 		</repository>
 	</repositories>
 
@@ -36,7 +29,7 @@
 		<dependency>
 			<groupId>com.blemobi.library</groupId>
 			<artifactId>java-public-library</artifactId>
-			<version>1.5.24</version>
+			<version>1.5.3</version>
 		</dependency>
 	</dependencies>
 	<build>
