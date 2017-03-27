@@ -7,13 +7,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.Cookie;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.blemobi.payment.core.PaymentManager;
 import com.blemobi.payment.util.DateTimeUtils;
 
 import lombok.extern.log4j.Log4j;
@@ -21,12 +18,11 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class GiftLotteryProcessTest {
 
-    //private static final String BASE_URL = "http://192.168.7.245";
-    private static final String BASE_URL = "http://127.0.0.1";
+    private static final String BASE_URL = "http://192.168.7.245";
+    //private static final String BASE_URL = "http://127.0.0.1";
     private static int port = 9014;
     private static final String URI = "/v1/payment/giftlottery/";
     private static List<Cookie> cookies = new ArrayList<>();
-
     @Before
     public void setup() {
         Cookie cookie0 = new Cookie("uuid", "1470563129739262662");
@@ -77,7 +73,7 @@ public class GiftLotteryProcessTest {
         param.put("uuidList", "1481558064279125258,1481558242396559459,1470753921857608048,1481558594837018113");
         param.put("regionList", "CN;6540,CN;3701,CN;3701,CN;6540");
         param.put("genderList", "0,0,1,0");
-        //HttpUtils.getInstance().post(getPath(action), param, cookies);
+        HttpUtils.getInstance().post(getPath(action), param, cookies);
 
         // 查看抽奖
         action = "view";
@@ -96,7 +92,7 @@ public class GiftLotteryProcessTest {
         action = "list";
         url = getPath(action);
         url += "?startIndex=0&keywords=";
-        HttpUtils.getInstance().get(url, cookies);
+        //HttpUtils.getInstance().get(url, cookies);
         // 详情
         action = "detail";
         url = getPath(action);
@@ -118,6 +114,14 @@ public class GiftLotteryProcessTest {
         param.put("rcvPhone", "188xxxxxxxx");
         //param.put("rcvEmail", "x");
         param.put("rcvRemark", "ddddsfsfsdfs");
+        //HttpUtils.getInstance().post(getPath(action), param, cookies);
+        
+        
+        //一键提醒
+        action = "remind";
+        param.clear();
+        param.put("lotteryId", "5201703241491483880945963013");
+        param.put("uuidList", "1481558242396559459,1481558064279125258");
         //HttpUtils.getInstance().post(getPath(action), param, cookies);
         
         }catch(Exception ex){
