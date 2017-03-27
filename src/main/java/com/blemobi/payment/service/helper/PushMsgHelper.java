@@ -234,7 +234,7 @@ public class PushMsgHelper {
 		params.add(new BasicNameValuePair("receiverUUIDs", receiverUUIDs));
 		params.add(new BasicNameValuePair("title", "BB"));
 		params.add(new BasicNameValuePair("msgid", "ov"));
-		params.add(new BasicNameValuePair("description", ""));
+		params.add(new BasicNameValuePair("description", "BB"));
 		params.add(new BasicNameValuePair("alertContent", conent));
 		params.add(new BasicNameValuePair("info", infoString));
 
