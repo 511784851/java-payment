@@ -34,7 +34,7 @@
 		<appender-ref ref="LogFile"/>
 	</category>
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
 		<appender-ref ref="LogFile" />
 	</root>

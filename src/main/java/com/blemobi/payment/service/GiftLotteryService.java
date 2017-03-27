@@ -21,6 +21,7 @@
 package com.blemobi.payment.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 
@@ -54,4 +55,9 @@ public interface GiftLotteryService {
 
     public PMessage edit(String uuid, String lotteryId, String uuid1, String rcvNm, String rcvAddr, String rcvPhone,
             String rcvEmail, String rcvRemark);
+    
+    public List<Map<String, Object>> queryForIn24HoursLotteries();
+    public void notfiyUser(String uuid, String lotteryId, String title);
+    public List<Map<String, Object>> queryForExpLotteries();
+    public void updExp(String lotteryId, Integer status);
 }

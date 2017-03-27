@@ -1,5 +1,8 @@
 package com.blemobi.payment.model;
 
+import lombok.ToString;
+
+@ToString
 public class RedSend {
 
 	private int id;

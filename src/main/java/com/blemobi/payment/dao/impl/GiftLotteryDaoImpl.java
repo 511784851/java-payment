@@ -23,6 +23,7 @@ package com.blemobi.payment.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -32,6 +33,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.blemobi.payment.dao.GiftLotteryDao;
+import com.blemobi.payment.util.DateTimeUtils;
 
 /**
  * @ClassName GiftLotteryDaoImpl
@@ -155,26 +157,6 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
         return this.queryForList(sql, lotteryId);
     }
 
-    /*
-     * (非 Javadoc) Description:
-     * @see com.blemobi.payment.dao.GiftLotteryDao#queryOverdueLotteries()
-     */
-    @Override
-    public List<Map<String, Object>> queryOverdueLotteries() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (非 Javadoc) Description:
-     * @see com.blemobi.payment.dao.GiftLotteryDao#updateOverdueLottery(java.lang.Object[])
-     */
-    @Override
-    public int updateOverdueLottery(Object[] param) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
     @Resource
     public void setDs(DataSource ds) {
         super.setDataSource(ds);
@@ -246,5 +228,39 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
         param.add(lotteryId);
         param.add(uuid);
         return this.update(sql.toString(), param.toArray());
+    }
+
+    @Override
+    public List<Map<String, Object>> queryForIn24HoursLotteries() {
+        String sql = "SELECT id, title, remark, uuid, status FROM t_gift_lottery WHERE overdue_tm >= ? AND overdue_tm < ? AND notify_cnt = 0 ORDER BY overdue_tm ASC";
+        long now = DateTimeUtils.currTime();
+        long past24 = DateTimeUtils.calcTime(TimeUnit.DAYS, -1);
+        return this.queryForList(sql, past24, now);
+    }
+
+
+    @Override
+    public List<Map<String, Object>> queryForExpLotteries() {
+        String sql = "SELECT id, title, remark, uuid, status FROM t_gift_lottery WHERE overdue_tm <= ? AND remain_cnt > 0 ORDER BY overdue_tm ASC";
+        long now = DateTimeUtils.currTime();
+        return this.queryForList(sql, now);
+    }
+
+    @Override
+    public Boolean updExp(String lotteryId, Integer status) {
+        String sql = "UPDATE t_gift_lottery SET status = ? WHERE id = ?";
+        return this.update(sql, new Object[]{lotteryId, status}) == 1;
+    }
+
+    @Override
+    public List<String> queryWinners(String lotteryId) {
+        String sql = "SELECT uuid FROM t_gift_winner WHERE lottery_id = ? AND status = 0";
+        return this.queryForList(sql, String.class, lotteryId);
+    }
+
+    @Override
+    public Boolean updNotifyCnt(String lotteryId) {
+        String sql = "UPDATE t_gift_lottery SET notify_cnt = notify_cnt + 1 WHERE id = ?";
+        return this.update(sql, lotteryId) == 1;
     }
 }

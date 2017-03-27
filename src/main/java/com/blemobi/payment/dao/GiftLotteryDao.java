@@ -60,12 +60,14 @@ public interface GiftLotteryDao {
 
     public List<Map<String, Object>> lotteryGiftList(String lotteryId);
 
-    public List<Map<String, Object>> queryOverdueLotteries();
-
-    public int updateOverdueLottery(Object[] param);
-
     public int delete(String uuid, List<String> lotteryId);
 
     public int updateLoc(String rcvNm, String rcvAddr, String rcvPhone, String rcvEmail, String rcvRemark,
             Boolean isSelf, Integer editCnt, Integer status, String lotteryId, String uuid);
+    
+    public List<Map<String, Object>> queryForIn24HoursLotteries();
+    public List<String> queryWinners(String lotteryId);
+    public Boolean updNotifyCnt(String lotteryId);
+    public List<Map<String, Object>> queryForExpLotteries();
+    public Boolean updExp(String lotteryId, Integer status);
 }

@@ -22,6 +22,7 @@ package com.blemobi.payment.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -405,9 +406,11 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("uuid:[" + uuid + "]在缓存中没有找到");
             throw new RuntimeException("用户没有找到");
         }
-        lnmBuilder.setOrdNo(lotteryId).setType(ERobotPushType.LotteryRemind).setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
+        lnmBuilder.setOrdNo(lotteryId).setType(ERobotPushType.LotteryRemind)
+                .setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
         rrnmBuilder.setLottery(lnmBuilder.build());
-        rnmBuilder.addAllTo(uuidList).setFrom(uuid).setMsgType(ERobotPushType.LotteryRemind).setContent(rrnmBuilder.build());
+        rnmBuilder.addAllTo(uuidList).setFrom(uuid).setMsgType(ERobotPushType.LotteryRemind)
+                .setContent(rrnmBuilder.build());
         builder.addList(rnmBuilder.build());
         client.push(builder.build());
         return ReslutUtil.createSucceedMessage();
@@ -493,12 +496,59 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build());
             nimBuilder.setService("payment").setStateless(true).addRecipient(uid).setMessage(nmBuilder.build());
             builder.addList(nimBuilder.build());
-            
-            
             client.send(builder.build());
         }
         giftLotteryDao.updateLoc(rcvNm, rcvAddr, rcvPhone, rcvEmail, rcvRemark, isSelf, editCnt, status, lotteryId,
                 uuid1);
         return ReslutUtil.createSucceedMessage();
+    }
+
+    @Override
+    public List<Map<String, Object>> queryForIn24HoursLotteries() {
+        return giftLotteryDao.queryForIn24HoursLotteries();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void notfiyUser(String uuid, String lotteryId, String title) {
+        List<String> uuidList = giftLotteryDao.queryWinners(lotteryId);
+        giftLotteryDao.updNotifyCnt(lotteryId);
+        // 通知网红发货提醒
+        NotifyGrpcClient client = new NotifyGrpcClient();
+        PNotifyInternalMessageList.Builder builder = PNotifyInternalMessageList.newBuilder();
+        PNotifyInternalMessage.Builder nimBuilder = PNotifyInternalMessage.newBuilder();
+        PNotifyMessage.Builder nmBuilder = PNotifyMessage.newBuilder();
+        PNotifySimple.Builder nsBuilder = PNotifySimple.newBuilder();
+        PNotifyRawMessage.Builder nrmBuilder = PNotifyRawMessage.newBuilder();
+        String uri = String.format("payment://lottery/shipping?lottery_id=%s", lotteryId);
+        nsBuilder.setUri(uri);
+        String desc = "你的抽奖活动" + title + "24小时后到截止日期，别忘记发货哦。";
+        nrmBuilder.setContent(desc).setSimple(nsBuilder.build());
+        nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build());
+        nimBuilder.setService("payment").setStateless(true).addRecipient(uuid).setMessage(nmBuilder.build());
+        builder.addList(nimBuilder.build());
+        client.send(builder.build());
+
+        // 提醒还未领奖者领奖
+        desc = "你有一个24小时内过期的抽奖活动未领取，赶紧去看看。";
+        PushMsgHelper push = new PushMsgHelper("", lotteryId, uuidList, desc);
+        try {
+            push.pushOver(desc);
+        } catch (IOException e) {
+            log.error("通知网红出现异常");
+            throw new RuntimeException("通知网红出现异常");
+        }
+
+    }
+
+    @Override
+    public List<Map<String, Object>> queryForExpLotteries() {
+        return giftLotteryDao.queryForExpLotteries();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updExp(String lotteryId, Integer status) {
+        giftLotteryDao.updExp(lotteryId, status);
     }
 }
