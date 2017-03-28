@@ -60,7 +60,7 @@ public class GiftLotteryProcess {
     private static void validation(String title, String remark, Long overdue) {
         if (StringUtils.isEmpty(title) || title.length() > 20) {
             log.debug("请输入标题，1-20个字符");
-            throw new BizException(215007, "请输入标题，1-20个字符");
+            throw new BizException(215006, "请输入标题，1-20个字符");
         }
         if (!StringUtils.isEmpty(remark) && remark.length() > 50) {
             log.debug("留言最多支持50个字符");
