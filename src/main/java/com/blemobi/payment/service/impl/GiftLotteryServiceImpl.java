@@ -180,7 +180,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 throw new RuntimeException("插入抽奖礼物表失败");
             }
         } else {
-            throw new BizException(215008, "请至少填写一个奖品信息！");
+            throw new BizException(2105008, "请至少填写一个奖品信息！");
         }
         if (uuidList != null && genderList != null && regionList != null && !uuidList.isEmpty()
                 && uuidList.size() == genderList.size() && uuidList.size() == regionList.size()
@@ -446,14 +446,14 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             f3 = true;
         }
         if (f1 && f2 && f3) {
-            throw new BizException(215016, "请至少输入收货信息、邮箱、留言中的一种");
+            throw new BizException(2105016, "请至少输入收货信息、邮箱、留言中的一种");
         }
         Map<String, Object> wInfo = giftLotteryDao.queryWinner(new Object[] {uuid1, lotteryId });
         Integer status = Integer.parseInt(wInfo.get("status").toString());
         Integer editCnt = Integer.parseInt(wInfo.get("edit_cnt").toString());
         if (isSelf) {
             if (editCnt.intValue() > 1) {
-                throw new BizException(215015, "更新次数超出限制");
+                throw new BizException(2105015, "更新次数超出限制");
             }
             editCnt++;
             String rcv_nm = wInfo.get("rcv_nm").toString();

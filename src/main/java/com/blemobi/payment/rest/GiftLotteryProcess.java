@@ -60,21 +60,21 @@ public class GiftLotteryProcess {
     private static void validation(String title, String remark, Long overdue) {
         if (StringUtils.isEmpty(title) || title.length() > 20) {
             log.debug("请输入标题，1-20个字符");
-            throw new BizException(215006, "请输入标题，1-20个字符");
+            throw new BizException(2105006, "请输入标题，1-20个字符");
         }
         if (!StringUtils.isEmpty(remark) && remark.length() > 50) {
             log.debug("留言最多支持50个字符");
-            throw new BizException(215011, "留言最多支持50个字符");
+            throw new BizException(2105011, "留言最多支持50个字符");
         }
         if (overdue == null) {
             log.debug("请输入截止日期");
-            throw new BizException(215012, "请输入截止日期。");
+            throw new BizException(2105012, "请输入截止日期。");
         }
         long theLast = DateTimeUtils.calcTime(TimeUnit.DAYS, 30);
         if (overdue.longValue() < System.currentTimeMillis()
                 || DateTimeUtils.compare(overdue.longValue(), theLast) == 1) {
             log.debug("截止日期最多可设置一个月以内");
-            throw new BizException(215014, "截止日期最多可设置一个月以内");
+            throw new BizException(2105014, "截止日期最多可设置一个月以内");
         }
     }
 
@@ -95,17 +95,17 @@ public class GiftLotteryProcess {
         }
         if (StringUtils.isEmpty(giftNm) || StringUtils.isEmpty(giftCnt)) {
             log.debug("uuid:["+ uuid + "]请至少填写一个奖品信息！");
-            throw new BizException(215008, "请至少填写一个奖品信息！");
+            throw new BizException(2105008, "请至少填写一个奖品信息！");
         }
         List<String> nmList = Arrays.asList(giftNm.split(","));
         if (nmList.size() > 10) {
             log.debug("uuid:["+ uuid + "]最多可设置10条奖项");
-            throw new BizException(215013, "最多可设置10条奖项");
+            throw new BizException(2105013, "最多可设置10条奖项");
         }
         for (String str : nmList) {
             if (str.length() > 15 || str.length() < 2) {
                 log.debug("uuid:["+ uuid + "]奖品名称仅支持2-15个字符");
-                throw new BizException(215009, "奖品名称仅支持2-15个字符");
+                throw new BizException(2105009, "奖品名称仅支持2-15个字符");
             }
         }
         String[] arr = giftCnt.split(",");
@@ -114,7 +114,7 @@ public class GiftLotteryProcess {
             int c = Integer.parseInt(cnt);
             if (c < 1 || c > 9999) {
                 log.debug("uuid:["+ uuid + "]正整数格式，范围1-9999");
-                throw new BizException(215010, "正整数格式，范围1-9999");
+                throw new BizException(2105010, "正整数格式，范围1-9999");
             }
             cntList.add(c);
         }
@@ -138,15 +138,15 @@ public class GiftLotteryProcess {
             regionLists = Arrays.asList(regions.split(","));
         }
         if (StringUtils.isEmpty(giftNm) || StringUtils.isEmpty(giftCnt)) {
-            throw new BizException(215008, "请至少填写一个奖品信息！");
+            throw new BizException(2105008, "请至少填写一个奖品信息！");
         }
         List<String> nmList = Arrays.asList(giftNm.split(","));
         if (nmList.size() > 10) {
-            throw new BizException(215013, "最多可设置10条奖项");
+            throw new BizException(2105013, "最多可设置10条奖项");
         }
         for (String str : nmList) {
             if (str.length() > 15 || str.length() < 2) {
-                throw new BizException(215009, "奖品名称仅支持2-15个字符");
+                throw new BizException(2105009, "奖品名称仅支持2-15个字符");
             }
         }
         String[] arr = giftCnt.split(",");
@@ -154,7 +154,7 @@ public class GiftLotteryProcess {
         for (String cnt : arr) {
             int c = Integer.parseInt(cnt);
             if (c < 1 || c > 9999) {
-                throw new BizException(215010, "正整数格式，范围1-9999");
+                throw new BizException(2105010, "正整数格式，范围1-9999");
             }
             cntList.add(c);
         }
