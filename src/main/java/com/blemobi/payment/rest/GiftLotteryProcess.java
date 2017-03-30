@@ -76,6 +76,11 @@ public class GiftLotteryProcess {
             log.debug("截止日期最多可设置一个月以内");
             throw new BizException(2105014, "截止日期最多可设置一个月以内");
         }
+        Boolean theFirst = DateTimeUtils.in24Hours(overdue.longValue(), DateTimeUtils.currTime());
+        if (theFirst) {
+            log.debug("你设置的截止日期较短，粉丝有可能来不及提交收货地址.");
+            throw new BizException(2105017, "你设置的截止日期较短，粉丝有可能来不及提交收货地址.");
+        }
     }
 
     @POST
