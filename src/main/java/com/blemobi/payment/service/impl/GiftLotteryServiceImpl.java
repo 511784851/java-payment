@@ -22,7 +22,6 @@ package com.blemobi.payment.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -400,7 +399,10 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
 
     @Override
     public PMessage delete(String uuid, List<String> lotteryId) {
-        giftLotteryDao.delete(uuid, lotteryId);
+        int ret = giftLotteryDao.delete(uuid, lotteryId);
+        if(ret < lotteryId.size()){
+            throw new BizException(2105018, "礼物抽奖记录截止日期一个月之后才能被删除！删除取消。");
+        }
         return ReslutUtil.createSucceedMessage();
     }
 
