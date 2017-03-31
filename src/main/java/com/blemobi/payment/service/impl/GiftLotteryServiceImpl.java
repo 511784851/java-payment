@@ -376,7 +376,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                         .setRcvAddr(winner.get("rcv_addr").toString()).setRcvEmail(winner.get("rcv_email").toString())
                         .setRcvNm(winner.get("rcv_nm").toString()).setRcvPhone(winner.get("rcv_phone").toString())
                         .setRcvRemark(winner.get("rcv_remark").toString()).setRegion(winner.get("loc_cd").toString())
-                        .setStatus(Integer.parseInt(winner.get("status").toString()));
+                        .setStatus(Integer.parseInt(winner.get("status").toString()))
+                        .setAcceptTm(Long.parseLong(winner.get("accept_tm").toString()));
                 wList.add(ub.build());
             }
             builder.addAllUserList(wList);

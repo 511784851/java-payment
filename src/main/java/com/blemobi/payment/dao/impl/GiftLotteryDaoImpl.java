@@ -266,7 +266,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public int updateWinner(Integer winnerId) {
-        String sql = "UPDATE t_gift_winner SET status = 0 WHERE id = ?";
-        return this.update(sql, winnerId);
+        String sql = "UPDATE t_gift_winner SET status = 0, accept_tm = ? WHERE id = ?";
+        return this.update(sql, DateTimeUtils.currTime(), winnerId);
     }
 }
