@@ -170,7 +170,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public Map<String, Object> queryWinner(Object[] param) {
-        String sql = "SELECT status, gift_id, edit_cnt, rcv_nm, rcv_phone, rcv_addr, rcv_email, rcv_remark, b_rcv_nm, b_rcv_phone, b_rcv_addr, b_rcv_email, b_rcv_remark FROM t_gift_winner WHERE uuid = ? AND lottery_id = ?";
+        String sql = "SELECT id, status, gift_id, edit_cnt, rcv_nm, rcv_phone, rcv_addr, rcv_email, rcv_remark, b_rcv_nm, b_rcv_phone, b_rcv_addr, b_rcv_email, b_rcv_remark FROM t_gift_winner WHERE uuid = ? AND lottery_id = ?";
         return this.queryForMap(sql, param);
     }
 
@@ -262,5 +262,11 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
     public Boolean updNotifyCnt(String lotteryId) {
         String sql = "UPDATE t_gift_lottery SET notify_cnt = notify_cnt + 1 WHERE id = ?";
         return this.update(sql, lotteryId) == 1;
+    }
+
+    @Override
+    public int updateWinner(Integer winnerId) {
+        String sql = "UPDATE t_gift_winner SET status = 0 WHERE id = ?";
+        return this.update(sql, winnerId);
     }
 }

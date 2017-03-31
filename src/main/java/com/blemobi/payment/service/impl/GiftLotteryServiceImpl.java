@@ -225,6 +225,13 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("领奖包已过期");
             throw new RuntimeException("领奖包已过期");
         }
+        Object[] winnerParam = new Object[] {uuid, lotteryId };
+        Map<String, Object> winnerInfo = giftLotteryDao.queryWinner(winnerParam);
+        Integer wStatus = Integer.parseInt(winnerInfo.get("status").toString());
+        if(wStatus.intValue() != -1){
+            log.error("你已领奖，不能重复领奖");
+            throw new RuntimeException("你已领奖，不能重复领奖");
+        }
         int remainCnt = Integer.parseInt(lottery.get("remain_cnt").toString());
         if (remainCnt >= 1) {
             remainCnt--;
@@ -244,8 +251,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("更新实物抽奖表异常");
             throw new RuntimeException("更新实物抽奖表异常");
         }
-        Object[] winnerParam = new Object[] {uuid, lotteryId };
-        Map<String, Object> winnerInfo = giftLotteryDao.queryWinner(winnerParam);
+        
         String giftId = winnerInfo.get("gift_id").toString();
         Object[] giftParam = new Object[] {giftId, lotteryId };
         Map<String, Object> giftInfo = giftLotteryDao.queryGift(giftParam);
@@ -263,7 +269,12 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("更新gift表异常");
             throw new RuntimeException("更新gift表异常");
         }
-
+        Integer winnerId = Integer.parseInt(winnerInfo.get("id").toString());
+        ret = giftLotteryDao.updateWinner(winnerId);
+        if (ret != 1) {
+            log.error("更新winner表异常");
+            throw new RuntimeException("更新winner表异常");
+        }
         return detail(lotteryId);
     }
 

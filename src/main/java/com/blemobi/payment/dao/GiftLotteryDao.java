@@ -70,4 +70,5 @@ public interface GiftLotteryDao {
     public Boolean updNotifyCnt(String lotteryId);
     public List<Map<String, Object>> queryForExpLotteries();
     public Boolean updExp(String lotteryId, Integer status);
+    public int updateWinner(Integer winnerId);
 }
