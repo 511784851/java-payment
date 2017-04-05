@@ -191,7 +191,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
         String lotteryIds = "'" + StringUtils.join(lotteryId, "','") + "'";
         long tm = DateTimeUtils.calcTime(TimeUnit.DAYS, 30);
         long currTm = DateTimeUtils.currTime();
-        String sql = "UPDATE t_gift_lottery SET status = 0 WHERE id IN (" + lotteryIds + ") AND uuid = ? AND ? < overdue_tm + ?";
+        String sql = "UPDATE t_gift_lottery SET status = 0 WHERE id IN (" + lotteryIds + ") AND uuid = ? AND ? > overdue_tm + ?";
         return this.update(sql, new Object[] {uuid, currTm, tm});
     }
 
