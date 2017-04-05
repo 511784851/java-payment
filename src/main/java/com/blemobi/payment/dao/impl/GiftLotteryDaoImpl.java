@@ -234,8 +234,8 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public List<Map<String, Object>> queryForIn24HoursLotteries() {
-        String sql = "SELECT id, title, remark, uuid, status FROM t_gift_lottery WHERE overdue_tm >= ? AND overdue_tm < ? AND notify_cnt = 0 ORDER BY overdue_tm ASC";
-        long now = DateTimeUtils.currTime();
+        String sql = "SELECT id, title, remark, uuid, status FROM t_gift_lottery WHERE overdue_tm >= ? AND overdue_tm <= ? AND notify_cnt = 0 ORDER BY overdue_tm ASC";
+        long now = DateTimeUtils.calcTime(TimeUnit.MINUTES, -10);
         long next24 = DateTimeUtils.calcTime(TimeUnit.DAYS, 1);
         return this.queryForList(sql, now, next24);
     }
