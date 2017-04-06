@@ -20,13 +20,10 @@
  *****************************************************************/
 package com.blemobi.payment.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
-import com.blemobi.library.consul.BaseService;
+import com.blemobi.library.consul_v1.PropsUtils;
 
 import lombok.extern.log4j.Log4j;
 
@@ -40,19 +37,12 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 
-    private static final List<String> DESKEYS = new ArrayList<String>();
-
-    @Override
-    protected String convertProperty(String propertyName, String propertyValue) {
-        String kvVal = BaseService.getProperty(propertyName);
-        if (!StringUtils.isEmpty(kvVal)) {
-            log.info("----properties key:" + propertyName + ",OrgVal: " + propertyValue + ", KvVal:" + kvVal);
-        }
-        return StringUtils.isEmpty(kvVal) ? propertyValue : kvVal;
-    }
-
-    static {
-        // DESKEYS.add("db.username");
-        // DESKEYS.add("db.password");
-    }
+	@Override
+	protected String convertProperty(String propertyName, String propertyValue) {
+		String kvVal = PropsUtils.getString(propertyName);
+		if (!StringUtils.isEmpty(kvVal)) {
+			log.info("----properties key:" + propertyName + ",OrgVal: " + propertyValue + ", KvVal:" + kvVal);
+		}
+		return StringUtils.isEmpty(kvVal) ? propertyValue : kvVal;
+	}
 }
