@@ -204,7 +204,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         client.saveFans(orderno, gender, regions, uuid, Constants.TABLE_NAMES.LOTTERY_TB.getValue()); // 通知GO 存储抽奖参与者
         // 发送通知
         PushMsgHelper pushMgr = new PushMsgHelper(uuid, orderno, uuidList, remark);
-        pushMgr.lotteryMsg();
+        pushMgr.lotteryMsg(ERobotPushType.GiftLottery);
         return ReslutUtil.createSucceedMessage();
     }
 
@@ -536,7 +536,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         PNotifyRawMessage.Builder nrmBuilder = PNotifyRawMessage.newBuilder();
         String uri = String.format("payment://lottery/shipping?lottery_id=%s", lotteryId);
         nsBuilder.setUri(uri);
-        String desc = "你的抽奖活动" + title + "24小时后到截止日期，别忘记发货哦。";
+        String desc = "你的抽奖活动“" + title + "”24小时后到截止日期，别忘记发货哦。";
         nrmBuilder.setContent(desc).setSimple(nsBuilder.build());
         nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build());
         nimBuilder.setService("payment").setStateless(true).addRecipient(uuid).setMessage(nmBuilder.build());
@@ -544,13 +544,15 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         client.send(builder.build());
 
         // 提醒还未领奖者领奖
-        desc = "你有一个24小时内过期的抽奖活动未领取，赶紧去看看。";
-        PushMsgHelper push = new PushMsgHelper("", lotteryId, uuidList, desc);
-        try {
-            push.pushOver(desc);
-        } catch (IOException e) {
-            log.error("通知网红出现异常");
-            throw new RuntimeException("通知网红出现异常");
+        if(uuidList != null && !uuidList.isEmpty()){
+            desc = "你有一个24小时内过期的抽奖活动未领取，赶紧去看看。";
+            PushMsgHelper push = new PushMsgHelper("", lotteryId, uuidList, desc);
+            try {
+                push.pushOver(desc);
+            } catch (IOException e) {
+                log.error("通知网红出现异常");
+                throw new RuntimeException("通知网红出现异常");
+            }
         }
 
     }
