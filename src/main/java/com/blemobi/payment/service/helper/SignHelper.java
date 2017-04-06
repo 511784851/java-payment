@@ -3,7 +3,7 @@ package com.blemobi.payment.service.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.blemobi.library.consul.BaseService;
+import com.blemobi.library.consul_v1.PropsUtils;
 import com.blemobi.payment.util.SignUtil;
 import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
 
@@ -15,9 +15,9 @@ import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
  */
 public class SignHelper {
 	/** 渠道key */
-	public static final String partnerId = BaseService.getProperty("ry.partnerId");
+	public static final String partnerId = PropsUtils.getString("ry.partnerId");
 	/** 私钥 */
-	public static final String seckey = BaseService.getProperty("ry.seckey");
+	public static final String seckey = PropsUtils.getString("ry.seckey");
 
 	/** 接受者账户类型（0-个人，1-企业） */
 	private int recAccountType;

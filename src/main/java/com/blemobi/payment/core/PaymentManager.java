@@ -2,6 +2,8 @@ package com.blemobi.payment.core;
 
 import java.util.List;
 
+import com.blemobi.library.cache.CacheInvalid;
+import com.blemobi.library.cache.LiveThread;
 import com.blemobi.library.consul_v1.Constants.CONFIG_KV_KEY;
 import com.blemobi.library.consul_v1.ConsulClientMgr;
 import com.blemobi.library.consul_v1.ConsulServiceMgr;
@@ -29,6 +31,10 @@ public class PaymentManager {
 	 * 要发布rest服务的
 	 */
 	private static final String packages = "com.blemobi." + selfName + ".rest";
+	/**
+	 * 用户缓存失效时间（单位：毫秒）
+	 */
+	private static final long live_time = 1 * 24 * 60 * 60 * 1000;
 
 	public static void main(String[] args) throws Exception {
 		ConsulClientMgr.initial(args, selfName, ADDRESS);
@@ -42,6 +48,10 @@ public class PaymentManager {
 		}
 		startJetty(jettyPort);
 		log.info("Start Payment Server Finish!");
+
+		// 启动线程管理用户缓存
+		LiveThread LiveThread = new LiveThread(live_time, new CacheInvalid());
+		LiveThread.start();
 		// 退款扫描
 		RefundThread rt = new RefundThread();
 		(new Thread(rt)).start();
