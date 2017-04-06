@@ -538,7 +538,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         nsBuilder.setUri(uri);
         String desc = "你的抽奖活动“" + title + "”24小时后到截止日期，别忘记发货哦。";
         nrmBuilder.setContent(desc).setSimple(nsBuilder.build());
-        nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build());
+        nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build()).setTime((System.currentTimeMillis() / 1000));
         nimBuilder.setService("payment").setStateless(true).addRecipient(uuid).setMessage(nmBuilder.build());
         builder.addList(nimBuilder.build());
         client.send(builder.build());
