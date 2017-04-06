@@ -243,7 +243,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public List<Map<String, Object>> queryForExpLotteries() {
-        String sql = "SELECT id, title, remark, uuid, status FROM t_gift_lottery WHERE overdue_tm <= ? AND remain_cnt > 0 ORDER BY overdue_tm ASC";
+        String sql = "SELECT id, title, remark, uuid, status FROM t_gift_lottery WHERE overdue_tm <= ? AND remain_cnt > 0 AND status NOT IN(0,4) ORDER BY overdue_tm ASC";
         long now = DateTimeUtils.currTime();
         return this.queryForList(sql, now);
     }
@@ -251,7 +251,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
     @Override
     public Boolean updExp(String lotteryId, Integer status) {
         String sql = "UPDATE t_gift_lottery SET status = ? WHERE id = ?";
-        return this.update(sql, new Object[]{lotteryId, status}) == 1;
+        return this.update(sql, new Object[]{status, lotteryId}) == 1;
     }
 
     @Override
