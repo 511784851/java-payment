@@ -484,6 +484,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             if (!rcv_nm.equals(b_rcv_nm) || !rcv_phone.equals(b_rcv_phone) || !rcv_addr.equals(b_rcv_addr)
                     || !rcv_email.equals(b_rcv_email) || !rcv_remark.equals(b_rcv_remark)) {
                 status = 3;
+            }else{
+                status = 1;
             }
             Map<String, Object> lottery = giftLotteryDao.queryLottery(lotteryId);
             String uid = lottery.get("uuid").toString();
