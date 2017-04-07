@@ -466,7 +466,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         Integer status = Integer.parseInt(wInfo.get("status").toString());
         Integer editCnt = Integer.parseInt(wInfo.get("edit_cnt").toString());
         if (isSelf) {
-            if (editCnt.intValue() > 1) {
+            if (editCnt.intValue() > 2) {
                 throw new BizException(2105015, "更新次数超出限制");
             }
             editCnt++;
