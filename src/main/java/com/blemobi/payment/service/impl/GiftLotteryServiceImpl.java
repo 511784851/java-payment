@@ -122,7 +122,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         List<PUserBaseGiftEx> winnersList = ShuffleUtils.shuffle(uuidList, winners);
         detailBuilder.setGender(gender).addAllGifts(builderGiftList(null, giftNm, giftCnt)).setOverdueTm(overdueTm)
                 .addAllRegions(regions).setRemark(remark).setTitle(title).setWinners(winners)
-                .addAllUserList(winnersList);
+                .addAllUserList(winnersList).setCrtTm(System.currentTimeMillis());
         jedisDao.setUserLotteryRefreshTimes(uuid);
         return ReslutUtil.createReslutMessage(detailBuilder.build());
     }
@@ -335,7 +335,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 .setStatus(Integer.parseInt(lotteryInfo.get("status").toString()))
                 .setTitle(lotteryInfo.get("title").toString())
                 .setWinners(Integer.parseInt(lotteryInfo.get("winners").toString()))
-                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString()));
+                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString())).setCrtTm(System.currentTimeMillis());;
         List<String> locList = giftLotteryDao.lotteryLocList(lotteryId);
         if (locList != null && !locList.isEmpty()) {
             builder.addAllRegions(locList);
@@ -393,7 +393,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         Long overdue = Long.parseLong(lotteryInfo.get("overdue_tm").toString());
         Integer status = Integer.parseInt(lotteryInfo.get("status").toString());
         PGiftLotteryDetail.Builder builder = PGiftLotteryDetail.newBuilder();
-        builder.setTitle(title).setRemark(remark).setOverdueTm(overdue).setStatus(status);
+        builder.setTitle(title).setRemark(remark).setOverdueTm(overdue).setStatus(status).setCrtTm(System.currentTimeMillis());
         return ReslutUtil.createReslutMessage(builder.build());
     }
 
