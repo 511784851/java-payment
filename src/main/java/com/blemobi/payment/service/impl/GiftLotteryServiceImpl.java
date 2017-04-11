@@ -557,7 +557,6 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             }
             PushMsgHelper pushMgr = new PushMsgHelper(uuid, lotteryId, uuidList, desc);
             pushMgr.lotteryMsg(ERobotPushType.LotteryExpire);
-            
         }
 
     }
