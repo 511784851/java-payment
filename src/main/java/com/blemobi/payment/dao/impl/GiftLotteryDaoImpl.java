@@ -256,7 +256,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
 
     @Override
     public List<String> queryWinners(String lotteryId) {
-        String sql = "SELECT uuid FROM t_gift_winner WHERE lottery_id = ? AND status = 0";
+        String sql = "SELECT uuid FROM t_gift_winner WHERE lottery_id = ? AND status < 1";
         return this.queryForList(sql, String.class, lotteryId);
     }
 
