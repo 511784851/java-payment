@@ -555,6 +555,9 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 log.error("通知网红出现异常");
                 throw new RuntimeException("通知网红出现异常");
             }
+            PushMsgHelper pushMgr = new PushMsgHelper(uuid, lotteryId, uuidList, desc);
+            pushMgr.lotteryMsg(ERobotPushType.LotteryExpire);
+            
         }
 
     }
