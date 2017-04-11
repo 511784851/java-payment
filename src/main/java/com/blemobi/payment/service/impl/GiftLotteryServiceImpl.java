@@ -340,7 +340,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 .setStatus(Integer.parseInt(lotteryInfo.get("status").toString()))
                 .setTitle(lotteryInfo.get("title").toString())
                 .setWinners(Integer.parseInt(lotteryInfo.get("winners").toString()))
-                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString())).setCrtTm(System.currentTimeMillis());;
+                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString())).setCrtTm(Long.parseLong(lotteryInfo.get("crt_tm").toString()));
         List<String> locList = giftLotteryDao.lotteryLocList(lotteryId);
         if (locList != null && !locList.isEmpty()) {
             builder.addAllRegions(locList);
@@ -398,7 +398,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         Long overdue = Long.parseLong(lotteryInfo.get("overdue_tm").toString());
         Integer status = Integer.parseInt(lotteryInfo.get("status").toString());
         PGiftLotteryDetail.Builder builder = PGiftLotteryDetail.newBuilder();
-        builder.setTitle(title).setRemark(remark).setOverdueTm(overdue).setStatus(status).setCrtTm(System.currentTimeMillis());
+        builder.setTitle(title).setRemark(remark).setOverdueTm(overdue).setStatus(status).setCrtTm(Long.parseLong(lotteryInfo.get("crt_tm").toString()));
         return ReslutUtil.createReslutMessage(builder.build());
     }
 
