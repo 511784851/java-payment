@@ -114,7 +114,7 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
     public List<Map<String, Object>> historyLotteries(String uuid, String keywords, Integer startIdx) {
         StringBuilder sql = new StringBuilder();
         List<Object> param = new ArrayList<Object>();
-        sql.append("SELECT id, title, winners, crt_tm, overdue_tm FROM t_gift_lottery WHERE uuid = ? ");
+        sql.append("SELECT id, title, winners, crt_tm, overdue_tm, status FROM t_gift_lottery WHERE uuid = ? ");
         param.add(uuid);
         if (!StringUtils.isEmpty(keywords)) {
             param.add("%" + keywords + "%");

@@ -297,7 +297,12 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 b.setLotteryId(lotteryId);
                 Long ot = Long.parseLong(map.get("overdue_tm").toString());
                 Boolean in24 = DateTimeUtils.in24Hours(ot, System.currentTimeMillis());
-                b.setIn24Hours(in24);
+                if(in24){
+                    int status = Integer.parseInt(map.get("status").toString());
+                    if(status != 0 && status != 4){
+                        b.setIn24Hours(in24);
+                    }
+                }
                 List<String> uuidList = giftLotteryDao.lotteryTop5WinnerList(lotteryId);
                 if (uuidList != null && !uuidList.isEmpty()) {
                     List<PUserBase> uList = new ArrayList<PUserBase>();
