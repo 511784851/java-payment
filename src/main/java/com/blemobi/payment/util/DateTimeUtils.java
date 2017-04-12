@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.log4j.Log4j;
+@Log4j
 public final class DateTimeUtils {
     private static final long DAY = 1 * 24 * 60 * 60 * 1000;
     private static final long HOURS = 1 * 60 * 60 * 1000;
@@ -54,6 +56,13 @@ public final class DateTimeUtils {
     public static boolean in24Hours(long ms1, long ms2){
         long sub = ms1 - ms2;
         return DAY > sub;
+    }
+    public static boolean in24Hours1(long ot, long ms2){
+        if(ot <= ms2){
+            return false;
+        }
+        long sub = (ms2 + DAY) - ot;
+        return 0 <= sub && sub <= DAY;
     }
     
     public static int compare(long dt1, long dt2){

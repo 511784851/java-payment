@@ -297,6 +297,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 b.setLotteryId(lotteryId);
                 Long ot = Long.parseLong(map.get("overdue_tm").toString());
                 Boolean in24 = DateTimeUtils.in24Hours1(ot, System.currentTimeMillis());
+                log.debug("lotteryId->" + lotteryId + ", in24->" + in24);
                 if (in24) {
                     b.setIn24Hours(in24);
                 }
