@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.alibaba.fastjson.JSONObject;
+import com.blemobi.library.consul_v1.PropsUtils;
 import com.blemobi.payment.service.CallbackService;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.Constants;
@@ -104,7 +105,7 @@ public class RongYunNotifyProcess {
             param.put("returnType", returnType);
             param.put("custUid", custUid);
             param.put("receiveUid", receiveUid);
-            param.put("seckey", SignHelper.seckey);
+            param.put("seckey", PropsUtils.getString("ry.seckey"));
 
             String signLocal = SignUtil.sign(param);
             log.info(signLocal);

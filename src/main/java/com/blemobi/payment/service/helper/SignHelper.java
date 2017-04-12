@@ -15,9 +15,9 @@ import com.blemobi.sep.probuf.PaymentProtos.POrderPay;
  */
 public class SignHelper {
 	/** 渠道key */
-	public static final String partnerId = PropsUtils.getString("ry.partnerId");
+	private String partnerId = PropsUtils.getString("ry.partnerId");
 	/** 私钥 */
-	public static final String seckey = PropsUtils.getString("ry.seckey");
+	private String seckey = PropsUtils.getString("ry.seckey");
 
 	/** 接受者账户类型（0-个人，1-企业） */
 	private int recAccountType;
@@ -81,7 +81,7 @@ public class SignHelper {
 	 *            商品名称
 	 */
 	public SignHelper(String cusId, int fenMoney, String ord_no, String goodsName) {
-		this(cusId, fenMoney, ord_no, goodsName, 1, partnerId);
+		this(cusId, fenMoney, ord_no, goodsName, 1, PropsUtils.getString("ry.partnerId"));
 	}
 
 	/**

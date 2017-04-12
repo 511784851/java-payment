@@ -21,6 +21,7 @@
 package com.blemobi.payment.util.rongyun;
 
 import com.alibaba.fastjson.JSON;
+import com.blemobi.library.consul_v1.PropsUtils;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.DateTimeUtils;
 
@@ -32,9 +33,9 @@ import com.blemobi.payment.util.DateTimeUtils;
  * @version 1.0.0
  */
 public abstract class RongYunReq {
-    protected String partnerId = SignHelper.partnerId;
+    protected String partnerId = PropsUtils.getString("ry.partnerId");
     protected String timeStamp = DateTimeUtils.getDateTime14();
-    protected final String seckey = SignHelper.seckey;
+    protected final String seckey = PropsUtils.getString("ry.seckey");
     
     /**
      * @return the seckey
