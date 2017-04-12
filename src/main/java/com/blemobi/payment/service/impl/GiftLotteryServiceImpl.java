@@ -227,7 +227,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         Object[] winnerParam = new Object[] {uuid, lotteryId };
         Map<String, Object> winnerInfo = giftLotteryDao.queryWinner(winnerParam);
         Integer wStatus = Integer.parseInt(winnerInfo.get("status").toString());
-        if(wStatus.intValue() != -1){
+        if (wStatus.intValue() != -1) {
             log.error("你已领奖，不能重复领奖");
             throw new RuntimeException("你已领奖，不能重复领奖");
         }
@@ -250,7 +250,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("更新实物抽奖表异常");
             throw new RuntimeException("更新实物抽奖表异常");
         }
-        
+
         String giftId = winnerInfo.get("gift_id").toString();
         Object[] giftParam = new Object[] {giftId, lotteryId };
         Map<String, Object> giftInfo = giftLotteryDao.queryGift(giftParam);
@@ -296,12 +296,9 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 String lotteryId = map.get("id").toString();
                 b.setLotteryId(lotteryId);
                 Long ot = Long.parseLong(map.get("overdue_tm").toString());
-                Boolean in24 = DateTimeUtils.in24Hours(ot, System.currentTimeMillis());
-                if(in24){
-                    int status = Integer.parseInt(map.get("status").toString());
-                    if(status != 0 && status != 4){
-                        b.setIn24Hours(in24);
-                    }
+                Boolean in24 = DateTimeUtils.in24Hours1(ot, System.currentTimeMillis());
+                if (in24) {
+                    b.setIn24Hours(in24);
                 }
                 List<String> uuidList = giftLotteryDao.lotteryTop5WinnerList(lotteryId);
                 if (uuidList != null && !uuidList.isEmpty()) {
@@ -340,7 +337,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 .setStatus(Integer.parseInt(lotteryInfo.get("status").toString()))
                 .setTitle(lotteryInfo.get("title").toString())
                 .setWinners(Integer.parseInt(lotteryInfo.get("winners").toString()))
-                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString())).setCrtTm(Long.parseLong(lotteryInfo.get("crt_tm").toString()));
+                .setRegionCnt(Integer.parseInt(lotteryInfo.get("area_cnt").toString()))
+                .setCrtTm(Long.parseLong(lotteryInfo.get("crt_tm").toString()));
         List<String> locList = giftLotteryDao.lotteryLocList(lotteryId);
         if (locList != null && !locList.isEmpty()) {
             builder.addAllRegions(locList);
@@ -398,14 +396,15 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         Long overdue = Long.parseLong(lotteryInfo.get("overdue_tm").toString());
         Integer status = Integer.parseInt(lotteryInfo.get("status").toString());
         PGiftLotteryDetail.Builder builder = PGiftLotteryDetail.newBuilder();
-        builder.setTitle(title).setRemark(remark).setOverdueTm(overdue).setStatus(status).setCrtTm(Long.parseLong(lotteryInfo.get("crt_tm").toString()));
+        builder.setTitle(title).setRemark(remark).setOverdueTm(overdue).setStatus(status)
+                .setCrtTm(Long.parseLong(lotteryInfo.get("crt_tm").toString()));
         return ReslutUtil.createReslutMessage(builder.build());
     }
 
     @Override
     public PMessage delete(String uuid, List<String> lotteryId) {
         int ret = giftLotteryDao.delete(uuid, lotteryId);
-        if(ret < lotteryId.size()){
+        if (ret < lotteryId.size()) {
             throw new BizException(2105018, "礼物抽奖记录截止日期一个月之后才能被删除！删除取消。");
         }
         return ReslutUtil.createSucceedMessage();
@@ -489,7 +488,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             if (!rcv_nm.equals(b_rcv_nm) || !rcv_phone.equals(b_rcv_phone) || !rcv_addr.equals(b_rcv_addr)
                     || !rcv_email.equals(b_rcv_email) || !rcv_remark.equals(b_rcv_remark)) {
                 status = 3;
-            }else{
+            } else {
                 status = 1;
             }
             Map<String, Object> lottery = giftLotteryDao.queryLottery(lotteryId);
@@ -545,13 +544,14 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         nsBuilder.setUri(uri);
         String desc = "你的抽奖活动“" + title + "”24小时后到截止日期，别忘记发货哦。";
         nrmBuilder.setContent(desc).setSimple(nsBuilder.build());
-        nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build()).setTime((System.currentTimeMillis() / 1000));
+        nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build())
+                .setTime((System.currentTimeMillis() / 1000));
         nimBuilder.setService("payment").setStateless(true).addRecipient(uuid).setMessage(nmBuilder.build());
         builder.addList(nimBuilder.build());
         client.send(builder.build());
 
         // 提醒还未领奖者领奖
-        if(uuidList != null && !uuidList.isEmpty()){
+        if (uuidList != null && !uuidList.isEmpty()) {
             desc = "你有一个24小时内过期的抽奖活动未领取，赶紧去看看。";
             PushMsgHelper push = new PushMsgHelper("", lotteryId, uuidList, desc);
             try {
