@@ -82,7 +82,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
             param.add( "%" + keywords + "%");
             sql.append(" AND title LIKE ? ");
         }
-        sql.append(" AND status NOT IN (0, 1)");
+        sql.append(" AND status NOT IN (0)");
         sql.append(" ORDER BY crt_tm DESC LIMIT ?, 10");
         param.add(startIdx);
         List<Map<String, Object>> result = this.queryForList(sql.toString(), param.toArray(new Object[] {}));
