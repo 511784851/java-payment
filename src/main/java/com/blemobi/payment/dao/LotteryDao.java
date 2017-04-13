@@ -50,4 +50,7 @@ public interface LotteryDao {
     public Map<String, Object> getUnacceptAmt(String lotteryId);
     public int updateExpireLottery(String lotteryId, long updTm, int updStatus, int status);
     public int updateExpireWinners(String lotteryId);
+    public List<Map<String, Object>> trashList(String uuid, int startIdx);
+    public int trashClear(String lotteryId, String uuid);
+    public int restoreRecord(String lotteryId, String uuid, Integer status);
 }

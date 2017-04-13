@@ -191,8 +191,8 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
         String lotteryIds = "'" + StringUtils.join(lotteryId, "','") + "'";
         long tm = DateTimeUtils.calcTime(TimeUnit.DAYS, 30);
         long currTm = DateTimeUtils.currTime();
-        String sql = "UPDATE t_gift_lottery SET status = 0 WHERE id IN (" + lotteryIds + ") AND uuid = ? AND ? > overdue_tm + ?";
-        return this.update(sql, new Object[] {uuid, currTm, tm});
+        String sql = "UPDATE t_gift_lottery SET status = 0, del_opr = ?, del_tm = ? WHERE id IN (" + lotteryIds + ") AND uuid = ? AND ? > overdue_tm + ?";
+        return this.update(sql, new Object[] {uuid, uuid, DateTimeUtils.currTime(), currTm, tm});
     }
 
     @Override
@@ -270,5 +270,17 @@ public class GiftLotteryDaoImpl extends JdbcTemplate implements GiftLotteryDao {
     public int updateWinner(Integer winnerId) {
         String sql = "UPDATE t_gift_winner SET status = 0, accept_tm = ? WHERE id = ?";
         return this.update(sql, DateTimeUtils.currTime(), winnerId);
+    }
+
+    @Override
+    public int trashClear(String lotteryId, String uuid) {
+        String sql = "UPDATE t_gift_lottery SET status = -1 WHERE id =? AND uuid = ?";
+        return this.update(sql, lotteryId, uuid);
+    }
+
+    @Override
+    public int restoreRecord(String lotteryId, String uuid, Integer status) {
+        String sql = "UPDATE t_gift_lottery SET status = ? WHERE id = ? AND uuid = ?";
+        return this.update(sql, new Object[]{status, lotteryId, uuid});
     }
 }

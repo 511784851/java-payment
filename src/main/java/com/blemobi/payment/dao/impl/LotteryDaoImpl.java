@@ -62,8 +62,8 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     @Override
     public int delPrize(List<String> lotteryId, String uuid) {
         String lotteryIds = "'" + StringUtils.join(lotteryId, "','") + "'";
-        String sql = "UPDATE t_lotteries SET status = 0 WHERE id IN (" + lotteryIds + ") AND uuid = ?";
-        return this.update(sql, new Object[]{uuid});
+        String sql = "UPDATE t_lotteries SET status = 0, del_opr = ?, del_tm = ? WHERE id IN (" + lotteryIds + ") AND uuid = ?";
+        return this.update(sql, new Object[]{uuid, DateTimeUtils.currTime(), uuid});
     }
 
     @Override
@@ -82,7 +82,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
             param.add( "%" + keywords + "%");
             sql.append(" AND title LIKE ? ");
         }
-        sql.append(" AND status NOT IN (0)");
+        sql.append(" AND status NOT IN (-1,0,1)");
         sql.append(" ORDER BY crt_tm DESC LIMIT ?, 10");
         param.add(startIdx);
         List<Map<String, Object>> result = this.queryForList(sql.toString(), param.toArray(new Object[] {}));
@@ -91,7 +91,7 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
 
     @Override
     public Map<String, Object> lotteryDetail(String lotteryId) {
-        String sql = "SELECT title, typ, crt_tm, tot_amt,winners, uuid, remark from t_lotteries where id = ?";
+        String sql = "SELECT title, typ, crt_tm, tot_amt,winners, remain_cnt, uuid, remark from t_lotteries where id = ?";
         return this.queryForMap(sql, lotteryId);
     }
 
@@ -175,6 +175,32 @@ public class LotteryDaoImpl extends JdbcTemplate implements LotteryDao {
     public int updateExpireWinners(String lotteryId) {
         String sql = "UPDATE t_winners SET status = 2 WHERE lottery_id = ? AND status = 0";
         return this.update(sql, lotteryId);
+    }
+    @Override
+    public List<Map<String, Object>> trashList(String uuid, int startIdx) {
+        StringBuilder sql = new StringBuilder();
+        List<Object> param = new ArrayList<Object>();
+        sql.append("SELECT * FROM (SELECT id as lotteryId, title as title, 1 as type, winners as cnt, remark as remark, del_opr as delOpr, del_tm as delTm, crt_tm as crtTm "
+                + "FROM t_lotteries WHERE uuid = ?  AND status = 0 ");
+        param.add(uuid);
+        sql.append(" UNION ");
+        sql.append("SELECT id as lotteryId, title as title, 2 as type, winners as cnt, remark as remark, del_opr as delOpr, del_tm as delTm, crt_tm as crtTm "
+                + "FROM t_gift_lottery WHERE uuid = ? AND status = 0) AS A ");
+        sql.append(" ORDER BY A.delTm DESC LIMIT ?, 20");
+        param.add(uuid);
+        param.add(startIdx);
+        List<Map<String, Object>> result = this.queryForList(sql.toString(), param.toArray(new Object[] {}));
+        return result;
+    }
+    @Override
+    public int trashClear(String lotteryId, String uuid) {
+        String sql = "UPDATE t_lotteries SET status = -1 WHERE id =? AND uuid = ?";
+        return this.update(sql, lotteryId, uuid);
+    }
+    @Override
+    public int restoreRecord(String lotteryId, String uuid, Integer status) {
+        String sql = "UPDATE t_lotteries SET status = ? WHERE id = ? AND uuid = ?";
+        return this.update(sql, new Object[]{status, lotteryId, uuid});
     }
     
 }

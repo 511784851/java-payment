@@ -71,4 +71,7 @@ public interface GiftLotteryDao {
     public List<Map<String, Object>> queryForExpLotteries();
     public Boolean updExp(String lotteryId, Integer status);
     public int updateWinner(Integer winnerId);
+    
+    public int trashClear(String lotteryId, String uuid);
+    public int restoreRecord(String lotteryId, String uuid, Integer status);
 }

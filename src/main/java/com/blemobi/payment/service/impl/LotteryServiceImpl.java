@@ -38,10 +38,14 @@ import com.blemobi.library.grpc.DataPublishGrpcClient;
 import com.blemobi.library.grpc.RobotGrpcClient;
 import com.blemobi.library.util.ReslutUtil;
 import com.blemobi.payment.dao.BillDao;
+import com.blemobi.payment.dao.GiftLotteryDao;
 import com.blemobi.payment.dao.JedisDao;
 import com.blemobi.payment.dao.LotteryDao;
 import com.blemobi.payment.dao.TransactionDao;
+import com.blemobi.payment.dto.TrashDto;
+import com.blemobi.payment.dto.WinnerDto;
 import com.blemobi.payment.excepiton.BizException;
+import com.blemobi.payment.excepiton.RestException;
 import com.blemobi.payment.service.LotteryService;
 import com.blemobi.payment.service.helper.SignHelper;
 import com.blemobi.payment.util.Constants;
@@ -77,6 +81,8 @@ public class LotteryServiceImpl implements LotteryService {
 
     @Autowired
     private LotteryDao lotteryDao;
+    @Autowired
+    private GiftLotteryDao giftLotteryDao;
     @Autowired
     private JedisDao jedisDao;
     @Autowired
@@ -115,7 +121,7 @@ public class LotteryServiceImpl implements LotteryService {
         String orderno = robotClient.generateOrder(oparam).getVal();
         Object[] params = new Object[] {orderno, lottery.getTitle(), lottery.getGender(), lottery.getWinners(),
                 lottery.getTotAmt(), lottery.getTotAmt(), lottery.getWinners(), 1, uuid, currTm, currTm,
-                lottery.getRemark(), -1};
+                lottery.getRemark(), -1 };
         int ret = lotteryDao.createLottery(params);
         if (ret != 1) {
             throw new RuntimeException("创建抽奖失败，请重试");
@@ -214,7 +220,7 @@ public class LotteryServiceImpl implements LotteryService {
                 log.debug("中奖用户UUID：" + uuid);
                 PUserBaseEx.Builder uBuilder = PUserBaseEx.newBuilder();
                 uBuilder.setAmt(Integer.parseInt(usr.get("bonus").toString()));
-                uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));  
+                uBuilder.setGender(Integer.parseInt(usr.get("sex").toString()));
                 try {
                     PUserBase userBase = UserBaseCache.get(uuid);
                     uBuilder.setInfo(userBase);
@@ -229,20 +235,19 @@ public class LotteryServiceImpl implements LotteryService {
             }
             builder.addAllUserList(userList);
         }
-        
-        
+
         List<Map<String, Object>> locations = lotteryDao.lotteryLocations(lotteryId);
         if (locations != null && !locations.isEmpty()) {
             List<String> regions = new ArrayList<>();
             for (Map<String, Object> loc : locations) {
                 String location = loc.get("loc_cd").toString();
-                if(locs.containsKey(location)){
+                if (locs.containsKey(location)) {
                     regions.add(location);
                 }
             }
             builder.addAllRegion(regions);
         }
-        
+
         return ReslutUtil.createReslutMessage(builder.build());
     }
 
@@ -289,13 +294,12 @@ public class LotteryServiceImpl implements LotteryService {
         remainCnt--;
         remainAmt -= bonus;
         int ret = lotteryDao.acceptPrize(lotteryId, uuid);
-        if(ret != 1){
+        if (ret != 1) {
             throw new RuntimeException("更新领奖失败");
         }
         lotteryDao.updateLottery(lotteryId, remainCnt, remainAmt, DateTimeUtils.currTime(), status);
         RobotGrpcClient robotClient = new RobotGrpcClient();
-        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus)
-                .setServiceNo(0).build();
+        PPayOrderParma oparam = PPayOrderParma.newBuilder().setAmount(bonus).setServiceNo(0).build();
         String orderno = robotClient.generateOrder(oparam).getVal();
         B2CReq req = new B2CReq();
         req.setCustOrderno(orderno);
@@ -309,17 +313,18 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
-            ret = billDao.insert(uuid, lotteryId, bonus, DateTimeUtils.currTime(), Constants.OrderEnum.LUCK_DRAW.getValue(), 1, inf.get("uuid").toString());
-            if(ret != 1){
+            ret = billDao.insert(uuid, lotteryId, bonus, DateTimeUtils.currTime(),
+                    Constants.OrderEnum.LUCK_DRAW.getValue(), 1, inf.get("uuid").toString());
+            if (ret != 1) {
                 throw new RuntimeException("更新账单失败");
             }
-            ret = transactionDao.insert(new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus,
-                    1, " ", " ", resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
+            ret = transactionDao.insert(
+                    new Object[] {uuid, lotteryId, Constants.OrderEnum.LUCK_DRAW.getValue() + "", bonus, 1, " ", " ",
+                            resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, orderno });
             log.info("完成交易流水插入");
-            if(ret != 1){
+            if (ret != 1) {
                 throw new RuntimeException("更新流水失败");
             }
-            
 
         }
         return viewPrize(uuid, lotteryId);
@@ -412,35 +417,36 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public List<Map<String, Object>> getExpireLottery() {
         long expTm = DateTimeUtils.calcTime(TimeUnit.DAYS, -2);
-        
+
         List<Map<String, Object>> retList = lotteryDao.getExpireLottery(expTm);
-        if(retList == null || retList.isEmpty()){
+        if (retList == null || retList.isEmpty()) {
             return null;
         }
         List<Map<String, Object>> expList = new ArrayList<Map<String, Object>>();
-        for(Map<String, Object> map : retList){
-            //id, tot_amt, remain_amt, status, remain_cnt, winners, uuid
+        for (Map<String, Object> map : retList) {
+            // id, tot_amt, remain_amt, status, remain_cnt, winners, uuid
             String lotteryId = map.get("id").toString();
             String status = map.get("status").toString();
             long crt = Long.parseLong(map.get("crt_tm").toString()) + (5 * 60 * 1000);
-            if(DateTimeUtils.in24Hours(crt)){
-               continue; 
+            if (DateTimeUtils.in24Hours(crt)) {
+                continue;
             }
             Integer remainAmt = Integer.parseInt(map.get("remain_amt").toString());
             Integer remainCnt = Integer.parseInt(map.get("remain_cnt").toString());
-            if(remainAmt == null || remainAmt.intValue() <= 0 || remainCnt == null || remainCnt.intValue() <= 0){
+            if (remainAmt == null || remainAmt.intValue() <= 0 || remainCnt == null || remainCnt.intValue() <= 0) {
                 continue;
             }
             String uuid = map.get("uuid").toString();
-            //COUNT(1) as cnt, SUM(bonus) amt
+            // COUNT(1) as cnt, SUM(bonus) amt
             Map<String, Object> win = lotteryDao.getUnacceptAmt(lotteryId);
             Integer cnt = Integer.parseInt(win.get("cnt").toString());
             Integer amt = Integer.parseInt(win.get("amt").toString());
-            if(cnt == null || cnt.intValue() <= 0 || amt == null || amt.intValue() <= 0 ){
+            if (cnt == null || cnt.intValue() <= 0 || amt == null || amt.intValue() <= 0) {
                 continue;
             }
-            if(cnt.intValue() != remainCnt.intValue() || amt.intValue() != remainAmt.intValue()){
-                log.warn("退款金额与未领取的金额不一致或未领取数量与剩余数量不一致,未领取数量:" + cnt + ",金额:" + amt + ",需要退款的数量:" + remainCnt + "金额:" + remainAmt);
+            if (cnt.intValue() != remainCnt.intValue() || amt.intValue() != remainAmt.intValue()) {
+                log.warn("退款金额与未领取的金额不一致或未领取数量与剩余数量不一致,未领取数量:" + cnt + ",金额:" + amt + ",需要退款的数量:" + remainCnt + "金额:"
+                        + remainAmt);
                 continue;
             }
             Map<String, Object> refundMap = new HashMap<String, Object>();
@@ -464,18 +470,18 @@ public class LotteryServiceImpl implements LotteryService {
         Integer status = Integer.parseInt(map.get("status").toString());
         Integer remainAmt = Integer.parseInt(map.get("remainAmt").toString());
         Integer cnt = Integer.parseInt(map.get("cnt").toString());
-        if(status.intValue() == 2){
+        if (status.intValue() == 2) {
             updStatus = 4;
         }
         int ret = lotteryDao.updateExpireLottery(lotteryId, updTm, updStatus, status);
-        if(ret != 1){
+        if (ret != 1) {
             throw new RuntimeException("操作数据库异常");
         }
         ret = lotteryDao.updateExpireWinners(lotteryId);
-        if(ret != cnt.intValue()){
+        if (ret != cnt.intValue()) {
             throw new RuntimeException("操作数据库异常");
         }
-        //B2C
+        // B2C
         String desc = "领奖退款";
         B2CReq req = new B2CReq();
         String ordNo = "T" + lotteryId;
@@ -490,14 +496,130 @@ public class LotteryServiceImpl implements LotteryService {
         } else {
             log.info(resp.toString());
             long currTm = DateTimeUtils.currTime();
-            ret = transactionDao.insert(new Object[] {uuid, lotteryId, "0", remainAmt,
-                    1, " ", desc, resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, ordNo });
-            if(ret != 1){
+            ret = transactionDao.insert(new Object[] {uuid, lotteryId, "0", remainAmt, 1, " ", desc,
+                    resp.getJrmfOrderno(), resp.getRespstat(), resp.getRespmsg(), currTm, currTm, ordNo });
+            if (ret != 1) {
                 throw new RuntimeException("插入流水失败");
             }
             log.info("完成交易流水插入");
-
         }
-        
+    }
+
+    @Override
+    public List<TrashDto> trashList(String uuid, Integer startIdx) {
+        List<Map<String, Object>> recList = lotteryDao.trashList(uuid, startIdx);
+        List<TrashDto> list = new ArrayList<>();
+        if (recList != null && !recList.isEmpty()) {
+            for (Map<String, Object> rec : recList) {
+                TrashDto trash = new TrashDto();
+                Integer type = Integer.parseInt(rec.get("type").toString());
+                String lotteryId = rec.get("lotteryId").toString();
+                trash.setLotteryId(lotteryId);
+                trash.setTitle(rec.get("title").toString());
+                trash.setType(type);
+                trash.setWinnerCnt(Integer.parseInt(rec.get("cnt").toString()));
+                trash.setDesc(rec.get("remark").toString());
+                trash.setOperator(rec.get("delOpr").toString());
+                trash.setDelTm(Long.parseLong(rec.get("delTm").toString()));
+                trash.setCrtTm(Long.parseLong(rec.get("crtTm").toString()));
+                List<WinnerDto> winnerList = new ArrayList<>();
+                if (type.intValue() == 1) {
+                    List<Map<String, Object>> winners = lotteryDao.lotteryUsers(lotteryId);
+                    for (Map<String, Object> winner : winners) {
+                        String wuuid = winner.get("uuid").toString();
+                        try {
+                            PUserBase userBase = UserBaseCache.get(wuuid);
+                            WinnerDto w = new WinnerDto();
+                            w.setHeadUrl(userBase.getHeadImgURL());
+                            w.setLevel(userBase.getLevel());
+                            w.setNickNm(userBase.getNickname());
+                            w.setUuid(userBase.getUUID());
+                            winnerList.add(w);
+                        } catch (IOException e) {
+                            log.warn("uuid:[" + uuid + "]在缓存中没有找到");
+                        }
+                    }
+                } else {
+                    List<Map<String, Object>> winners = giftLotteryDao.lotteryWinnerList(lotteryId);
+                    for (Map<String, Object> winner : winners) {
+                        String wuuid = winner.get("uuid").toString();
+                        try {
+                            PUserBase userBase = UserBaseCache.get(wuuid);
+                            WinnerDto w = new WinnerDto();
+                            w.setHeadUrl(userBase.getHeadImgURL());
+                            w.setLevel(userBase.getLevel());
+                            w.setNickNm(userBase.getNickname());
+                            w.setUuid(userBase.getUUID());
+                            winnerList.add(w);
+                        } catch (IOException e) {
+                            log.warn("uuid:[" + uuid + "]在缓存中没有找到");
+                        }
+                    }
+                }
+                trash.setWinnerList(winnerList);
+                list.add(trash);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void restoreLottery(List<String> lotteryId, List<Integer> type, String uuid) {
+        int idx = 0, count = 0;
+        for (Integer t : type) {
+            String lottery = lotteryId.get(idx);
+            int status = 0;
+            if (t.intValue() == 1) {
+                Map<String, Object> detail = lotteryDao.lotteryDetail(lottery);
+                long crtTm = Long.parseLong(detail.get("crt_tm").toString());
+                int remainCnt = Integer.parseInt(detail.get("remain_cnt").toString());
+                if (remainCnt == 0) {
+                    status = 3;// 领奖完成
+                } else {
+                    long ot = DateTimeUtils.calcTime(TimeUnit.DAYS, -1);
+                    if(ot >= crtTm){
+                        status = 2;//领奖中
+                    }else {
+                        status = 4;//过期
+                    }
+                }
+                count += lotteryDao.restoreRecord(lottery, uuid, status);
+            } else if (t.intValue() == 2) {
+                Map<String, Object> detail = giftLotteryDao.queryLottery(lottery);
+                int remainCnt = Integer.parseInt(detail.get("remain_cnt").toString());
+                if(remainCnt > 0){
+                    status = 4;
+                }else {
+                    status = 3;
+                }
+                count += giftLotteryDao.restoreRecord(lottery, uuid, status);
+            } else {
+                throw new RuntimeException("抽奖类型有误");
+            }
+            idx++;
+        }
+        if(count != lotteryId.size()){
+            throw new RuntimeException("恢复数量与传入数量不一致");
+        }
+    }
+
+    @Override
+    public void deleteforeverLottery(List<String> lotteryId, List<Integer> type, String uuid) {
+        int idx = 0, count = 0;
+        for (Integer t : type) {
+            String lottery = lotteryId.get(idx);
+            if (t.intValue() == 1) {
+                count += lotteryDao.trashClear(lottery, uuid);
+            } else if (t.intValue() == 2) {
+                count += giftLotteryDao.trashClear(lottery, uuid);
+            } else {
+                throw new RuntimeException("抽奖类型有误");
+            }
+            idx++;
+        }
+        if(count != lotteryId.size()){
+            throw new RuntimeException("删除数量与传入数量不一致");
+        }
     }
 }

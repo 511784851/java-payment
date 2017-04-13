@@ -23,6 +23,7 @@ package com.blemobi.payment.service;
 import java.util.List;
 import java.util.Map;
 
+import com.blemobi.payment.dto.TrashDto;
 import com.blemobi.sep.probuf.PaymentProtos.PLotteryConfirm;
 import com.blemobi.sep.probuf.PaymentProtos.PShuffle;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
@@ -109,5 +110,11 @@ public interface LotteryService {
      * @author HUNTER.POON
      */
     public void doRefund(Map<String, Object> map);
+    
+    public List<TrashDto> trashList(String uuid, Integer startIdx);
+    
+    public void restoreLottery(List<String> lotteryId, List<Integer> type, String uuid);
+    
+    public void deleteforeverLottery(List<String> lotteryId, List<Integer> type, String uuid);
     
 }
