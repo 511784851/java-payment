@@ -88,7 +88,7 @@ public class LotteryProcess {
     @Path("resotre")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public String resotre(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
-            @FormParam("lotteryId") List<String> lotteryId, @FormParam("type") List<Integer> type) {
+            @FormParam("lotteryId[]") List<String> lotteryId, @FormParam("type[]") List<Integer> type) {
         log.debug(StringUtils.join(lotteryId, ","));
         log.debug(StringUtils.join(type, ","));
         try {
@@ -110,7 +110,7 @@ public class LotteryProcess {
     @Path("foreverdel")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public String foreverdel(@CookieParam("uuid") String uuid, @CookieParam("token") String token,
-            @FormParam("lotteryId") List<String> lotteryId, @FormParam("type") List<Integer> type) {
+            @FormParam("lotteryId[]") List<String> lotteryId, @FormParam("type[]") List<Integer> type) {
         try {
             if (lotteryId == null || lotteryId.isEmpty() || type == null || type.isEmpty()
                     || lotteryId.size() != type.size()) {
