@@ -425,8 +425,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("uuid:[" + uuid + "]在缓存中没有找到");
             throw new RuntimeException("用户没有找到");
         }
-        lnmBuilder.setOrdNo(lotteryId).setType(ERobotPushType.LotteryRemind)
-                .setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
+        lnmBuilder.setOrdNo(lotteryId).setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
         rrnmBuilder.setLottery(lnmBuilder.build());
         rnmBuilder.addAllTo(uuidList).setFrom(uuid).setMsgType(ERobotPushType.LotteryRemind)
                 .setContent(rrnmBuilder.build());
