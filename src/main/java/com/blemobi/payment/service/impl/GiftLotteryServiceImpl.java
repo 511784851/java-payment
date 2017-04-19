@@ -474,16 +474,16 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
                 throw new BizException(2105015, "更新次数超出限制");
             }
             editCnt++;
-            String rcv_nm = wInfo.get("rcv_nm").toString();
-            String rcv_phone = wInfo.get("rcv_phone").toString();
-            String rcv_addr = wInfo.get("rcv_addr").toString();
-            String rcv_email = wInfo.get("rcv_email").toString();
-            String rcv_remark = wInfo.get("rcv_remark").toString();
-            String b_rcv_nm = wInfo.get("b_rcv_nm").toString();
-            String b_rcv_phone = wInfo.get("b_rcv_phone").toString();
-            String b_rcv_addr = wInfo.get("b_rcv_addr").toString();
-            String b_rcv_email = wInfo.get("b_rcv_email").toString();
-            String b_rcv_remark = wInfo.get("b_rcv_remark").toString();
+//            String rcv_nm = wInfo.get("rcv_nm").toString();
+//            String rcv_phone = wInfo.get("rcv_phone").toString();
+//            String rcv_addr = wInfo.get("rcv_addr").toString();
+//            String rcv_email = wInfo.get("rcv_email").toString();
+//            String rcv_remark = wInfo.get("rcv_remark").toString();
+//            String b_rcv_nm = wInfo.get("b_rcv_nm").toString();
+//            String b_rcv_phone = wInfo.get("b_rcv_phone").toString();
+//            String b_rcv_addr = wInfo.get("b_rcv_addr").toString();
+//            String b_rcv_email = wInfo.get("b_rcv_email").toString();
+//            String b_rcv_remark = wInfo.get("b_rcv_remark").toString();
             String giftId = wInfo.get("gift_id").toString();
 //            if (!rcv_nm.equals(b_rcv_nm) || !rcv_phone.equals(b_rcv_phone) || !rcv_addr.equals(b_rcv_addr)
 //                    || !rcv_email.equals(b_rcv_email) || !rcv_remark.equals(b_rcv_remark)) {
@@ -491,7 +491,9 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
 //            } else {
 //                status = 1;
 //            }
-            status = 3;
+            if(editCnt > 1){
+            	status = 3;
+            }
             Map<String, Object> lottery = giftLotteryDao.queryLottery(lotteryId);
             String uid = lottery.get("uuid").toString();
             Map<String, Object> gift = giftLotteryDao.queryGift(new Object[] {giftId, lotteryId });
