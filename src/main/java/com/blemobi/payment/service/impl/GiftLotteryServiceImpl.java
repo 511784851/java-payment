@@ -203,6 +203,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
         DataPublishGrpcClient client = new DataPublishGrpcClient();
         client.saveFans(orderno, gender, regions, uuid, Constants.TABLE_NAMES.LOTTERY_TB.getValue()); // 通知GO 存储抽奖参与者
         // 发送通知
+        remark = "恭喜！天降神秘大奖，赶紧去领吧！";
         PushMsgHelper pushMgr = new PushMsgHelper(uuid, orderno, uuidList, remark);
         pushMgr.lotteryMsg(ERobotPushType.GiftLottery);
         return ReslutUtil.createSucceedMessage();
@@ -425,7 +426,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             log.error("uuid:[" + uuid + "]在缓存中没有找到");
             throw new RuntimeException("用户没有找到");
         }
-        lnmBuilder.setOrdNo(lotteryId).setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
+        //lnmBuilder.setOrdNo(lotteryId).setText(String.format("%s给你发了一个领奖提醒", userBase.getNickname()));
+        lnmBuilder.setOrdNo(lotteryId).setText("你有一个大奖未领取哦");
         rrnmBuilder.setLottery(lnmBuilder.build());
         rnmBuilder.addAllTo(uuidList).setFrom(uuid).setMsgType(ERobotPushType.LotteryRemind)
                 .setContent(rrnmBuilder.build());
@@ -555,13 +557,14 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
 
         // 提醒还未领奖者领奖
         if (uuidList != null && !uuidList.isEmpty()) {
-            desc = "你有一个24小时内过期的抽奖活动未领取，赶紧去看看。";
+            //desc = "你有一个24小时内过期的抽奖活动未领取，赶紧去看看。";
+        	desc = "你有一个24小时内过期的抽奖活动未领取。";
             PushMsgHelper push = new PushMsgHelper("", lotteryId, uuidList, desc);
             try {
                 push.pushOver(desc);
             } catch (IOException e) {
-                log.error("通知网红出现异常");
-                throw new RuntimeException("通知网红出现异常");
+                log.error("通知中奖者出现异常");
+                throw new RuntimeException("通知中奖者出现异常");
             }
             PushMsgHelper pushMgr = new PushMsgHelper(uuid, lotteryId, uuidList, desc);
             pushMgr.lotteryMsg(ERobotPushType.LotteryExpire);

@@ -33,6 +33,10 @@
 		<priority value="ERROR"/>
 		<appender-ref ref="LogFile"/>
 	</category>
+	<category name="com.blemobi.library.consul_v1" additivity="false">
+		<priority value="ERROR"/>
+		<appender-ref ref="LogFile"/>
+	</category>
 	<root>
 		<priority value="debug" />
 		<appender-ref ref="console" />
