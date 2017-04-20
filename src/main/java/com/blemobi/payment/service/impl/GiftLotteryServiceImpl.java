@@ -495,6 +495,8 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
 //            }
             if(editCnt > 1){
             	status = 3;
+            }else {
+            	status = 1;
             }
             Map<String, Object> lottery = giftLotteryDao.queryLottery(lotteryId);
             String uid = lottery.get("uuid").toString();
