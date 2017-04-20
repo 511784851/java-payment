@@ -23,8 +23,8 @@ import lombok.extern.log4j.Log4j;
  */
 @Log4j
 public class PaymentManager {
-	private static String ADDRESS = "192.168.7.245";//本地环境
-	//private static String ADDRESS = "127.0.0.1";// 测试、生产环境
+	//private static String ADDRESS = "192.168.7.245";//本地环境
+	private static String ADDRESS = "127.0.0.1";// 测试、生产环境
 	/**
 	 * 服务名称
 	 */
