@@ -18,12 +18,12 @@ import com.blemobi.payment.model.Reward;
 import com.blemobi.payment.service.SreachService;
 import com.blemobi.payment.util.Constants.TABLE_NAMES;
 import com.blemobi.sep.probuf.AccountProtos.PUserBase;
+import com.blemobi.sep.probuf.DatapublishingApiProtos.PQueryUserParam;
 import com.blemobi.sep.probuf.PaymentProtos.PRedEnveBaseInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PRewardInfo;
 import com.blemobi.sep.probuf.PaymentProtos.PSreachList;
 import com.blemobi.sep.probuf.ResultProtos.PMessage;
 import com.blemobi.sep.probuf.ResultProtos.PStringList;
-import com.blemobi.sep.probuf.ResultProtos.PStringSingle;
 
 import lombok.extern.log4j.Log4j;
 
@@ -135,7 +135,7 @@ public class SreachServiceImpl implements SreachService {
 	 * @return
 	 */
 	private PStringList getNicknameByKeyword(String keyword) {
-		PStringSingle request = PStringSingle.newBuilder().setVal(keyword).build();
+		PQueryUserParam request = PQueryUserParam.newBuilder().setKeyword(keyword).setOffset(0).setSize(1000).build();
 		DataPublishGrpcClient client = new DataPublishGrpcClient();
 		return client.SearchUser(request);
 	}
