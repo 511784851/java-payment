@@ -520,7 +520,7 @@ public class GiftLotteryServiceImpl implements GiftLotteryService {
             }
             String desc = "你的粉丝" + userBase.getNickname() + "更新了领奖收货资料，请注意查看。";
             nrmBuilder.setContent(desc).setSimple(nsBuilder.build());
-            nmBuilder.setType(ENotifyType.SimpleMessage).setContent(nrmBuilder.build());
+            nmBuilder.setType(ENotifyType.SimpleMessage).setTime(System.currentTimeMillis() / 1000).setContent(nrmBuilder.build());
             nimBuilder.setService("payment").setStateless(true).addRecipient(uid).setMessage(nmBuilder.build());
             builder.addList(nimBuilder.build());
             client.send(builder.build());
