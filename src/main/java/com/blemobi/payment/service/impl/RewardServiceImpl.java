@@ -30,7 +30,7 @@ import com.blemobi.sep.probuf.RobotApiProtos.PPayOrderParma;
 import com.google.common.base.Strings;
 
 /**
- * 打赏业务实现类
+ * 红包业务实现类
  * 
  * @author zhaoyong
  *
@@ -57,10 +57,10 @@ public class RewardServiceImpl implements RewardService {
 		String ord_no = createOrdNo(OrderEnum.REWARD.getValue(), money);
 		int rs = rewardDao.insert(ord_no, send_uuid, rece_uuid, money, content, send_tm);
 		if (rs != 1)
-			throw new RuntimeException("保存打赏数据失败");
+			throw new RuntimeException("保存红包数据失败");
 
 		// 生成支付信息给APP端
-		SignHelper signHelper = new SignHelper(send_uuid, money, ord_no, "打赏", rece_uuid);
+		SignHelper signHelper = new SignHelper(send_uuid, money, ord_no, "红包", rece_uuid);
 		POrderPay orderPay = signHelper.getOrderPay();
 		return ReslutUtil.createReslutMessage(orderPay);
 	}
@@ -86,8 +86,8 @@ public class RewardServiceImpl implements RewardService {
 		idx = checkIdx(idx);
 
 		PUserBase userBase = null;// 对方信息
-		int money = 0;// 打赏总金额
-		List<Reward> list = null;// 打赏记录
+		int money = 0;// 红包总金额
+		List<Reward> list = null;// 红包记录
 
 		Reward reward = rewardDao.selectByKey(ord_no, 1);
 		if (uuid.equals(reward.getSend_uuid())) {// 用户为发送者，需要处理接受者数据
@@ -101,9 +101,9 @@ public class RewardServiceImpl implements RewardService {
 		} else
 			throw new BizException(1901010, "没有权限");
 
-		// 打赏信息
+		// 红包信息
 		PRewardInfo rewardInfo = buildRawardInfo(userBase, reward);
-		// 历史打赏记录
+		// 历史红包记录
 		List<PRewardInfo> rewardList = buildRewardList(list);
 		// 返回数据内容
 		PRewardInfoList rewardInfoList = PRewardInfoList.newBuilder().setRewardInfo(rewardInfo).setMoney(money)
@@ -154,7 +154,7 @@ public class RewardServiceImpl implements RewardService {
 	}
 
 	/**
-	 * 验证是否符合打赏规则
+	 * 验证是否符合红包规则
 	 * 
 	 * @param send_uuid
 	 * @param money
@@ -163,17 +163,17 @@ public class RewardServiceImpl implements RewardService {
 	 */
 	private PMessage verification(String send_uuid, int money, String content, String rece_uuid) {
 		if (Strings.isNullOrEmpty(rece_uuid))
-			return ReslutUtil.createErrorMessage(2102001, "打赏没有选择领赏用户");
+			return ReslutUtil.createErrorMessage(2102001, "红包没有选择领赏用户");
 		if (content.length() > 100)
-			return ReslutUtil.createErrorMessage(2102003, "打赏描述不能超过100个字符");
+			return ReslutUtil.createErrorMessage(2102003, "红包描述不能超过100个字符");
 		if (money < Constants.min_each_money)
-			return ReslutUtil.createErrorMessage(2102004, "打赏金额不能少于0.01元");
+			return ReslutUtil.createErrorMessage(2102004, "红包金额不能少于0.01元");
 		if (money > Constants.max_each_money)
-			return ReslutUtil.createErrorMessage(2102005, "打赏金额最大仅支持200元");
+			return ReslutUtil.createErrorMessage(2102005, "红包金额最大仅支持200元");
 
 		int has_send_money = jedisDao.findDailySendMoney(send_uuid);
 		if (has_send_money + money > Constants.max_daily_money)
-			return ReslutUtil.createErrorMessage(2101006, "每天发送总金额（红包、抽奖、打赏）不能超过30000元 ");
+			return ReslutUtil.createErrorMessage(2101006, "每天发送总金额（红包、抽奖、红包）不能超过30000元 ");
 		return null;
 	}
 
